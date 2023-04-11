@@ -85,3 +85,57 @@ void invCooleyTukey(int n, int m, double complex* x, double complex* w) {
 
     bitReversed(n, x);
 }
+
+void stockham(int n, int p, double complex* x, double complex* y, double complex* w) {
+    int l = n / 2, m = 1, t, j, k, flag = 0;
+    double complex c0, c1;
+    double complex** X = (double complex**)calloc(2, sizeof(double complex*));
+    X[0] = (double complex*)calloc(n, sizeof(double complex));
+    X[1] = (double complex*)calloc(n, sizeof(double complex));
+    for(j = 0;j < n;j++)
+        X[0][j] = x[j];
+
+    for(t = 1;t <= p;t++) {
+        for(j = 0;j <= l - 1;j++) {
+            for(k = 0;k <= m - 1;k++) {
+                c0 = X[flag][k + j * m];
+                c1 = X[flag][k + j * m + l * m];
+                X[!flag][k + 2 * j * m] = c0 + c1;
+                X[!flag][k + 2 * j * m + m] = w[j * n / (2 * l)] * (c0 - c1);
+            }
+        }
+        l /= 2;
+        m *= 2;
+        flag = !flag;
+    }
+
+    for(j = 0;j < n;j++)
+        y[j] = X[flag][j];
+}
+
+void invStockham(int n, int p, double complex* x, double complex* y, double complex* w) {
+    int l = n / 2, m = 1, t, j, k, flag = 0;
+    double complex c0, c1;
+    double complex** X = (double complex**)calloc(2, sizeof(double complex*));
+    X[0] = (double complex*)calloc(n, sizeof(double complex));
+    X[1] = (double complex*)calloc(n, sizeof(double complex));
+    for(j = 0;j < n;j++)
+        X[0][j] = x[j];
+
+    for(t = 1;t <= p;t++) {
+        for(j = 0;j <= l - 1;j++) {
+            for(k = 0;k <= m - 1;k++) {
+                c0 = X[flag][k + j * m];
+                c1 = X[flag][k + j * m + l * m];
+                X[!flag][k + 2 * j * m] = c0 + c1;
+                X[!flag][k + 2 * j * m + m] = (c0 - c1) / w[j * n / (2 * l)];
+            }
+        }
+        l /= 2;
+        m *= 2;
+        flag = !flag;
+    }
+
+    for(j = 0;j < n;j++)
+        y[j] = X[flag][j] / n;
+}

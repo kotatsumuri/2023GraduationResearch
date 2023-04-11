@@ -7,6 +7,7 @@
 #include "FFT.h"
 
 void testDecimationInFrequency() {
+    printf("testDecimationInFrequency\n");
     int n = 16;
     int i;
     double complex *w = makeW(n);
@@ -29,6 +30,7 @@ void testDecimationInFrequency() {
 }
 
 void testCooleyTukey() {
+    printf("testCooleyTukey\n");
     int n = 16, m = 0, l = 1, i;
     while(n > l) {
         m++;
@@ -52,8 +54,35 @@ void testCooleyTukey() {
     }
 }
 
+void testStockham() {
+    printf("testStockham\n");
+    int n = 16, p = 0, l = 1, i;
+    while(n > l) {
+        p++;
+        l *= 2;
+    }
+    double complex *w = makeW(n);
+    double complex *x = (double complex*)calloc(n, sizeof(double complex));
+    for(i = 0;i < n;i++)
+        x[i] = (double complex)cos(2.0 * M_PI * (double)i / (double)n);
+    double complex *y = (double complex*)calloc(n, sizeof(double complex));
+
+    stockham(n, p, x, y, w);
+    for(int i = 0;i < n;i++) {
+        printComplex(y[i]);
+        puts("");
+    }
+
+    invStockham(n, p, y, x, w);
+    for(int i = 0;i < n;i++) {
+        printComplex(x[i]);
+        puts("");
+    }
+}
+
 int main() {
     testDecimationInFrequency();
     testCooleyTukey();
+    testStockham();
     return 0;
 }
