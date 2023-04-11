@@ -7,3 +7,4 @@
 
 void printComplex(double complex c);
 double complex* makeW(int n);
+void bitReversed(int n, double complex* x);

@@ -15,3 +15,12 @@ add_library(DFT
 target_include_directories(DFT
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
+
+add_library(FFT
+    STATIC
+        FFT.c
+    )
+
+target_include_directories(FFT
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    )
