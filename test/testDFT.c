@@ -25,5 +25,12 @@ int main() {
         puts("");
     }
 
+    invDFT(n, y, x, w);
+
+    for(i = 0;i < n;i++) {
+        printComplex(x[i]);
+        puts("");
+    }
+
     return 0;
 }
