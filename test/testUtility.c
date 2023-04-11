@@ -12,6 +12,8 @@ void testMakeW() {
     for(i = 0;i < 16;i++) {
         assert(creal(w[i]) == cos(2.0 * M_PI_2 * (double)i / (double)n));
         assert(cimag(w[i]) == sin(2.0 * M_PI_2 * (double)i / (double)n));
+        printComplex(w[i]);
+        puts("");
     }
 }
 

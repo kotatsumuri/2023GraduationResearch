@@ -5,5 +5,4 @@
 #include <math.h>
 #include <complex.h>
 
-void printComplex(double complex c);
-double complex* makeW(int n);
+void DFT(int n, double complex* x, double complex *y, double complex *w);
