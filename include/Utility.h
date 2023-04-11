@@ -1,5 +1,4 @@
-#ifndef UTILITY_H
-#define UTILITY_H
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,5 +6,3 @@
 #include <complex.h>
 
 double complex* makeW(int n);
-
-#endif // UTILITY_H
