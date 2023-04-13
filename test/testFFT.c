@@ -80,9 +80,36 @@ void testStockham() {
     }
 }
 
+void testRealFFT() {
+    printf("testRealFFT\n");
+    int n = 16, m = 0, l = 1, i;
+    while(n > l) {
+        m++;
+        l *= 2;
+    }
+    double complex *w = makeW(n);
+    double* x = (double*)calloc(n, sizeof(double));
+    for(i = 0;i < n;i++)
+        x[i] = cos(2.0 * M_PI * (double)i / (double)n);
+    double complex *y = (double complex*)calloc(n, sizeof(double complex));
+    realFFT(n, m, x, y, w);
+    for(int i = 0;i < n;i++) {
+        printComplex(y[i]);
+        puts("");
+    }
+    for(i = 0;i < n;i++)
+        x[i] = creal(y[i]);
+    invRealFFT(n, m, x, y, w);
+    for(int i = 0;i < n;i++) {
+        printComplex(y[i]);
+        puts("");
+    }
+}
+
 int main() {
     testDecimationInFrequency();
     testCooleyTukey();
     testStockham();
+    testRealFFT();
     return 0;
 }

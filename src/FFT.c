@@ -139,3 +139,53 @@ void invStockham(int n, int p, double complex* x, double complex* y, double comp
     for(j = 0;j < n;j++)
         y[j] = X[flag][j] / n;
 }
+
+void realFFT(int n, int m, double* x, double complex* y, double complex* w) {
+    int i;
+    double complex* a = (double complex*)calloc(n / 2, sizeof(double complex));
+    for(i = 0;i < n / 2;i++)
+        a[i] = x[2 * i] + I * x[2 * i + 1];
+    double complex *w2 = (double complex*)calloc(n / 2, sizeof(double complex));
+    for(i = 0;i < n / 2;i++)
+        w2[i] = w[2 * i];
+
+    cooleyTukey(n / 2, m, a, w2);
+    
+    y[0] = creal(a[0]) + cimag(a[0]);
+    y[n / 4] = a[n / 4];
+    y[n / 2] = creal(a[0]) - cimag(a[0]);
+    
+    double complex temp;
+    for(i = 1;i < n / 4;i++) {
+        temp = (a[i] - conj(a[n / 2 - i])) * (1 + I * w[i]) * 0.5;
+        y[i] = a[i] - temp;
+        y[n - i] = conj(y[i]);
+        y[n / 2 + i] = conj(a[n / 2 - i]) + temp;
+        y[n / 2 - i] = conj(y[n / 2 + i]);
+    }
+}
+
+void invRealFFT(int n, int m, double* x, double complex* y, double complex* w) {
+    int i;
+    double complex* a = (double complex*)calloc(n / 2, sizeof(double complex));
+    for(i = 0;i < n / 2;i++)
+        a[i] = x[2 * i] + I * x[2 * i + 1];
+    double complex *w2 = (double complex*)calloc(n / 2, sizeof(double complex));
+    for(i = 0;i < n / 2;i++)
+        w2[i] = w[2 * i];
+
+    invCooleyTukey(n / 2, m, a, w2);
+    
+    y[0] = (creal(a[0]) + cimag(a[0])) / 2;
+    y[n / 4] = a[n / 4] / 2;
+    y[n / 2] = (creal(a[0]) - cimag(a[0])) / 2;
+    
+    double complex temp;
+    for(i = 1;i < n / 4;i++) {
+        temp = (a[i] - conj(a[n / 2 - i])) * (1 + I / w[i]) * 0.5;
+        y[i] = (a[i] - temp) / 2;
+        y[n - i] = conj(y[i]);
+        y[n / 2 + i] = (conj(a[n / 2 - i]) + temp) / 2;
+        y[n / 2 - i] = conj(y[n / 2 + i]);
+    }
+}
