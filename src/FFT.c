@@ -189,3 +189,59 @@ void invRealFFT(int n, int m, double* x, double complex* y, double complex* w) {
         y[n / 2 - i] = conj(y[n / 2 + i]);
     }
 }
+
+void splitRadixFFT(int initN, int n, double complex* x, double complex* w) {
+    if(n == 1)
+        return;
+    if(n == 2) {
+        x[0] += x[1];
+        x[1] = x[0] - 2 * x[1];
+        return;
+    }
+    int i;
+    double complex c0;
+    double complex c1;
+    int p;
+    for(i = 0;i < n / 4;i++) {
+        c0 = x[i] - x[i + n / 2];
+        c1 = (x[i + n / 4] - x[i + 3 * n / 4]) * I;
+        x[i] += x[i + n / 2];
+        x[i + n / 4] += x[i + 3 * n / 4];
+        p = i * initN / n;
+        x[i + n / 2] = (c0 - c1) * w[p];
+        x[i + 3 * n / 4] = (c0 + c1) * w[3 * p];
+    }
+    splitRadixFFT(initN, n / 2, x, w);
+    splitRadixFFT(initN, n / 4, x + (n / 2), w);
+    splitRadixFFT(initN, n / 4, x + (3 * n / 4), w);
+}
+
+void invSplitRadixFFT(int initN, int n, double complex* x, double complex* w) {
+    if(n == 1) {
+        x[0] /= initN;
+        return;
+    }
+    if(n == 2) {
+        x[0] += x[1];
+        x[1] = x[0] - 2 * x[1];
+        x[0] /= initN;
+        x[1] /= initN;
+        return;
+    }
+
+    int i;
+    double complex c0, c1;
+    int p;
+    for(i = 0;i < n / 4;i++) {
+        c0 = x[i] - x[i + n / 2];
+        c1 = (x[i + n / 4] - x[i + 3 * n / 4]) * -I;
+        x[i] += x[i + n / 2];
+        x[i + n / 4] += x[i + 3 * n / 4];
+        p = i * initN / n;
+        x[i + n / 2] = (c0 - c1) / w[p];
+        x[i + 3 * n / 4] = (c0 + c1) / w[3 * p];
+    }
+    invSplitRadixFFT(initN, n / 2, x, w);
+    invSplitRadixFFT(initN, n / 4, x + (n / 2), w);
+    invSplitRadixFFT(initN, n / 4, x + (3 * n / 4), w);
+}

@@ -106,10 +106,36 @@ void testRealFFT() {
     }
 }
 
+void testSplitRadixFFT() {
+    printf("testSplitRadixFFT\n");
+    int n = 16, i;
+    double complex *w = makeW(n);
+    double complex* x = (double complex*)calloc(n, sizeof(double complex));
+    for(i = 0;i < n;i++)
+        x[i] = (double complex)cos(2.0 * M_PI * (double)i / (double)n);
+    for(int i = 0;i < n;i++) {
+        printComplex(x[i]);
+        puts("");
+    }
+    splitRadixFFT(n, n, x, w);
+    bitReversed(n, x);
+    for(int i = 0;i < n;i++) {
+        printComplex(x[i]);
+        puts("");
+    }
+    invSplitRadixFFT(n, n, x, w);
+    bitReversed(n, x);
+    for(int i = 0;i < n;i++) {
+        printComplex(x[i]);
+        puts("");
+    }
+}
+
 int main() {
     testDecimationInFrequency();
     testCooleyTukey();
     testStockham();
     testRealFFT();
+    testSplitRadixFFT();
     return 0;
 }
