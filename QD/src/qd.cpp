@@ -53,3 +53,16 @@ void qd::qd_add_d_qd(qd a, double b, qd* c) {
 
     c->renormalize(e);
 }
+
+void qd::qd_add_qd_qd(qd a, qd b, qd* c) {
+    double t[4];
+    utility::two_sum(a.x[0],  b.x[0], &(c->x[0]), &t[0]);
+    utility::two_sum(a.x[1],  b.x[1], &(c->x[1]), &t[1]);
+    utility::two_sum(c->x[1], t[0],   &(c->x[1]), &t[0]);
+    utility::two_sum(a.x[2],  b.x[2], &(c->x[2]), &t[2]);
+    utility::three_sum(c->x[2], t[1], t[0], &(c->x[2]), &t[0], &t[1]);
+    utility::two_sum(a.x[3],  b.x[3], &(c->x[3]), &t[3]);
+    utility::three_sum(c->x[3], t[2], t[0], &(c->x[3]), &t[0]);
+    t[1] += t[0] + t[3];
+    c->renormalize(t[1]);
+}
