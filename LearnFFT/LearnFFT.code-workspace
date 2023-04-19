@@ -6,8 +6,7 @@
   ],
   "settings": {
     "files.associations": {
-      "ccomplex": "cpp",
-      "fft.h": "c"
+      "ccomplex": "cpp"
     }
   }
 }
