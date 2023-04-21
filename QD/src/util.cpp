@@ -3,9 +3,9 @@
 #include <sstream>
 #include <iomanip>
 #include <bitset>
-#include "utility.hpp"
+#include "util.hpp"
 
-std::string utility::to_reg_str(double a) {
+std::string util::to_reg_str(double a) {
     unsigned long long row_bit = *(unsigned long long *)&a;
     std::bitset<64> bin(row_bit);
     std::ostringstream ret;
@@ -21,7 +21,7 @@ std::string utility::to_reg_str(double a) {
  * @param s sum
  * @param e error
  */
-void utility::quick_two_sum(double a, double b, double* s, double* e) {
+void util::quick_two_sum(double a, double b, double* s, double* e) {
     *s = a + b;
     *e = b - (*s - a);
 }
@@ -34,19 +34,19 @@ void utility::quick_two_sum(double a, double b, double* s, double* e) {
  * @param s sum
  * @param e error
  */
-void utility::two_sum(double a, double b, double* s, double* e) {
+void util::two_sum(double a, double b, double* s, double* e) {
     *s = a + b;
     double v = *s - a;
     *e = (a - (*s - v)) + (b - v);
 }
 
-void utility::three_sum(double a, double b, double c, double* s, double* e0, double* e1) {
+void util::three_sum(double a, double b, double c, double* s, double* e0, double* e1) {
     two_sum(a,   b,   s,  e0);
     two_sum(*s,  c,   s,  e1);
     two_sum(*e0, *e1, e0, e1);
 }
 
-void utility::three_sum(double a, double b, double c, double* s, double* e) {
+void util::three_sum(double a, double b, double c, double* s, double* e) {
     double e1;
     two_sum(a,  b, s, e);
     two_sum(*s, c, s, &e1);

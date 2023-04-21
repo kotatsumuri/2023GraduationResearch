@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace utility {
+namespace util {
     std::string to_reg_str(double a);
     void quick_two_sum(double a, double b, double* s, double* e);
     void two_sum(double a, double b, double* s, double* e);

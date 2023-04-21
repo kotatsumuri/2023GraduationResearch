@@ -7,11 +7,11 @@ target_include_directories(qd
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
 
-add_library(utility
+add_library(util
     STATIC
-        utility.cpp
+        util.cpp
     )
 
-target_include_directories(utility
+target_include_directories(util
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
