@@ -1,4 +1,13 @@
+#include <cmath>
+#include <string>
+#include <bitset>
 #include "utility.hpp"
+
+std::string utility::to_reg_str(double a) {
+    unsigned long long row_bit = *(unsigned long long *)&a;
+    std::bitset<64> bin(row_bit);
+    return ((bool)(row_bit >> 63) ? "+2^" : "-2^") + std::to_string(((int)(row_bit >> 52) & 2047) - 1023) + "*1." + bin.to_string().substr(12);
+}
 
 /**
  * @brief Calculate sum and error. (|a| >= |b|)
