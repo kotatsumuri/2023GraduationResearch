@@ -46,9 +46,9 @@ void util::three_sum(double a, double b, double c, double* s, double* e0, double
     two_sum(*e0, *e1, e0, e1);
 }
 
-void util::three_sum(double a, double b, double c, double* s, double* e) {
+void util::three_sum(double a, double b, double c, double* s, double* e0) {
     double e1;
-    two_sum(a,  b, s, e);
+    two_sum(a,  b, s, e0);
     two_sum(*s, c, s, &e1);
-    *e += e1;
+    *e0 += e1;
 }

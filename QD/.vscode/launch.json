@@ -5,7 +5,7 @@
       "type": "lldb",
       "request": "launch",
       "name": "UtilityTest",
-      "program": "${workspaceFolder}/build/test/UtilityTest",
+      "program": "${workspaceFolder}/build/test/UtilTest",
       "args": [],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
