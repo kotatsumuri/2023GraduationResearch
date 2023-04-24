@@ -4,8 +4,17 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "UtilityTest",
+      "name": "UtilTest",
       "program": "${workspaceFolder}/build/test/UtilTest",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "QDTest",
+      "program": "${workspaceFolder}/build/test/QDTest",
       "args": [],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"

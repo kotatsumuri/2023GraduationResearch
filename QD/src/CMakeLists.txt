@@ -1,9 +1,9 @@
-add_library(qd
+add_library(QD
     STATIC
         qd.cpp
     )
 
-target_include_directories(qd
+target_include_directories(QD
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
 

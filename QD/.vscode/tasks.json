@@ -2,13 +2,13 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "cmake",
-      "label": "CMake: build",
-      "command": "build",
-      "targets": ["all"],
-      "group": "build",
-      "problemMatcher": [],
-      "detail": "CMake template build task"
+      "type": "cppbuild",
+      "label": "build",
+      "command": "/opt/homebrew/bin/cmake",
+      "args": ["--build", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
     }
   ]
 }

@@ -15,5 +15,8 @@ set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib) 
+
 add_subdirectory(src)
 add_subdirectory(test)

@@ -9,7 +9,7 @@ std::string util::to_reg_str(double a) {
     unsigned long long row_bit = *(unsigned long long *)&a;
     std::bitset<64> bin(row_bit);
     std::ostringstream ret;
-    ret << ((bool)(row_bit >> 63) ? "-2^" : "+2^") << std::setw(5) << std::to_string(((int)(row_bit >> 52) & 2047) - 1023);
+    ret << ((bool)(row_bit >> 63) ? "-2^" : "+2^") << std::left << std::setw(5) << std::to_string(((int)(row_bit >> 52) & 2047) - 1023);
     return ret.str() + "*1." + bin.to_string().substr(12);
 }
 
