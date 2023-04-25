@@ -96,3 +96,16 @@ void QD::qd_add_qd_qd(const QD* a, const QD* b, QD* c) {
     t[1] += t[0] + t[3];
     c->renormalize(t[1]);
 }
+
+void QD::qd_prod_d_qd(const QD* a, double b, QD* c) {
+    double t[4];
+    util::two_prod(a->x[0], b, &(c->x[0]), &t[0]);
+    util::two_prod(a->x[1], b, &(c->x[1]), &t[1]);
+    util::two_sum(c->x[1], t[0], &(c->x[1]), &t[0]);
+    util::two_prod(a->x[2], b, &(c->x[2]), &t[2]);
+    util::three_sum(c->x[2], t[1], t[0], &(c->x[2]), &t[0], &t[1]);
+    c->x[3] = a->x[3] * b;
+    util::three_sum(c->x[3], t[2], t[0], &(c->x[3]), &t[0]);
+    t[0] += t[1];
+    c->renormalize(t[0]);
+}

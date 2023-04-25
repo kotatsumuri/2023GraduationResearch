@@ -13,6 +13,12 @@ std::string util::to_reg_str(double a) {
     return ret.str() + "*1." + bin.to_string().substr(12);
 }
 
+void util::split(double a, double* a_hi, double* a_lo) {
+    *a_hi = (double)((1 << 27) + 1) * a;
+    *a_hi = *a_hi - (*a_hi - a);
+    *a_lo = a - *a_hi;
+}
+
 /**
  * @brief Calculate sum and error. (|a| >= |b|)
  * 
@@ -51,4 +57,12 @@ void util::three_sum(double a, double b, double c, double* s, double* e0) {
     two_sum(a,  b, s, e0);
     two_sum(*s, c, s, &e1);
     *e0 += e1;
+}
+
+void util::two_prod(double a, double b, double* p, double* e) {
+    double a_hi, a_lo, b_hi, b_lo;
+    *p = a * b;
+    split(a, &a_hi, &a_lo);
+    split(b, &b_hi, &b_lo);
+    *e = ((a_hi * b_hi - *p) + a_hi * b_lo + a_lo * b_hi) + a_lo * b_lo;
 }

@@ -32,3 +32,14 @@ TEST(qd, qd_add_qd_qd) {
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(d.x[i], c.x[i]);
 }
+
+TEST(qd, qd_prod_d_qd) {
+    QD a(1.0, std::pow(2, -53), 0.0, 0.0);
+    QD c;
+    QD::qd_prod_d_qd(&a, std::pow(2, -53), &c);
+    qd_real b = qd_real(1.0) + qd_real(std::pow(2, -53));
+    b *= std::pow(2, -53);
+    std::cout << c << std::endl;
+    for(int i = 0;i < 4;i++)
+        EXPECT_EQ(b.x[i], c.x[i]);
+}
