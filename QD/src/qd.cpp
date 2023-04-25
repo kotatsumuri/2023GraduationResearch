@@ -111,23 +111,20 @@ void QD::qd_prod_d_qd(const QD* a, double b, QD* c) {
 }
 
 void QD::qd_prod_qd_qd(const QD* a, const QD* b, QD* c) {
-    double t[15];
+    double t[13];
     util::two_prod(a->x[0], b->x[0], &(c->x[0]), &(c->x[1])); // 0, 1  
-    util::two_prod(a->x[0], b->x[1], &t[0], &t[1]); // 1, 2 0, 1
-    util::two_prod(a->x[1], b->x[0], &t[2], &t[3]); // 1, 2 0 - 3
-    util::three_sum(c->x[1], t[0], t[2], &(c->x[1]), &t[0], &t[2]); // 1, 2, 3 0 - 3
-    util::two_prod(a->x[0], b->x[2], &(c->x[2]), &t[4]); // 2, 3 0 - 4
-    util::two_prod(a->x[1], b->x[1], &t[5], &t[6]); // 2, 3 0 - 6
-    util::two_prod(a->x[2], b->x[0], &t[7], &t[8]); // 2, 3 0 - 8
-    util::six_three_sum(t[1], t[3], t[0], c->x[2], t[5], t[7], &(c->x[2]), &t[0], &t[1]); // 2, 3, 4 0 - 2, 4, 6, 8 
-    util::two_prod(a->x[0], b->x[3], &(c->x[3]), &t[3]); // 3, 4 0 - 4, 6, 8
-    util::two_prod(a->x[1], b->x[2], &t[5], &t[7]); // 3, 4 0 - 8
-    util::two_prod(a->x[2], b->x[1], &t[9], &t[10]); // 3, 4 0 - 10
-    util::two_prod(a->x[3], b->x[0], &t[11], &t[12]); // 3, 4 0 - 12
-    util::nine_two_sum(t[2], t[4], t[6], t[8], t[0], c->x[3], t[5], t[9], t[11], &(c->x[3]), &t[0]); // 3, 4 0 - 1, 3, 7, 10, 12
-    util::two_prod(a->x[1], b->x[3], &t[2], &t[4]);
-    util::two_prod(a->x[2], b->x[2], &t[5], &t[4]);
-    util::two_prod(a->x[3], b->x[1], &t[6], &t[4]);
-    util::nine_two_sum(t[1], t[3], t[7], t[10], t[12], t[0], t[2], t[5], t[6], &t[2], &t[4]);
-    c->renormalize(t[2]);
+    util::two_prod(a->x[0], b->x[1], &t[0], &t[1]); // 1, 2 
+    util::two_prod(a->x[1], b->x[0], &t[2], &t[3]); // 1, 2 
+    util::three_sum(c->x[1], t[0], t[2], &(c->x[1]), &t[0], &t[2]); // 1, 2, 3 
+    util::two_prod(a->x[0], b->x[2], &(c->x[2]), &t[4]); // 2, 3 
+    util::two_prod(a->x[1], b->x[1], &t[5], &t[6]); // 2, 3
+    util::two_prod(a->x[2], b->x[0], &t[7], &t[8]); // 2, 3 
+    util::six_three_sum(t[1], t[3], t[0], c->x[2], t[5], t[7], &(c->x[2]), &t[0], &t[1]); // 2, 3, 4 
+    util::two_prod(a->x[0], b->x[3], &(c->x[3]), &t[3]); // 3, 4
+    util::two_prod(a->x[1], b->x[2], &t[5], &t[7]);  // 3, 4
+    util::two_prod(a->x[2], b->x[1], &t[9], &t[10]);  // 3, 4
+    util::two_prod(a->x[3], b->x[0], &t[11], &t[12]);  // 3, 4
+    util::nine_two_sum(t[2], t[4], t[6], t[8], t[0], c->x[3], t[5], t[9], t[11], &(c->x[3]), &t[0]); // 3, 4 
+    t[0] = a->x[1] * b->x[3] + a->x[2] * b->x[2] + a->x[3] * b->x[1] + t[1] + t[3] + t[7] + t[10] + t[12] + t[0];
+    c->renormalize(t[0]);
 }

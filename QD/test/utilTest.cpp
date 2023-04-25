@@ -1,5 +1,6 @@
 #include <cmath>
 #include <gtest/gtest.h>
+#include <qd/dd_real.h>
 #include "util.hpp"
 
 TEST(quick_two_sum, zero) {
@@ -141,4 +142,18 @@ TEST(three_sum, normal) {
     util::three_sum(a, b, c, &s, &e0);
     EXPECT_EQ(1.0, s);
     EXPECT_EQ(std::pow(2, -53) + std::pow(2, -105), e0);
+}
+
+TEST(dd_add_dd, normal) {
+    dd_real a = dd_real::_pi;
+    dd_real b = dd_real::_pi * dd_real(std::pow(2, -53));
+    double s0, s1;
+    util::dd_add_dd_dd(a.x[0], a.x[1], b.x[0], b.x[1], &s0, &s1);
+    a += b;
+    EXPECT_EQ(a.x[0], s0);
+    EXPECT_EQ(a.x[1], s1);
+    std::cout << util::to_reg_str(a.x[0]) << std::endl;
+    std::cout << util::to_reg_str(s0) << std::endl;
+    std::cout << util::to_reg_str(a.x[1]) << std::endl;
+    std::cout << util::to_reg_str(s1) << std::endl;
 }
