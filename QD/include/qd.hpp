@@ -11,7 +11,9 @@ class QD {
         void renormalize();
         void renormalize(double a);
         static void qd_add_d_qd(const QD* a, double b, QD* c);
-        static void qd_add_qd_qd(const QD* a, const QD* b, QD* c);  
+        static void qd_add_qd_qd(const QD* a, const QD* b, QD* c);
+        static void qd_sub_qd_qd(const QD* a, const QD* b, QD* c);
         static void qd_mul_d_qd(const QD* a, double b, QD* c);
         static void qd_mul_qd_qd(const QD* a, const QD* b, QD* c);
+        static void qd_div_qd_qd(const QD* a, const QD* b, QD* c);
 };
