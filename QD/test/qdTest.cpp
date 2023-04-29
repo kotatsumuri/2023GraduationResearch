@@ -55,7 +55,7 @@ TEST(qd, qd_add_qd_qd) {
 TEST(qd, qd_prod_d_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD c;
-    QD::qd_prod_d_qd(&a, std::pow(2, -53), &c);
+    QD::qd_mul_d_qd(&a, std::pow(2, -53), &c);
     qd_real b = qd_real(1.0) + qd_real(std::pow(2, -53));
     b *= std::pow(2, -53);
     for(int i = 0;i < 4;i++)
@@ -64,7 +64,7 @@ TEST(qd, qd_prod_d_qd) {
     for(int i = 0;i < 4;i++)
         a.x[i] = b.x[i];
     b *= M_PI;
-    QD::qd_prod_d_qd(&a, M_PI, &c);
+    QD::qd_mul_d_qd(&a, M_PI, &c);
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(b.x[i], c.x[i]);
 }
@@ -73,7 +73,7 @@ TEST(qd, qd_prod_qd_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD b(1.0, std::pow(2, -53), 0.0, 0.0);
     QD c;
-    QD::qd_prod_qd_qd(&a, &b, &c);
+    QD::qd_mul_qd_qd(&a, &b, &c);
     qd_real d = qd_real(1.0) + qd_real(std::pow(2, -53));
     qd_real e = qd_real(1.0) + qd_real(std::pow(2, -53));
     d = qd_real::accurate_mul(d, e);
@@ -87,7 +87,7 @@ TEST(qd, qd_prod_qd_qd) {
         b.x[i] = e.x[i];
     }
     d = qd_real::accurate_mul(d, e);
-    QD::qd_prod_qd_qd(&a, &b, &c);
+    QD::qd_mul_qd_qd(&a, &b, &c);
     for(int i = 0;i < 4;i++) {
         EXPECT_EQ(d.x[i], c.x[i]);
     }

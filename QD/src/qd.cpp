@@ -97,7 +97,7 @@ void QD::qd_add_qd_qd(const QD* a, const QD* b, QD* c) {
     c->renormalize(t[1]);
 }
 
-void QD::qd_prod_d_qd(const QD* a, double b, QD* c) {
+void QD::qd_mul_d_qd(const QD* a, double b, QD* c) {
     double t[4];
     util::two_prod(a->x[0], b, &(c->x[0]), &t[0]);
     util::two_prod(a->x[1], b, &(c->x[1]), &t[1]);
@@ -110,7 +110,7 @@ void QD::qd_prod_d_qd(const QD* a, double b, QD* c) {
     c->renormalize(t[0]);
 }
 
-void QD::qd_prod_qd_qd(const QD* a, const QD* b, QD* c) {
+void QD::qd_mul_qd_qd(const QD* a, const QD* b, QD* c) {
     double t[13];
     util::two_prod(a->x[0], b->x[0], &(c->x[0]), &(c->x[1])); // 0, 1  
     util::two_prod(a->x[0], b->x[1], &t[0], &t[1]); // 1, 2 
