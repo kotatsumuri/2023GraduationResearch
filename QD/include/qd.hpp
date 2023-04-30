@@ -16,4 +16,5 @@ class QD {
         static void qd_mul_d_qd(const QD* a, double b, QD* c);
         static void qd_mul_qd_qd(const QD* a, const QD* b, QD* c);
         static void qd_div_qd_qd(const QD* a, const QD* b, QD* c);
+        static void pow(const QD* a, int n, QD* b);
 };

@@ -125,21 +125,22 @@ void QD::qd_mul_d_qd(const QD* a, double b, QD* c) {
 }
 
 void QD::qd_mul_qd_qd(const QD* a, const QD* b, QD* c) {
-    double t[13];
-    util::two_prod(a->x[0], b->x[0], &(c->x[0]), &(c->x[1])); // 0, 1  
+    double t[17];
+    util::two_prod(a->x[0], b->x[0], &t[13], &t[14]); // 0, 1  
     util::two_prod(a->x[0], b->x[1], &t[0], &t[1]); // 1, 2 
     util::two_prod(a->x[1], b->x[0], &t[2], &t[3]); // 1, 2 
-    util::three_sum(c->x[1], t[0], t[2], &(c->x[1]), &t[0], &t[2]); // 1, 2, 3 
-    util::two_prod(a->x[0], b->x[2], &(c->x[2]), &t[4]); // 2, 3 
+    util::three_sum(t[14], t[0], t[2], &t[14], &t[0], &t[2]); // 1, 2, 3 
+    util::two_prod(a->x[0], b->x[2], &t[15], &t[4]); // 2, 3 
     util::two_prod(a->x[1], b->x[1], &t[5], &t[6]); // 2, 3
     util::two_prod(a->x[2], b->x[0], &t[7], &t[8]); // 2, 3 
-    util::six_three_sum(t[1], t[3], t[0], c->x[2], t[5], t[7], &(c->x[2]), &t[0], &t[1]); // 2, 3, 4 
-    util::two_prod(a->x[0], b->x[3], &(c->x[3]), &t[3]); // 3, 4
+    util::six_three_sum(t[1], t[3], t[0], t[15], t[5], t[7], &t[15], &t[0], &t[1]); // 2, 3, 4 
+    util::two_prod(a->x[0], b->x[3], &t[16], &t[3]); // 3, 4
     util::two_prod(a->x[1], b->x[2], &t[5], &t[7]);  // 3, 4
     util::two_prod(a->x[2], b->x[1], &t[9], &t[10]);  // 3, 4
     util::two_prod(a->x[3], b->x[0], &t[11], &t[12]);  // 3, 4
-    util::nine_two_sum(t[2], t[4], t[6], t[8], t[0], c->x[3], t[5], t[9], t[11], &(c->x[3]), &t[0]); // 3, 4 
+    util::nine_two_sum(t[2], t[4], t[6], t[8], t[0], t[16], t[5], t[9], t[11], &t[16], &t[0]); // 3, 4 
     t[0] = a->x[1] * b->x[3] + a->x[2] * b->x[2] + a->x[3] * b->x[1] + t[1] + t[3] + t[7] + t[10] + t[12] + t[0];
+    c->x[0] = t[13];c->x[1] = t[14];c->x[2] = t[15];c->x[3] = t[16];
     c->renormalize(t[0]);
 }
 
@@ -160,4 +161,15 @@ void QD::qd_div_qd_qd(const QD* a, const QD* b, QD* c) {
     qd_sub_qd_qd(&t0, &t1, &t0);
     q = t0.x[0] / b->x[0];
     c->renormalize(q);
+}
+
+void QD::pow(const QD* a, int n, QD* b) {
+    QD c = *a;
+    *b = QD(1.0, 0, 0, 0);
+    while(n != 0) {
+        if(n & 1)
+            qd_mul_qd_qd(b, &c, b);
+        qd_mul_qd_qd(&c, &c, &c);
+        n >>= 1;
+    }
 }

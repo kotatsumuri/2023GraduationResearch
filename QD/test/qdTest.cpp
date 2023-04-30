@@ -135,3 +135,20 @@ TEST(qd, qd_div_qd_qd) {
     for(int i = 0;i < 4;i++) 
         EXPECT_EQ(d.x[i], c.x[i]);
 }
+
+TEST(qd, pow) {
+    QD a(1.0, std::pow(2, -53), 0.0, 0.0);
+    QD b;
+    QD::pow(&a, 10, &b);
+    qd_real c = qd_real(1.0) + qd_real(std::pow(2, -53));   
+    c = c^10;
+    for(int i = 0;i < 4;i++)
+        EXPECT_EQ(c.x[i], b.x[i]);
+    c = qd_real::_pi;
+    for(int i = 0;i < 4;i++)
+        a.x[i] = c.x[i];
+    c = c^100;
+    QD::pow(&a, 100, &b);   
+    for(int i = 0;i < 4;i++)
+        EXPECT_EQ(c.x[i], b.x[i]);
+}
