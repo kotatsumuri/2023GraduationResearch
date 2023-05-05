@@ -26,14 +26,14 @@ void QD::renormalize() {
     int k, i;
 
     t[4] = 0.0;
-    util::quick_two_sum(x[2], x[3], &s,    &t[3]);
-    util::quick_two_sum(x[1], s,    &s,    &t[2]);
-    util::quick_two_sum(x[0], s,    &t[0], &t[1]);
+    s = util::quick_two_sum(x[2], x[3], &t[3]);
+    s = util::quick_two_sum(x[1], s, &t[2]);
+    t[0] = util::quick_two_sum(x[0], s, &t[1]);
 
     s = t[0];
     k = 0;
     for(i = 1;i <= 4;i++) {
-        util::quick_two_sum(s, t[i], &s, &e);
+        s = util::quick_two_sum(s, t[i], &e);
         if(e != 0) {
             x[k++] = s;
             s = e;
@@ -51,15 +51,15 @@ void QD::renormalize(double a) {
     double s, e, t[5];
     int k, i;
 
-    util::quick_two_sum(x[3], a, &s,    &t[4]);
-    util::quick_two_sum(x[2], s, &s,    &t[3]);
-    util::quick_two_sum(x[1], s, &s,    &t[2]);
-    util::quick_two_sum(x[0], s, &t[0], &t[1]);
+    s = util::quick_two_sum(x[3], a, &t[4]);
+    s = util::quick_two_sum(x[2], s, &t[3]);
+    s = util::quick_two_sum(x[1], s, &t[2]);
+    t[0] = util::quick_two_sum(x[0], s, &t[1]);
 
     s = t[0];
     k = 0;
     for(i = 1;i <= 4;i++) {
-        util::quick_two_sum(s, t[i], &s, &e);
+        s = util::quick_two_sum(s, t[i], &e);
         if(e != 0) {
             x[k++] = s;
             s = e;
@@ -73,103 +73,153 @@ void QD::renormalize(double a) {
     }
 }
 
-void QD::qd_add_d_qd(const QD* a, double b, QD* c) {
+QD QD::qd_add_d_qd(const QD& a, double b) {
     double e;
-    
-    util::two_sum(a->x[0], b, &(c->x[0]), &e);
-    util::two_sum(a->x[1], e, &(c->x[1]), &e);
-    util::two_sum(a->x[2], e, &(c->x[2]), &e);
-    util::two_sum(a->x[3], e, &(c->x[3]), &e);
+    QD c;
+    c.x[0] = util::two_sum(a.x[0], b, &e);
+    c.x[1] = util::two_sum(a.x[1], e, &e);
+    c.x[2] = util::two_sum(a.x[2], e, &e);
+    c.x[3] = util::two_sum(a.x[3], e, &e);
 
-    c->renormalize(e);
+    c.renormalize(e);
+    return c;
 }
 
-void QD::qd_add_qd_qd(const QD* a, const QD* b, QD* c) {
+QD QD::qd_add_qd_qd(const QD& a, const QD& b) {
     double t[4];
-    util::two_sum(a->x[0],  b->x[0], &(c->x[0]), &t[0]);
-    util::two_sum(a->x[1],  b->x[1], &(c->x[1]), &t[1]);
-    util::two_sum(c->x[1], t[0],   &(c->x[1]), &t[0]);
-    util::two_sum(a->x[2],  b->x[2], &(c->x[2]), &t[2]);
-    util::three_sum(c->x[2], t[1], t[0], &(c->x[2]), &t[0], &t[1]);
-    util::two_sum(a->x[3],  b->x[3], &(c->x[3]), &t[3]);
-    util::three_sum(c->x[3], t[2], t[0], &(c->x[3]), &t[0]);
+    QD c;
+    c.x[0] = util::two_sum(a.x[0], b.x[0], &t[0]);
+    c.x[1] = util::two_sum(a.x[1], b.x[1], &t[1]);
+    c.x[1] = util::two_sum(c.x[1], t[0], &t[0]);
+    c.x[2] = util::two_sum(a.x[2],  b.x[2], &t[2]);
+    c.x[2] = util::three_sum(c.x[2], t[1], t[0], &t[0], &t[1]);
+    c.x[3] = util::two_sum(a.x[3],  b.x[3], &t[3]);
+    c.x[3] = util::three_sum(c.x[3], t[2], t[0], &t[0]);
     t[1] += t[0] + t[3];
-    c->renormalize(t[1]);
+    c.renormalize(t[1]);
+    return c;
 }
 
-void QD::qd_sub_qd_qd(const QD* a, const QD* b, QD* c) {
+QD QD::qd_sub_qd_qd(const QD& a, const QD& b) {
     double t[4];
-
-    util::two_sum(a->x[0],  -b->x[0], &(c->x[0]), &t[0]);
-    util::two_sum(a->x[1],  -b->x[1], &(c->x[1]), &t[1]);
-    util::two_sum(c->x[1], t[0],   &(c->x[1]), &t[0]);
-    util::two_sum(a->x[2],  -b->x[2], &(c->x[2]), &t[2]);
-    util::three_sum(c->x[2], t[1], t[0], &(c->x[2]), &t[0], &t[1]);
-    util::two_sum(a->x[3],  -b->x[3], &(c->x[3]), &t[3]);
-    util::three_sum(c->x[3], t[2], t[0], &(c->x[3]), &t[0]);
+    QD c;
+    c.x[0] = util::two_sum(a.x[0], -b.x[0], &t[0]);
+    c.x[1] = util::two_sum(a.x[1], -b.x[1], &t[1]);
+    c.x[1] = util::two_sum(c.x[1], t[0], &t[0]);
+    c.x[2] = util::two_sum(a.x[2],  -b.x[2], &t[2]);
+    c.x[2] = util::three_sum(c.x[2], t[1], t[0], &t[0], &t[1]);
+    c.x[3] = util::two_sum(a.x[3],  -b.x[3], &t[3]);
+    c.x[3] = util::three_sum(c.x[3], t[2], t[0], &t[0]);
     t[1] += t[0] + t[3];
-    c->renormalize(t[1]);
+    c.renormalize(t[1]);
+    return c;
 }
 
-void QD::qd_mul_d_qd(const QD* a, double b, QD* c) {
+QD QD::qd_mul_d_qd(const QD& a, double b) {
     double t[4];
-    util::two_prod(a->x[0], b, &(c->x[0]), &t[0]);
-    util::two_prod(a->x[1], b, &(c->x[1]), &t[1]);
-    util::two_sum(c->x[1], t[0], &(c->x[1]), &t[0]);
-    util::two_prod(a->x[2], b, &(c->x[2]), &t[2]);
-    util::three_sum(c->x[2], t[1], t[0], &(c->x[2]), &t[0], &t[1]);
-    c->x[3] = a->x[3] * b;
-    util::three_sum(c->x[3], t[2], t[0], &(c->x[3]), &t[0]);
+    QD c;
+    c.x[0] = util::two_prod(a.x[0], b, &t[0]);
+    c.x[1] = util::two_prod(a.x[1], b, &t[1]);
+    c.x[1] = util::two_sum(c.x[1], t[0], &t[0]);
+    c.x[2] = util::two_prod(a.x[2], b, &t[2]);
+    c.x[2] = util::three_sum(c.x[2], t[1], t[0], &t[0], &t[1]);
+    c.x[3] = a.x[3] * b;
+    c.x[3] = util::three_sum(c.x[3], t[2], t[0], &t[0]);
     t[0] += t[1];
-    c->renormalize(t[0]);
+    c.renormalize(t[0]);
+    return c;
 }
 
-void QD::qd_mul_qd_qd(const QD* a, const QD* b, QD* c) {
+QD QD::qd_mul_qd_qd(const QD& a, const QD& b) {
     double t[17];
-    util::two_prod(a->x[0], b->x[0], &t[13], &t[14]); // 0, 1  
-    util::two_prod(a->x[0], b->x[1], &t[0], &t[1]); // 1, 2 
-    util::two_prod(a->x[1], b->x[0], &t[2], &t[3]); // 1, 2 
-    util::three_sum(t[14], t[0], t[2], &t[14], &t[0], &t[2]); // 1, 2, 3 
-    util::two_prod(a->x[0], b->x[2], &t[15], &t[4]); // 2, 3 
-    util::two_prod(a->x[1], b->x[1], &t[5], &t[6]); // 2, 3
-    util::two_prod(a->x[2], b->x[0], &t[7], &t[8]); // 2, 3 
-    util::six_three_sum(t[1], t[3], t[0], t[15], t[5], t[7], &t[15], &t[0], &t[1]); // 2, 3, 4 
-    util::two_prod(a->x[0], b->x[3], &t[16], &t[3]); // 3, 4
-    util::two_prod(a->x[1], b->x[2], &t[5], &t[7]);  // 3, 4
-    util::two_prod(a->x[2], b->x[1], &t[9], &t[10]);  // 3, 4
-    util::two_prod(a->x[3], b->x[0], &t[11], &t[12]);  // 3, 4
-    util::nine_two_sum(t[2], t[4], t[6], t[8], t[0], t[16], t[5], t[9], t[11], &t[16], &t[0]); // 3, 4 
-    t[0] = a->x[1] * b->x[3] + a->x[2] * b->x[2] + a->x[3] * b->x[1] + t[1] + t[3] + t[7] + t[10] + t[12] + t[0];
-    c->x[0] = t[13];c->x[1] = t[14];c->x[2] = t[15];c->x[3] = t[16];
-    c->renormalize(t[0]);
+    QD c;
+    c.x[0] = util::two_prod(a.x[0], b.x[0], &c.x[1]); // 0, 1  
+    t[0] = util::two_prod(a.x[0], b.x[1], &t[1]); // 1, 2 
+    t[2] = util::two_prod(a.x[1], b.x[0], &t[3]); // 1, 2 
+    c.x[1] = util::three_sum(c.x[1], t[0], t[2], &t[0], &t[2]); // 1, 2, 3 
+    c.x[2] = util::two_prod(a.x[0], b.x[2], &t[4]); // 2, 3 
+    t[5] = util::two_prod(a.x[1], b.x[1], &t[6]); // 2, 3
+    t[7] = util::two_prod(a.x[2], b.x[0], &t[8]); // 2, 3 
+    c.x[2] = util::six_three_sum(t[1], t[3], t[0], c.x[2], t[5], t[7], &t[0], &t[1]); // 2, 3, 4 
+    c.x[3] = util::two_prod(a.x[0], b.x[3], &t[3]); // 3, 4
+    t[5] = util::two_prod(a.x[1], b.x[2], &t[7]);  // 3, 4
+    t[9] = util::two_prod(a.x[2], b.x[1], &t[10]);  // 3, 4
+    t[11] = util::two_prod(a.x[3], b.x[0], &t[12]);  // 3, 4
+    c.x[3] = util::nine_two_sum(t[2], t[4], t[6], t[8], t[0], c.x[3], t[5], t[9], t[11], &t[0]); // 3, 4 
+    t[0] = a.x[1] * b.x[3] + a.x[2] * b.x[2] + a.x[3] * b.x[1] + t[1] + t[3] + t[7] + t[10] + t[12] + t[0];
+    c.renormalize(t[0]);
+    return c;
 }
 
-void QD::qd_div_qd_qd(const QD* a, const QD* b, QD* c) {
+QD QD::qd_div_qd_qd(const QD& a, const QD& b) {
     double q;
     QD t0, t1;
-    c->x[0] = a->x[0] / b->x[0];
-    qd_mul_d_qd(b, c->x[0], &t0);
-    qd_sub_qd_qd(a, &t0, &t0);
-    c->x[1] = t0.x[0] / b->x[0];
-    qd_mul_d_qd(b, c->x[1], &t1);
-    qd_sub_qd_qd(&t0, &t1, &t0);
-    c->x[2] = t0.x[0] / b->x[0];
-    qd_mul_d_qd(b, c->x[2], &t1);
-    qd_sub_qd_qd(&t0, &t1, &t0);
-    c->x[3] = t0.x[0] / b->x[0];
-    qd_mul_d_qd(b, c->x[3], &t1);
-    qd_sub_qd_qd(&t0, &t1, &t0);
-    q = t0.x[0] / b->x[0];
-    c->renormalize(q);
+    QD c;
+    c.x[0] = a.x[0] / b.x[0];
+    t0 = qd_mul_d_qd(b, c.x[0]);
+    t0 = qd_sub_qd_qd(a, t0);
+    c.x[1] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[1]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[2] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[2]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[3] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[3]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    q = t0.x[0] / b.x[0];
+    c.renormalize(q);
+    return c;
 }
 
-void QD::pow(const QD* a, int n, QD* b) {
-    QD c = *a;
-    *b = QD(1.0, 0, 0, 0);
+QD QD::pow(const QD& a, int n) {
+    QD c = a;
+    QD b = QD(1.0, 0, 0, 0);
     while(n != 0) {
         if(n & 1)
-            qd_mul_qd_qd(b, &c, b);
-        qd_mul_qd_qd(&c, &c, &c);
+            b = qd_mul_qd_qd(b, c);
+        c = qd_mul_qd_qd(c, c);
         n >>= 1;
     }
+    return b;
+}
+
+QD& QD::operator =(const QD& r) {
+    x[0] = r.x[0];
+    x[1] = r.x[1];
+    x[2] = r.x[2];
+    x[3] = r.x[3];
+    return *this;
+}
+
+QD QD::operator +(double r) {
+    return qd_add_d_qd(*this, r);
+}
+
+QD QD::operator +(const QD& r) {
+    return qd_add_qd_qd(*this, r);
+} 
+
+QD QD::operator -(double r) {
+    return qd_add_d_qd(*this, -r);
+}
+
+QD QD::operator -() {
+    return QD(-x[0], -x[1], -x[2], -x[3]);
+}
+
+QD QD::operator *(double r) {
+    return qd_mul_d_qd(*this, r);
+}
+
+QD QD::operator *(const QD& r) {
+    return qd_mul_qd_qd(*this, r);
+}
+
+QD QD::operator /(const QD& r) {
+    return qd_div_qd_qd(*this, r);
+}
+
+QD QD::operator ^(int r) {
+    return pow(*this, r);
 }

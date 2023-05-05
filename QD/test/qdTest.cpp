@@ -18,7 +18,7 @@ TEST(qd, renormalize) {
 
 TEST(qd, qd_add_d_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
-    QD::qd_add_d_qd(&a, std::pow(2, -53), &a);
+    a = QD::qd_add_d_qd(a, std::pow(2, -53));
     qd_real b = qd_real(1.0) + qd_real(std::pow(2, -53));
     b += std::pow(2, -53);
     for(int i = 0;i < 4;i++)
@@ -26,7 +26,7 @@ TEST(qd, qd_add_d_qd) {
     b = qd_real::_pi;
     for(int i = 0;i < 4;i++)
         a.x[i] = b.x[i];
-    QD::qd_add_d_qd(&a, M_PI, &a);
+    a = QD::qd_add_d_qd(a, M_PI);
     b += M_PI;
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(b.x[i], a.x[i]);
@@ -36,7 +36,7 @@ TEST(qd, qd_add_qd_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD b(std::pow(2, -53), 0, 0, 0);
     QD c;
-    QD::qd_add_qd_qd(&a, &b, &c);
+    c = QD::qd_add_qd_qd(a, b);
     qd_real d = qd_real(1.0) + qd_real(std::pow(2, -53));
     d += qd_real(std::pow(2, -53));
     for(int i = 0;i < 4;i++)
@@ -46,7 +46,7 @@ TEST(qd, qd_add_qd_qd) {
         a.x[i] = d.x[i];
         b.x[i] = d.x[i];
     }
-    QD::qd_add_qd_qd(&a, &b, &c);
+    c = QD::qd_add_qd_qd(a, b);
     d += qd_real::_pi;
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(d.x[i], c.x[i]);
@@ -56,7 +56,7 @@ TEST(qd, qd_sub_qd_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD b(std::pow(2, -53), 0, 0, 0);
     QD c;
-    QD::qd_sub_qd_qd(&a, &b, &c);
+    c = QD::qd_sub_qd_qd(a, b);
     qd_real d = qd_real(1.0) + qd_real(std::pow(2, -53));
     d -= qd_real(std::pow(2, -53));
     for(int i = 0;i < 4;i++)
@@ -66,7 +66,7 @@ TEST(qd, qd_sub_qd_qd) {
         a.x[i] = d.x[i];
         b.x[i] = d.x[i];
     }
-    QD::qd_sub_qd_qd(&a, &b, &c);
+    c = QD::qd_sub_qd_qd(a, b);
     d -= qd_real::_pi;
     for(int i = 0;i < 4;i++) 
         EXPECT_EQ(d.x[i], c.x[i]);
@@ -76,7 +76,7 @@ TEST(qd, qd_sub_qd_qd) {
 TEST(qd, qd_prod_d_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD c;
-    QD::qd_mul_d_qd(&a, std::pow(2, -53), &c);
+    c = QD::qd_mul_d_qd(a, std::pow(2, -53));
     qd_real b = qd_real(1.0) + qd_real(std::pow(2, -53));
     b *= std::pow(2, -53);
     for(int i = 0;i < 4;i++)
@@ -85,7 +85,7 @@ TEST(qd, qd_prod_d_qd) {
     for(int i = 0;i < 4;i++)
         a.x[i] = b.x[i];
     b *= M_PI;
-    QD::qd_mul_d_qd(&a, M_PI, &c);
+    c = QD::qd_mul_d_qd(a, M_PI);
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(b.x[i], c.x[i]);
 }
@@ -94,7 +94,7 @@ TEST(qd, qd_prod_qd_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD b(1.0, std::pow(2, -53), 0.0, 0.0);
     QD c;
-    QD::qd_mul_qd_qd(&a, &b, &c);
+    c = QD::qd_mul_qd_qd(a, b);
     qd_real d = qd_real(1.0) + qd_real(std::pow(2, -53));
     qd_real e = qd_real(1.0) + qd_real(std::pow(2, -53));
     d = qd_real::accurate_mul(d, e);
@@ -108,7 +108,7 @@ TEST(qd, qd_prod_qd_qd) {
         b.x[i] = e.x[i];
     }
     d = qd_real::accurate_mul(d, e);
-    QD::qd_mul_qd_qd(&a, &b, &c);
+    c = QD::qd_mul_qd_qd(a, b);
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(d.x[i], c.x[i]);
 }
@@ -117,7 +117,7 @@ TEST(qd, qd_div_qd_qd) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD b(1.0, std::pow(2, -53), 0.0, 0.0);
     QD c;
-    QD::qd_div_qd_qd(&a, &b, &c);
+    c = QD::qd_div_qd_qd(a, b);
     qd_real d = qd_real(1.0) + qd_real(std::pow(2, -53));
     qd_real e = qd_real(1.0) + qd_real(std::pow(2, -53));
     d = qd_real::accurate_div(d, e);
@@ -131,7 +131,7 @@ TEST(qd, qd_div_qd_qd) {
         b.x[i] = e.x[i];
     }
     d = qd_real::accurate_div(d, e);
-    QD::qd_div_qd_qd(&a, &b, &c);
+    c = QD::qd_div_qd_qd(a, b);
     for(int i = 0;i < 4;i++) 
         EXPECT_EQ(d.x[i], c.x[i]);
 }
@@ -139,7 +139,7 @@ TEST(qd, qd_div_qd_qd) {
 TEST(qd, pow) {
     QD a(1.0, std::pow(2, -53), 0.0, 0.0);
     QD b;
-    QD::pow(&a, 10, &b);
+    b = QD::pow(a, 10);
     qd_real c = qd_real(1.0) + qd_real(std::pow(2, -53));   
     c = c^10;
     for(int i = 0;i < 4;i++)
@@ -148,7 +148,7 @@ TEST(qd, pow) {
     for(int i = 0;i < 4;i++)
         a.x[i] = c.x[i];
     c = c^100;
-    QD::pow(&a, 100, &b);   
+    b = QD::pow(a, 100);   
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(c.x[i], b.x[i]);
 }
