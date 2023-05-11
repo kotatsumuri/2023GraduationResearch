@@ -17,6 +17,7 @@ class QD {
         static QD qd_mul_qd_qd(const QD& a, const QD& b);
         static QD qd_div_qd_qd(const QD& a, const QD& b);
         static QD pow(const QD& a, int n);
+        static QD sqrt(const QD& a);
         QD& operator =(const QD& r);
         QD operator +(double r);
         QD operator +(const QD& r);

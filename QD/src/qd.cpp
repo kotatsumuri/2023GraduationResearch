@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "qd.hpp"
 #include "util.hpp"
 
@@ -182,6 +183,18 @@ QD QD::pow(const QD& a, int n) {
         n >>= 1;
     }
     return b;
+}
+
+QD QD::sqrt(const QD& a) {
+    QD b = QD(1.0 / std::sqrt(a.x[0]), 0, 0, 0);
+    QD c = QD(0.5, 0, 0, 0);
+    QD h = QD(a.x[0] / 2.0, a.x[1] / 2.0, a.x[2] / 2.0, a.x[3] / 2.0);
+
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
+
+    return qd_mul_qd_qd(a, b);
 }
 
 QD& QD::operator =(const QD& r) {

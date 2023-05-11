@@ -152,3 +152,25 @@ TEST(qd, pow) {
     for(int i = 0;i < 4;i++)
         EXPECT_EQ(c.x[i], b.x[i]);
 }
+
+TEST(qd, sqrt) {
+    QD a(1.0, std::pow(2, -53), 0.0, 0.0);
+    QD b = QD::sqrt(a);
+    qd_real c = qd_real(1.0) + qd_real(std::pow(2, -53));
+    c = QD_API::sqrt(c);
+    for(int i = 0;i < 4;i++) {
+        EXPECT_EQ(c.x[i], b.x[i]);
+        std::cout << util::to_reg_str(c.x[i]) << std::endl;
+        std::cout << util::to_reg_str(b.x[i]) << std::endl;
+    }
+    c = qd_real::_pi;
+    for(int i = 0;i < 4;i++)
+        a.x[i] = c.x[i];
+    c = QD_API::sqrt(c);
+    b = QD::sqrt(a);
+    for(int i = 0;i < 4;i++) {
+        EXPECT_EQ(c.x[i], b.x[i]);
+        std::cout << util::to_reg_str(c.x[i]) << std::endl;
+        std::cout << util::to_reg_str(b.x[i]) << std::endl;
+    }
+}
