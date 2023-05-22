@@ -116,6 +116,17 @@ QD QD::qd_sub_qd_qd(const QD& a, const QD& b) {
     return c;
 }
 
+QD QD::d_sub_qd_qd(double a, const QD& b) {
+    double t[4];
+    QD c;
+    c.x[0] = util::two_sum(a, -b.x[0], &t[0]);
+    c.x[1] = util::two_sum(-b.x[1], t[0], &t[0]);
+    c.x[2] = util::two_sum(-b.x[2], t[0], &t[0]);
+    c.x[3] = util::two_sum(-b.x[3], t[0], &t[0]);
+    c.renormalize(t[0]);
+    return c;
+}
+
 QD QD::qd_mul_d_qd(const QD& a, double b) {
     double t[4];
     QD c;
@@ -152,6 +163,13 @@ QD QD::qd_mul_qd_qd(const QD& a, const QD& b) {
     return c;
 }
 
+QD QD::d_mul_d_qd(double a, double b) {
+    QD c;
+    c.x[0] = util::two_prod(a, b, &c.x[1]);
+    c.renormalize();
+    return c;
+}
+
 QD QD::qd_div_qd_qd(const QD& a, const QD& b) {
     double q;
     QD t0, t1;
@@ -169,6 +187,69 @@ QD QD::qd_div_qd_qd(const QD& a, const QD& b) {
     t1 = qd_mul_d_qd(b, c.x[3]);
     t0 = qd_sub_qd_qd(t0, t1);
     q = t0.x[0] / b.x[0];
+    c.renormalize(q);
+    return c;
+}
+
+QD QD::qd_div_d_qd(const QD& a, double b) {
+    double q;
+    QD t0, t1;
+    QD c;
+    c.x[0] = a.x[0] / b;
+    t0 = d_mul_d_qd(b, c.x[0]);
+    t0 = qd_sub_qd_qd(a, t0);
+    c.x[1] = t0.x[0] / b;
+    t1 = d_mul_d_qd(b, c.x[1]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[2] = t0.x[0] / b;
+    t1 = d_mul_d_qd(b, c.x[2]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[3] = t0.x[0] / b;
+    t1 = d_mul_d_qd(b, c.x[3]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    q = t0.x[0] / b;
+    c.renormalize(q);
+    return c;
+}
+
+QD QD::d_div_qd_qd(double a, const QD& b) {
+    double q;
+    QD t0, t1;
+    QD c;
+    c.x[0] = a / b.x[0];
+    t0 = qd_mul_d_qd(b, c.x[0]);
+    t0 = d_sub_qd_qd(a, t0);
+    c.x[1] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[1]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[2] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[2]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[3] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[3]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    q = t0.x[0] / b.x[0];
+    c.renormalize(q);
+    return c;
+}
+
+QD QD::d_div_d_qd(double a, double b) {
+    double q;
+    QD t0, t1;
+    QD c;
+    c.x[0] = a / b;
+    t0 = d_mul_d_qd(b, c.x[0]);
+    t0 = d_sub_qd_qd(a, t0);
+    c.x[1] = t0.x[0] / b;
+    t1 = d_mul_d_qd(b, c.x[1]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[2] = t0.x[0] / b;
+    t1 = d_mul_d_qd(b, c.x[2]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[3] = t0.x[0] / b;
+    t1 = d_mul_d_qd(b, c.x[3]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    q = t0.x[0] / b;
     c.renormalize(q);
     return c;
 }
@@ -195,6 +276,18 @@ QD QD::sqrt(const QD& a) {
     b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
 
     return qd_mul_qd_qd(a, b);
+}
+
+QD QD::root(const QD& a, int n) {
+    QD b = QD(std::pow(a.x[0],-1.0 / n), 0, 0, 0);
+    QD c = d_div_d_qd(1.0, (double)n);
+    QD h = qd_div_d_qd(a, (double)n);
+
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, pow(b, n)))));
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, pow(b, n)))));
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, pow(b, n)))));
+
+    return d_div_qd_qd(1.0, b);
 }
 
 QD& QD::operator =(const QD& r) {

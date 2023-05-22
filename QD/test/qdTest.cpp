@@ -174,3 +174,36 @@ TEST(qd, sqrt) {
         std::cout << util::to_reg_str(b.x[i]) << std::endl;
     }
 }
+
+TEST(qd, root) {
+    QD a(1.0, std::pow(2, -53), 0.0, 0.0);
+    QD b = QD::root(a, 3);
+    qd_real c = qd_real(1.0) + qd_real(std::pow(2, -53));
+    c = QD_API::nroot(c, 3);
+    for(int i = 0;i < 4;i++) {
+        EXPECT_EQ(c.x[i], b.x[i]);
+        std::cout << util::to_reg_str(c.x[i]) << std::endl;
+        std::cout << util::to_reg_str(b.x[i]) << std::endl;
+    }
+    c = qd_real::_pi;
+    for(int i = 0;i < 4;i++)
+        a.x[i] = c.x[i];
+    c = QD_API::nroot(c, 3);
+    b = QD::root(a, 3);
+    for(int i = 0;i < 4;i++) {
+        EXPECT_EQ(c.x[i], b.x[i]);
+        std::cout << util::to_reg_str(c.x[i]) << std::endl;
+        std::cout << util::to_reg_str(b.x[i]) << std::endl;
+    }
+
+    c = 8;
+    for(int i = 0;i < 4;i++)
+        a.x[i] = c.x[i];
+    c = QD_API::nroot(c, 3);
+    b = QD::root(a, 3);
+    for(int i = 0;i < 4;i++) {
+        EXPECT_EQ(c.x[i], b.x[i]);
+        std::cout << util::to_reg_str(c.x[i]) << std::endl;
+        std::cout << util::to_reg_str(b.x[i]) << std::endl;
+    }
+}
