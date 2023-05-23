@@ -372,8 +372,16 @@ QD QD::exp(const QD& a) {
     s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
     s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
     s = qd_add_d_qd(s, 1.0);
-    
+
     return qd_mul_d_qd(s, ldexp(1, m));
+}
+
+QD QD::log(const QD& a) {
+    QD b(std::log(a.x[0]));
+    b = qd_add_d_qd(qd_add_qd_qd(b, qd_mul_qd_qd(a, exp(-b))), -1.0);
+    b = qd_add_d_qd(qd_add_qd_qd(b, qd_mul_qd_qd(a, exp(-b))), -1.0);
+    b = qd_add_d_qd(qd_add_qd_qd(b, qd_mul_qd_qd(a, exp(-b))), -1.0);
+    return b;
 }
 
 double QD::to_double(const QD& a) {

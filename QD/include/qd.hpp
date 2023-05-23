@@ -26,6 +26,7 @@ class QD {
         static QD sqrt(const QD& a);
         static QD root(const QD& a, int n);
         static QD exp(const QD& a);
+        static QD log(const QD& a);
         static double to_double(const QD& a);
         QD& operator =(const QD& r);
         QD operator +(double r);

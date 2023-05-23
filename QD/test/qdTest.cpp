@@ -219,3 +219,15 @@ TEST(qd, exp) {
         std::cout << util::to_reg_str(b.x[i]) << std::endl;
     }
 }
+
+TEST(qd, log) {
+    QD a(100.0);
+    qd_real b = 100.0;
+    b = QD_API::log(b);
+    a = QD::log(a);
+    for(int i = 0;i < 4;i++) {
+        EXPECT_EQ(b.x[i], a.x[i]);
+        std::cout << util::to_reg_str(a.x[i]) << std::endl;
+        std::cout << util::to_reg_str(b.x[i]) << std::endl;
+    }
+}
