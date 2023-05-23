@@ -14,6 +14,14 @@ QD::QD() {
     x[2] = 0.0;
     x[3] = 0.0;
 }
+
+QD::QD(double x0) {
+    x[0] = x0;
+    x[1] = 0.0;
+    x[2] = 0.0;
+    x[3] = 0.0;
+}
+
 QD::QD(double x0, double x1, double x2, double x3) {
     x[0] = x0;
     x[1] = x1;
@@ -288,6 +296,88 @@ QD QD::root(const QD& a, int n) {
     b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, pow(b, n)))));
 
     return d_div_qd_qd(1.0, b);
+}
+
+static const QD _eps = QD(std::ldexp(1.0, -209));
+static const QD _log2 = QD(6.931471805599452862e-01,
+                    2.319046813846299558e-17,
+                    5.707708438416212066e-34,
+                    -3.582432210601811423e-50);
+static const int n_inv_fact = 15;
+static const QD inv_fact[n_inv_fact] = {
+  QD( 1.66666666666666657e-01,  9.25185853854297066e-18,
+           5.13581318503262866e-34,  2.85094902409834186e-50),
+  QD( 4.16666666666666644e-02,  2.31296463463574266e-18,
+           1.28395329625815716e-34,  7.12737256024585466e-51),
+  QD( 8.33333333333333322e-03,  1.15648231731787138e-19,
+           1.60494162032269652e-36,  2.22730392507682967e-53),
+  QD( 1.38888888888888894e-03, -5.30054395437357706e-20,
+          -1.73868675534958776e-36, -1.63335621172300840e-52),
+  QD( 1.98412698412698413e-04,  1.72095582934207053e-22,
+           1.49269123913941271e-40,  1.29470326746002471e-58),
+  QD( 2.48015873015873016e-05,  2.15119478667758816e-23,
+           1.86586404892426588e-41,  1.61837908432503088e-59),
+  QD( 2.75573192239858925e-06, -1.85839327404647208e-22,
+           8.49175460488199287e-39, -5.72661640789429621e-55),
+  QD( 2.75573192239858883e-07,  2.37677146222502973e-23,
+          -3.26318890334088294e-40,  1.61435111860404415e-56),
+  QD( 2.50521083854417202e-08, -1.44881407093591197e-24,
+           2.04267351467144546e-41, -8.49632672007163175e-58),
+  QD( 2.08767569878681002e-09, -1.20734505911325997e-25,
+           1.70222792889287100e-42,  1.41609532150396700e-58),
+  QD( 1.60590438368216133e-10,  1.25852945887520981e-26,
+          -5.31334602762985031e-43,  3.54021472597605528e-59),
+  QD( 1.14707455977297245e-11,  2.06555127528307454e-28,
+           6.88907923246664603e-45,  5.72920002655109095e-61),
+  QD( 7.64716373181981641e-13,  7.03872877733453001e-30,
+          -7.82753927716258345e-48,  1.92138649443790242e-64),
+  QD( 4.77947733238738525e-14,  4.39920548583408126e-31,
+          -4.89221204822661465e-49,  1.20086655902368901e-65),
+  QD( 2.81145725434552060e-15,  1.65088427308614326e-31,
+          -2.87777179307447918e-50,  4.27110689256293549e-67)
+};
+
+QD QD::exp(const QD& a) {
+    double k = ldexp(1.0, 16);
+    QD inv_k = d_div_d_qd(1.0, k);
+    int m = std::floor(a.x[0] / _log2.x[0] + 0.5);
+    QD r = qd_mul_qd_qd(qd_sub_qd_qd(a, qd_mul_d_qd(_log2, m)), inv_k);
+    double thresh = to_double(qd_mul_qd_qd(inv_k, _eps));
+
+    QD t;
+    QD p = qd_mul_qd_qd(r, r);
+    QD s = qd_add_qd_qd(r, qd_mul_d_qd(p, 0.5));
+    int i = 0;
+
+    do {
+        p =  qd_mul_qd_qd(p, r);
+        t = qd_mul_qd_qd(p, inv_fact[i++]);
+        s = qd_add_qd_qd(s, t);
+    } while (std::abs(to_double(t)) > thresh && i < 9);
+
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_d_qd(s, 1.0);
+    
+    return qd_mul_d_qd(s, ldexp(1, m));
+}
+
+double QD::to_double(const QD& a) {
+    return a.x[0];
 }
 
 QD& QD::operator =(const QD& r) {

@@ -7,6 +7,7 @@ class QD {
     public:
         double x[4];
         QD();
+        QD(double x0);
         QD(double x0, double x1, double x2, double x3);
         void renormalize();
         void renormalize(double a);
@@ -24,6 +25,8 @@ class QD {
         static QD pow(const QD& a, int n);
         static QD sqrt(const QD& a);
         static QD root(const QD& a, int n);
+        static QD exp(const QD& a);
+        static double to_double(const QD& a);
         QD& operator =(const QD& r);
         QD operator +(double r);
         QD operator +(const QD& r);
