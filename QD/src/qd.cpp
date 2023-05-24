@@ -275,6 +275,9 @@ QD QD::pow(const QD& a, int n) {
 }
 
 QD QD::sqrt(const QD& a) {
+    if(a.x[0] == 0.0 && a.x[1] == 0.0 && a.x[2] == 0.0 && a.x[3] == 0.0)
+        return QD(0.0);
+
     QD b = QD(1.0 / std::sqrt(a.x[0]), 0, 0, 0);
     QD c = QD(0.5, 0, 0, 0);
     QD h = QD(a.x[0] / 2.0, a.x[1] / 2.0, a.x[2] / 2.0, a.x[3] / 2.0);
@@ -384,6 +387,36 @@ QD QD::log(const QD& a) {
     return b;
 }
 
+/**
+ * @brief Calculate cos(k * 2pi / n) n is power of 2.
+ */
+QD QD::cos(int k, int n) {
+    std::cout << k << " " << n << std::endl;
+    if(k == 0)
+        return QD(1.0);
+    if(n == 1)
+        return QD(1.0);
+    if(n == 2)
+        return QD(-1.0);
+
+    int harf_n = n >> 1;
+
+    if(k > harf_n)
+        k = n - k;
+    
+    if(k > (harf_n >> 1))
+        return -qd_mul_d_qd(sqrt(qd_add_d_qd(qd_mul_d_qd(cos(harf_n - k, harf_n), 2.0), 2.0)), 0.5);
+    else 
+        return qd_mul_d_qd(sqrt(qd_add_d_qd(qd_mul_d_qd(cos(k, harf_n), 2.0), 2.0)), 0.5);    
+}
+
+QD QD::sin(int k, int n) {
+    if(n <= 2)
+        return 0;
+
+    return cos(abs(k - (n >> 2)), n);
+}
+
 double QD::to_double(const QD& a) {
     return a.x[0];
 }
@@ -402,7 +435,7 @@ QD QD::operator +(double r) {
 
 QD QD::operator +(const QD& r) {
     return qd_add_qd_qd(*this, r);
-} 
+}
 
 QD QD::operator -(double r) {
     return qd_add_d_qd(*this, -r);

@@ -221,12 +221,21 @@ TEST(qd, exp) {
 }
 
 TEST(qd, log) {
-    QD a(100.0);
-    qd_real b = 100.0;
+    QD a(1.0);
+    qd_real b = 1.0;
     b = QD_API::log(b);
     a = QD::log(a);
     for(int i = 0;i < 4;i++) {
         EXPECT_EQ(b.x[i], a.x[i]);
+        std::cout << util::to_reg_str(a.x[i]) << std::endl;
+        std::cout << util::to_reg_str(b.x[i]) << std::endl;
+    }
+}
+
+TEST(qd, sincos) {
+    QD a = QD::cos(1, 128);
+    qd_real b = QD_API::cos(qd_real(qd_real::_2pi * 1.0 / 128));
+    for(int i = 0;i < 4;i++) {
         std::cout << util::to_reg_str(a.x[i]) << std::endl;
         std::cout << util::to_reg_str(b.x[i]) << std::endl;
     }

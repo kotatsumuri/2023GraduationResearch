@@ -27,6 +27,8 @@ class QD {
         static QD root(const QD& a, int n);
         static QD exp(const QD& a);
         static QD log(const QD& a);
+        static QD cos(int k, int n);
+        static QD sin(int k, int n);
         static double to_double(const QD& a);
         QD& operator =(const QD& r);
         QD operator +(double r);
@@ -37,4 +39,5 @@ class QD {
         QD operator *(const QD& r);
         QD operator /(const QD& r);
         QD operator ^(int r);
+        bool operator ==(const QD r);
 };
