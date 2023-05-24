@@ -21,6 +21,7 @@ namespace QD_Lib {
 
             static QD qd_mul_d_qd(const QD& a, double b);
             static QD qd_mul_qd_qd(const QD& a, const QD& b);
+            static QD qd_mul_pwr2_qd(const QD& a, double b);
             static QD d_mul_d_qd(double a, double b);
 
             static QD qd_div_d_qd(const QD& a, double b);

@@ -109,8 +109,6 @@ QD QD::qd_add_qd_qd(const QD& a, const QD& b) {
     t[1] += t[0] + t[3];
     c.renormalize(t[1]);
     return c;
-
-    QD c = t[0] + a;
 }
 
 QD QD::qd_sub_d_qd(const QD& a, double b) {
@@ -177,6 +175,10 @@ QD QD::qd_mul_qd_qd(const QD& a, const QD& b) {
     t[0] = a.x[1] * b.x[3] + a.x[2] * b.x[2] + a.x[3] * b.x[1] + t[1] + t[3] + t[7] + t[10] + t[12] + t[0];
     c.renormalize(t[0]);
     return c;
+}
+
+QD QD::qd_mul_pwr2_qd(const QD& a, double b) {
+    return QD(a.x[0] * b, a.x[1] * b, a.x[2] * b, a.x[3] * b);
 }
 
 QD QD::d_mul_d_qd(double a, double b) {
@@ -291,12 +293,11 @@ QD QD::sqrt(const QD& a) {
         return QD(0.0);
 
     QD b = QD(1.0 / std::sqrt(a.x[0]), 0, 0, 0);
-    QD c = QD(0.5, 0, 0, 0);
-    QD h = QD(a.x[0] / 2.0, a.x[1] / 2.0, a.x[2] / 2.0, a.x[3] / 2.0);
+    QD h = qd_mul_pwr2_qd(a, 0.5);
 
-    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
-    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
-    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, qd_sub_qd_qd(c, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, d_sub_qd_qd(0.5, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, d_sub_qd_qd(0.5, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
+    b = qd_add_qd_qd(b, qd_mul_qd_qd(b, d_sub_qd_qd(0.5, qd_mul_qd_qd(h, qd_mul_qd_qd(b, b)))));
 
     return qd_mul_qd_qd(a, b);
 }
@@ -361,7 +362,7 @@ QD QD::exp(const QD& a) {
 
     QD t;
     QD p = qd_mul_qd_qd(r, r);
-    QD s = qd_add_qd_qd(r, qd_mul_d_qd(p, 0.5));
+    QD s = qd_add_qd_qd(r, qd_mul_pwr2_qd(p, 0.5));
     int i = 0;
 
     do {
@@ -370,22 +371,22 @@ QD QD::exp(const QD& a) {
         s = qd_add_qd_qd(s, t);
     } while (std::abs(to_double(t)) > thresh && i < 9);
 
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
-    s = qd_add_qd_qd(qd_mul_d_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
+    s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
     s = qd_add_d_qd(s, 1.0);
 
     return qd_mul_d_qd(s, ldexp(1, m));
@@ -417,9 +418,9 @@ QD QD::cos(int k, int n) {
         k = n - k;
     
     if(k > (harf_n >> 1))
-        return -qd_mul_d_qd(sqrt(qd_add_d_qd(qd_mul_d_qd(cos(harf_n - k, harf_n), 2.0), 2.0)), 0.5);
+        return -qd_mul_pwr2_qd(sqrt(qd_add_d_qd(qd_mul_pwr2_qd(cos(harf_n - k, harf_n), 2.0), 2.0)), 0.5);
     else 
-        return qd_mul_d_qd(sqrt(qd_add_d_qd(qd_mul_d_qd(cos(k, harf_n), 2.0), 2.0)), 0.5);    
+        return qd_mul_pwr2_qd(sqrt(qd_add_d_qd(qd_mul_pwr2_qd(cos(k, harf_n), 2.0), 2.0)), 0.5);    
 }
 
 QD QD::sin(int k, int n) {
@@ -546,4 +547,3 @@ bool QD::operator <=(const QD& r) {
             x[2] != r.x[2] ? x[2] < r.x[2] : 
             x[3] <= r.x[3]);
 }
-
