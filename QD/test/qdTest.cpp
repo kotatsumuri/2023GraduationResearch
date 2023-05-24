@@ -5,6 +5,8 @@
 #include "util.hpp"
 #include "qd.hpp"
 
+using namespace QD_Lib;
+
 TEST(qd, renormalize) {
     QD a(1.0, std::pow(2, -52), 0.0, 0.0);
     qd_real b = qd_real(1.0) + qd_real(std::pow(2, -52));

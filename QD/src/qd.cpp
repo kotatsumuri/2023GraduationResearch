@@ -3,6 +3,8 @@
 #include "qd.hpp"
 #include "util.hpp"
 
+using namespace QD_Lib;
+
 std::ostream& operator << (std::ostream& os, const QD& a) {
     os << util::to_reg_str(a.x[0]) << "|" << util::to_reg_str(a.x[1]) << "|" << util::to_reg_str(a.x[2]) << "|" << util::to_reg_str(a.x[3]);
     return os;
@@ -107,6 +109,12 @@ QD QD::qd_add_qd_qd(const QD& a, const QD& b) {
     t[1] += t[0] + t[3];
     c.renormalize(t[1]);
     return c;
+
+    QD c = t[0] + a;
+}
+
+QD QD::qd_sub_d_qd(const QD& a, double b) {
+    return qd_add_d_qd(a, -b);
 }
 
 QD QD::qd_sub_qd_qd(const QD& a, const QD& b) {
@@ -178,27 +186,6 @@ QD QD::d_mul_d_qd(double a, double b) {
     return c;
 }
 
-QD QD::qd_div_qd_qd(const QD& a, const QD& b) {
-    double q;
-    QD t0, t1;
-    QD c;
-    c.x[0] = a.x[0] / b.x[0];
-    t0 = qd_mul_d_qd(b, c.x[0]);
-    t0 = qd_sub_qd_qd(a, t0);
-    c.x[1] = t0.x[0] / b.x[0];
-    t1 = qd_mul_d_qd(b, c.x[1]);
-    t0 = qd_sub_qd_qd(t0, t1);
-    c.x[2] = t0.x[0] / b.x[0];
-    t1 = qd_mul_d_qd(b, c.x[2]);
-    t0 = qd_sub_qd_qd(t0, t1);
-    c.x[3] = t0.x[0] / b.x[0];
-    t1 = qd_mul_d_qd(b, c.x[3]);
-    t0 = qd_sub_qd_qd(t0, t1);
-    q = t0.x[0] / b.x[0];
-    c.renormalize(q);
-    return c;
-}
-
 QD QD::qd_div_d_qd(const QD& a, double b) {
     double q;
     QD t0, t1;
@@ -216,6 +203,27 @@ QD QD::qd_div_d_qd(const QD& a, double b) {
     t1 = d_mul_d_qd(b, c.x[3]);
     t0 = qd_sub_qd_qd(t0, t1);
     q = t0.x[0] / b;
+    c.renormalize(q);
+    return c;
+}
+
+QD QD::qd_div_qd_qd(const QD& a, const QD& b) {
+    double q;
+    QD t0, t1;
+    QD c;
+    c.x[0] = a.x[0] / b.x[0];
+    t0 = qd_mul_d_qd(b, c.x[0]);
+    t0 = qd_sub_qd_qd(a, t0);
+    c.x[1] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[1]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[2] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[2]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    c.x[3] = t0.x[0] / b.x[0];
+    t1 = qd_mul_d_qd(b, c.x[3]);
+    t0 = qd_sub_qd_qd(t0, t1);
+    q = t0.x[0] / b.x[0];
     c.renormalize(q);
     return c;
 }
@@ -260,6 +268,10 @@ QD QD::d_div_d_qd(double a, double b) {
     q = t0.x[0] / b;
     c.renormalize(q);
     return c;
+}
+
+QD QD::minus(const QD& a) {
+    return QD(-a.x[0], -a.x[1], -a.x[2], -a.x[3]);
 }
 
 QD QD::pow(const QD& a, int n) {
@@ -429,34 +441,109 @@ QD& QD::operator =(const QD& r) {
     return *this;
 }
 
-QD QD::operator +(double r) {
-    return qd_add_d_qd(*this, r);
+QD& QD::operator =(double r) {
+    x[0] = r;
+    x[1] = 0.0;
+    x[2] = 0.0;
+    x[3] = 0.0;
+    return *this;
 }
 
 QD QD::operator +(const QD& r) {
     return qd_add_qd_qd(*this, r);
 }
 
+QD QD::operator +(double r) {
+    return qd_add_d_qd(*this, r);
+}
+
+QD QD_Lib::operator +(double l, const QD& r) {
+    return QD::qd_add_d_qd(r, l);
+}
+
+QD QD::operator -(const QD& r) {
+    return qd_sub_qd_qd(*this, r);
+}
+
 QD QD::operator -(double r) {
     return qd_add_d_qd(*this, -r);
+}
+
+QD QD_Lib::operator -(double l, const QD& r) {
+    return QD::d_sub_qd_qd(l, r);
 }
 
 QD QD::operator -() {
     return QD(-x[0], -x[1], -x[2], -x[3]);
 }
 
+QD QD::operator *(const QD& r) {
+    return qd_mul_qd_qd(*this, r);
+}
+
 QD QD::operator *(double r) {
     return qd_mul_d_qd(*this, r);
 }
 
-QD QD::operator *(const QD& r) {
-    return qd_mul_qd_qd(*this, r);
+QD QD_Lib::operator *(double l, const QD& r) {
+    return QD::qd_mul_d_qd(r, l);
 }
 
 QD QD::operator /(const QD& r) {
     return qd_div_qd_qd(*this, r);
 }
 
+QD QD::operator /(double r) {
+    return qd_div_d_qd(*this, r);
+}
+
+QD QD_Lib::operator /(double l, const QD& r) {
+    return QD::d_div_qd_qd(l, r);
+}
+
 QD QD::operator ^(int r) {
     return pow(*this, r);
 }
+
+bool QD::operator ==(const QD& r) {
+    return (x[0] != r.x[0] ? 0 :
+            x[1] != r.x[1] ? 0 :
+            x[2] != r.x[2] ? 0 : 
+            x[3] == r.x[3]);
+}
+
+bool QD::operator !=(const QD& r) {
+    return (x[0] != r.x[0] ? 1 :
+            x[1] != r.x[1] ? 1 :
+            x[2] != r.x[2] ? 1 : 
+            x[3] != r.x[3]);
+}
+
+bool QD::operator >(const QD& r) {
+    return (x[0] != r.x[0] ? x[0] > r.x[0] :
+            x[1] != r.x[1] ? x[1] > r.x[1] :
+            x[2] != r.x[2] ? x[2] > r.x[2] : 
+            x[3] > r.x[3]);
+}
+
+bool QD::operator >=(const QD& r) {
+    return (x[0] != r.x[0] ? x[0] > r.x[0] :
+            x[1] != r.x[1] ? x[1] > r.x[1] :
+            x[2] != r.x[2] ? x[2] > r.x[2] : 
+            x[3] >= r.x[3]);
+}
+
+bool QD::operator <(const QD& r) {
+    return (x[0] != r.x[0] ? x[0] < r.x[0] :
+            x[1] != r.x[1] ? x[1] < r.x[1] :
+            x[2] != r.x[2] ? x[2] < r.x[2] : 
+            x[3] < r.x[3]);
+}
+
+bool QD::operator <=(const QD& r) {
+    return (x[0] != r.x[0] ? x[0] < r.x[0] :
+            x[1] != r.x[1] ? x[1] < r.x[1] :
+            x[2] != r.x[2] ? x[2] < r.x[2] : 
+            x[3] <= r.x[3]);
+}
+
