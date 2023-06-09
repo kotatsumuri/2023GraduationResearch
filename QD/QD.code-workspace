@@ -115,7 +115,15 @@
       "utility": "cpp",
       "stop_token": "cpp",
       "cinttypes": "cpp",
-      "stack": "cpp"
+      "stack": "cpp",
+      "charconv": "cpp",
+      "format": "cpp",
+      "shared_mutex": "cpp",
+      "span": "cpp",
+      "source_location": "cpp",
+      "valarray": "cpp",
+      "regex": "cpp",
+      "*.ipp": "cpp"
     }
   }
 }

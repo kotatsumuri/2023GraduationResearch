@@ -2,9 +2,7 @@
 #include <iostream>
 
 namespace QD_Lib {
-    class QD {
-        friend std::ostream& operator << (std::ostream& os, const QD& a);
-        
+    class QD {        
         public:
             double x[4];
             QD();
@@ -35,8 +33,8 @@ namespace QD_Lib {
             static QD root(const QD& a, int n);
             static QD exp(const QD& a);
             static QD log(const QD& a);
-            static QD cos(int k, int n);
-            static QD sin(int k, int n);
+            static QD cos(unsigned long long int k, unsigned long long int n);
+            static QD sin(unsigned long long int k, unsigned long long int n);
             
             static double to_double(const QD& a);
 
@@ -63,4 +61,5 @@ namespace QD_Lib {
     QD operator-(double l, const QD& r);
     QD operator*(double l, const QD& r);
     QD operator/(double l, const QD& r);
+    std::ostream& operator <<(std::ostream& os, const QD& a);
 }

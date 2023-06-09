@@ -18,6 +18,15 @@
       "args": [],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "PrecisionTest",
+      "program": "${workspaceFolder}/build/test/PrecisionTest",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
     }
   ]
 }

@@ -5,7 +5,7 @@
 
 using namespace QD_Lib;
 
-std::ostream& operator << (std::ostream& os, const QD& a) {
+std::ostream& QD_Lib::operator <<(std::ostream& os, const QD_Lib::QD& a) {
     os << util::to_reg_str(a.x[0]) << "|" << util::to_reg_str(a.x[1]) << "|" << util::to_reg_str(a.x[2]) << "|" << util::to_reg_str(a.x[3]);
     return os;
 }
@@ -403,8 +403,7 @@ QD QD::log(const QD& a) {
 /**
  * @brief Calculate cos(k * 2pi / n) n is power of 2.
  */
-QD QD::cos(int k, int n) {
-    std::cout << k << " " << n << std::endl;
+QD QD::cos(unsigned long long int k, unsigned long long int n) {
     if(k == 0)
         return QD(1.0);
     if(n == 1)
@@ -412,7 +411,7 @@ QD QD::cos(int k, int n) {
     if(n == 2)
         return QD(-1.0);
 
-    int harf_n = n >> 1;
+    unsigned long long int harf_n = n >> 1;
 
     if(k > harf_n)
         k = n - k;
@@ -423,7 +422,7 @@ QD QD::cos(int k, int n) {
         return qd_mul_pwr2_qd(sqrt(qd_add_d_qd(qd_mul_pwr2_qd(cos(k, harf_n), 2.0), 2.0)), 0.5);    
 }
 
-QD QD::sin(int k, int n) {
+QD QD::sin(unsigned long long int k, unsigned long long int n) {
     if(n <= 2)
         return 0;
 
