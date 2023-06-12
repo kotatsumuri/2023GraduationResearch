@@ -2,6 +2,7 @@
 #include <boost/multiprecision/cpp_bin_float.hpp>
 #include <cmath>
 #include <iostream>
+#include <bitset>
 #include <qd/qd_real.h>
 #include "util.hpp"
 #include "qd.hpp"
@@ -31,13 +32,31 @@ Real reccos(unsigned long long int k, unsigned long long n) {
         return mp::sqrt(2.0 + 2.0 * reccos(k, harf_n)) / 2.0;
 }
 
+int ulp(double a) {
+    unsigned long long row_bit = *(unsigned long long *)&a;
+    std::bitset<64> bin(row_bit);
+    return ((int)(row_bit >> 52) & 2047) - 1023 - 52;
+}
+
 int main() {
     unsigned long long int n = 1;
     for(int i = 0;i < 64;i++) {
         Real a = reccos(1, n);
         QD b = QD::cos(1, n);
+        Real bb = b.x[0];
+        bb += b.x[1];
+        bb += b.x[2];
+        bb += b.x[3];
         Real e = mp::abs(a - b.x[0] - b.x[1] - b.x[2] - b.x[3]);
-        std::cout << n << "," << e.str(0, std::ios_base::scientific) << std::endl;
+        // if(a != 0) 
+        //     e /= mp::abs(a);
+        //std::cout << i << "," << b << std::endl;
+        std::cout << i << "," << mp::abs(static_cast<Real>(1) - a).str(0, std::ios_base::scientific) << std::endl;
+        // std::cout << i << "," << e.str(0, std::ios_base::scientific) << std::endl;
+        // Real error_bits = 0;
+        // if(e != 0)
+        //     error_bits =  mp::log2(e) - static_cast<Real>(ulp(b.x[3]));
+        // std::cout << i << "," << error_bits.str(0, std::ios_base::scientific) << std::endl;
         n *= 2;
     }
 
