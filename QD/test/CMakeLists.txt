@@ -14,3 +14,7 @@ gtest_discover_tests(QDTest)
 add_executable(PrecisionTest precisionTest.cpp)
 target_compile_options(PrecisionTest PRIVATE -O2 -Wall)
 target_link_libraries(PrecisionTest PRIVATE QD qd util)
+
+add_executable(MakeCosConst makeCosConst.cpp)
+target_compile_options(MakeCosConst PRIVATE -O2 -Wall)
+target_link_libraries(MakeCosConst PRIVATE QD qd util)

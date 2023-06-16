@@ -27,6 +27,15 @@
       "args": [],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "MakeCosConst",
+      "program": "${workspaceFolder}/build/test/MakeCosConst",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
     }
   ]
 }
