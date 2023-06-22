@@ -51,12 +51,13 @@ int main() {
         // if(a != 0) 
         //     e /= mp::abs(a);
         //std::cout << i << "," << b << std::endl;
-        std::cout << i << "," << mp::abs(static_cast<Real>(1) - a).str(0, std::ios_base::scientific) << std::endl;
+        // std::cout << i << "," << mp::abs(static_cast<Real>(1) - a).str(0, std::ios_base::scientific) << std::endl;
         // std::cout << i << "," << e.str(0, std::ios_base::scientific) << std::endl;
         // Real error_bits = 0;
         // if(e != 0)
         //     error_bits =  mp::log2(e) - static_cast<Real>(ulp(b.x[3]));
         // std::cout << i << "," << error_bits.str(0, std::ios_base::scientific) << std::endl;
+        std::cout << i << "," << mp::ldexp(Real(1.0), ulp(b.x[3])).str(0, std::ios_base::scientific) << std::endl;
         n *= 2;
     }
 
