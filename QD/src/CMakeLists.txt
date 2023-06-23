@@ -1,6 +1,7 @@
 add_library(QD
     STATIC
         qd.cpp
+        qd_operator.cpp
     )
 
 target_include_directories(QD

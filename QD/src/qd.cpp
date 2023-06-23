@@ -358,7 +358,7 @@ QD QD::exp(const QD& a) {
     QD inv_k = d_div_d_qd(1.0, k);
     int m = std::floor(a.x[0] / _log2.x[0] + 0.5);
     QD r = qd_mul_qd_qd(qd_sub_qd_qd(a, qd_mul_d_qd(_log2, m)), inv_k);
-    double thresh = to_double(qd_mul_qd_qd(inv_k, _eps));
+    double thresh = double(qd_mul_qd_qd(inv_k, _eps));
 
     QD t;
     QD p = qd_mul_qd_qd(r, r);
@@ -369,7 +369,7 @@ QD QD::exp(const QD& a) {
         p =  qd_mul_qd_qd(p, r);
         t = qd_mul_qd_qd(p, inv_fact[i++]);
         s = qd_add_qd_qd(s, t);
-    } while (std::abs(to_double(t)) > thresh && i < 9);
+    } while (std::abs(double(t)) > thresh && i < 9);
 
     s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
     s = qd_add_qd_qd(qd_mul_pwr2_qd(s, 2.0), qd_mul_qd_qd(s, s));
@@ -1463,122 +1463,4 @@ QD QD::sin(unsigned long long int k, unsigned long long int n) {
         return 0;
 
     return cos(abs(k - (n >> 2)), n);
-}
-
-double QD::to_double(const QD& a) {
-    return a.x[0];
-}
-
-QD& QD::operator =(const QD& r) {
-    x[0] = r.x[0];
-    x[1] = r.x[1];
-    x[2] = r.x[2];
-    x[3] = r.x[3];
-    return *this;
-}
-
-QD& QD::operator =(double r) {
-    x[0] = r;
-    x[1] = 0.0;
-    x[2] = 0.0;
-    x[3] = 0.0;
-    return *this;
-}
-
-QD QD::operator +(const QD& r) {
-    return qd_add_qd_qd(*this, r);
-}
-
-QD QD::operator +(double r) {
-    return qd_add_d_qd(*this, r);
-}
-
-QD QD_Lib::operator +(double l, const QD& r) {
-    return QD::qd_add_d_qd(r, l);
-}
-
-QD QD::operator -(const QD& r) {
-    return qd_sub_qd_qd(*this, r);
-}
-
-QD QD::operator -(double r) {
-    return qd_add_d_qd(*this, -r);
-}
-
-QD QD_Lib::operator -(double l, const QD& r) {
-    return QD::d_sub_qd_qd(l, r);
-}
-
-QD QD::operator -() {
-    return QD(-x[0], -x[1], -x[2], -x[3]);
-}
-
-QD QD::operator *(const QD& r) {
-    return qd_mul_qd_qd(*this, r);
-}
-
-QD QD::operator *(double r) {
-    return qd_mul_d_qd(*this, r);
-}
-
-QD QD_Lib::operator *(double l, const QD& r) {
-    return QD::qd_mul_d_qd(r, l);
-}
-
-QD QD::operator /(const QD& r) {
-    return qd_div_qd_qd(*this, r);
-}
-
-QD QD::operator /(double r) {
-    return qd_div_d_qd(*this, r);
-}
-
-QD QD_Lib::operator /(double l, const QD& r) {
-    return QD::d_div_qd_qd(l, r);
-}
-
-QD QD::operator ^(int r) {
-    return pow(*this, r);
-}
-
-bool QD::operator ==(const QD& r) {
-    return (x[0] != r.x[0] ? 0 :
-            x[1] != r.x[1] ? 0 :
-            x[2] != r.x[2] ? 0 : 
-            x[3] == r.x[3]);
-}
-
-bool QD::operator !=(const QD& r) {
-    return (x[0] != r.x[0] ? 1 :
-            x[1] != r.x[1] ? 1 :
-            x[2] != r.x[2] ? 1 : 
-            x[3] != r.x[3]);
-}
-
-bool QD::operator >(const QD& r) {
-    return (x[0] != r.x[0] ? x[0] > r.x[0] :
-            x[1] != r.x[1] ? x[1] > r.x[1] :
-            x[2] != r.x[2] ? x[2] > r.x[2] : 
-            x[3] > r.x[3]);
-}
-
-bool QD::operator >=(const QD& r) {
-    return (x[0] != r.x[0] ? x[0] > r.x[0] :
-            x[1] != r.x[1] ? x[1] > r.x[1] :
-            x[2] != r.x[2] ? x[2] > r.x[2] : 
-            x[3] >= r.x[3]);
-}
-
-bool QD::operator <(const QD& r) {
-    return (x[0] != r.x[0] ? x[0] < r.x[0] :
-            x[1] != r.x[1] ? x[1] < r.x[1] :
-            x[2] != r.x[2] ? x[2] < r.x[2] : 
-            x[3] < r.x[3]);
-}
-
-bool QD::operator <=(const QD& r) {
-    return (x[0] != r.x[0] ? x[0] < r.x[0] :
-            x[1] != r.x[1] ? x[1] < r.x[1] :
-            x[2] != r.x[2] ? x[2] < r.x[2] : 
-            x[3] <= r.x[3]);
 }
