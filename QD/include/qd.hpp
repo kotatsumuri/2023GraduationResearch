@@ -36,7 +36,6 @@ namespace QD_Lib {
             static QD cos(unsigned long long int k, unsigned long long int n);
             static QD sin(unsigned long long int k, unsigned long long int n);
             
-            static double to_double(const QD& a);
 
             QD& operator =(const QD& r);
             QD& operator =(double l);
@@ -44,7 +43,7 @@ namespace QD_Lib {
             QD operator +(double r);
             QD operator -(const QD& r);
             QD operator -(double r);
-            QD operator -();
+            const QD operator -();
             QD operator *(const QD& r);
             QD operator *(double r);
             QD operator /(const QD& r);
@@ -56,6 +55,7 @@ namespace QD_Lib {
             bool operator >=(const QD& r);
             bool operator < (const QD& r);
             bool operator <=(const QD& r);
+            operator double();
     };
     QD operator+(double l, const QD& r);
     QD operator-(double l, const QD& r);
