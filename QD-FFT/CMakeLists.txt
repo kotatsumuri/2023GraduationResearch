@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.26)
 
 project(QD-FFT CXX)
 
+add_definitions(-std=c++17 -Wall)
+
 # Google Test
 include(FetchContent)
 FetchContent_Declare(
