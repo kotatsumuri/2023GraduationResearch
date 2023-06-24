@@ -11,6 +11,9 @@ inline void copy(const qd a, qd b);
 void renormalize(qd a);
 void renormalize(qd a, double b);
 
+inline void minus(const qd a, qd b);
+inline void minus(qd a);
+
 void add(const qd a, const qd b, qd s);
 void add(const qd a, double b, qd s);
 
