@@ -9,7 +9,8 @@ RUN apt install -y wget \
   gpg \
   g++ \
   git \
-  clang-format
+  clang-format \
+  gdb
 
 # cmake 3.26
 RUN cd $HOME && \
