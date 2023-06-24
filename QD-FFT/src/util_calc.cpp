@@ -1,5 +1,7 @@
 #include "util_calc.hpp"
 
+#include <bitset>
+
 namespace util::calc {
 void split(double a, double* a_hi, double* a_lo) {
     *a_hi = (double)((1 << 27) + 1) * a;
@@ -75,5 +77,21 @@ void nine_two_sum(double a, double b, double c, double d, double e, double f,
     dd_add_dd_dd(t[0], t[1], t[2], t[3], &t[0], &t[1]);
     dd_add_dd_dd(*s, *e0, t[0], t[1], s, e0);
     three_sum(i, *s, *e0, s, e0);
+}
+
+int ufp(double a) {
+    unsigned long long row_bit = *(unsigned long long*)&a;
+    std::bitset<64> bin(row_bit);
+    return ((int)(row_bit >> 52) & 2047) - 1023;
+}
+
+int ulp(double a) { return ufp(a) - 52; }
+
+int sign(double a) {
+    if (a > 0)
+        return 1;
+    if (a < 0)
+        return -1;
+    return 0;
 }
 }  // namespace util::calc

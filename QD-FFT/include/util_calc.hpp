@@ -13,4 +13,8 @@ void dd_add_dd_dd(double a0, double a1, double b0, double b1, double* s0,
                   double* s1);
 void nine_two_sum(double a, double b, double c, double d, double e, double f,
                   double g, double h, double i, double* s, double* e0);
+
+int ufp(double a);
+int ulp(double a);
+int sign(double a);
 }  // namespace util::calc
