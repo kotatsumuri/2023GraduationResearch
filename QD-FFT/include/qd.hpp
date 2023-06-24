@@ -3,16 +3,18 @@
 namespace QD {
 using qd = double[4];
 
-inline void zero(qd a);
-inline void init(qd a, double x0);
-inline void init(qd a, double x0, double x1, double x2, double x3);
-inline void copy(const qd a, qd b);
+// util
+void zero(qd a);
+void init(qd a, double x0);
+void init(qd a, double x0, double x1, double x2, double x3);
+void copy(const qd a, qd b);
 
+// calc
 void renormalize(qd a);
 void renormalize(qd a, double b);
 
-inline void minus(const qd a, qd b);
-inline void minus(qd a);
+void minus(const qd a, qd b);
+void minus(qd a);
 
 void add(const qd a, const qd b, qd s);
 void add(const qd a, double b, qd s);
