@@ -17,4 +17,9 @@ namespace QD {
     void mul(const qd a, double b, qd p);
     void mul(double a, double b, qd p);
     void mul_pwr2(const qd a, double b, qd p);
+
+    void div(const qd a, const qd b, qd d);
+    void div(const qd a, double b, qd d);
+    void div(double a, const qd b, qd d);
+    void div(double a, double b, qd d);
 }  // namespace QD

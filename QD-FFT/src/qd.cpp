@@ -153,4 +153,76 @@ namespace QD {
         p[2] = a[2] * b;
         p[3] = a[3] * b;
     }
+
+    void div(const qd a, const qd b, qd d) {
+        qd t0, t1, t2;
+        d[0] = a[0] / b[0];
+        mul(b, d[0], t0);
+        sub(a, t0, t1);
+        d[1] = t1[0] / b[0];
+        mul(b, d[1], t0);
+        sub(t1, t0, t2);
+        d[2] = t2[0] / b[0];
+        mul(b, d[2], t0);
+        sub(t2, t0, t1);
+        d[3] = t1[0] / b[0];
+        mul(b, d[3], t0);
+        sub(t1, t0, t2);
+        t2[0] = t2[0] / b[0];
+        renormalize(d, t2[0]);
+    }
+
+    void div(const qd a, double b, qd d) {
+        qd t0, t1, t2;
+        d[0] = a[0] / b;
+        mul(b, d[0], t0);
+        sub(a, t0, t1);
+        d[1] = t1[0] / b;
+        mul(b, d[1], t0);
+        sub(t1, t0, t2);
+        d[2] = t2[0] / b;
+        mul(b, d[2], t0);
+        sub(t2, t0, t1);
+        d[3] = t1[0] / b;
+        mul(b, d[3], t0);
+        sub(t1, t0, t2);
+        t2[0] = t2[0] / b;
+        renormalize(d, t2[0]);
+    }
+
+    void div(double a, const qd b, qd d) {
+        qd t0, t1, t2;
+        d[0] = a / b[0];
+        mul(b, d[0], t0);
+        sub(a, t0, t1);
+        d[1] = t1[0] / b[0];
+        mul(b, d[1], t0);
+        sub(t1, t0, t2);
+        d[2] = t2[0] / b[0];
+        mul(b, d[2], t0);
+        sub(t2, t0, t1);
+        d[3] = t1[0] / b[0];
+        mul(b, d[3], t0);
+        sub(t1, t0, t2);
+        t2[0] = t2[0] / b[0];
+        renormalize(d, t2[0]);
+    }
+
+    void div(double a, double b, qd d) {
+        qd t0, t1, t2;
+        d[0] = a / b;
+        mul(b, d[0], t0);
+        sub(a, t0, t1);
+        d[1] = t1[0] / b;
+        mul(b, d[1], t0);
+        sub(t1, t0, t2);
+        d[2] = t2[0] / b;
+        mul(b, d[2], t0);
+        sub(t2, t0, t1);
+        d[3] = t1[0] / b;
+        mul(b, d[3], t0);
+        sub(t1, t0, t2);
+        t2[0] = t2[0] / b;
+        renormalize(d, t2[0]);
+    }
 }  // namespace QD
