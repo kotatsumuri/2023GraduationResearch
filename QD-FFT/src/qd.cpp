@@ -228,6 +228,28 @@ void div(double a, double b, qd d) {
     renormalize(d, t2[0]);
 }
 
+void sqr(const qd a, qd p) {
+    double t[17];
+    two_prod(a[0], a[0], p, p + 1);                // 0, 1
+    two_prod(a[0], a[1], t, t + 1);                // 1, 2
+    two_prod(a[1], a[0], t + 2, t + 3);            // 1, 2
+    three_sum(p[1], t[0], t[2], p + 1, t, t + 2);  // 1, 2, 3
+    two_prod(a[0], a[2], p + 2, t + 4);            // 2, 3
+    two_prod(a[1], a[1], t + 5, t + 6);            // 2, 3
+    two_prod(a[2], a[0], t + 7, t + 8);            // 2, 3
+    six_three_sum(t[1], t[3], t[0], p[2], t[5], t[7], p + 2, t,
+                  t + 1);                          // 2, 3, 4
+    two_prod(a[0], a[3], p + 3, t + 3);            // 3, 4
+    two_prod(a[1], a[2], t + 5, t + 7);            // 3, 4
+    two_prod(a[2], a[1], t + 9, t + 10);           // 3, 4
+    two_prod(a[3], a[0], t + 11, t + 12);          // 3, 4
+    nine_two_sum(t[2], t[4], t[6], t[8], t[0], p[3], t[5], t[9], t[11], p + 3,
+                 t);                               // 3, 4
+    t[0] = a[1] * a[3] + a[2] * a[2] + a[3] * a[1] + t[1] + t[3] + t[7] +
+           t[10] + t[12] + t[0];
+    renormalize(p, t[0]);
+}
+
 void sqrt(const qd a, qd b) {
     if (a[0] != 0.0 || a[1] != 0.0 || a[2] != 0.0 || a[3] == 0.0) {
         qd h;
@@ -235,19 +257,19 @@ void sqrt(const qd a, qd b) {
         mul_pwr2(a, 0.5, h);
         init(b, 1 / std::sqrt(a[0]));
 
-        mul(b, b, t0);
+        sqr(b, t0);
         mul(h, t0, t1);
         sub(0.5, t1, t0);
         mul(b, t0, t1);
         add(b, t1, t0);
 
-        mul(t0, t0, b);
+        sqr(t0, b);
         mul(h, b, t1);
         sub(0.5, t1, b);
         mul(t0, b, t1);
         add(t0, t1, b);
 
-        mul(b, b, t0);
+        sqr(b, t0);
         mul(h, t0, t1);
         sub(0.5, t1, t0);
         mul(b, t0, t1);

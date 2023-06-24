@@ -31,6 +31,7 @@ void div(const qd a, double b, qd d);
 void div(double a, const qd b, qd d);
 void div(double a, double b, qd d);
 
+void sqr(const qd a, qd p);
 void sqrt(const qd a, qd b);
 
 void cos(unsigned long long int k, unsigned long long int n, qd a);
