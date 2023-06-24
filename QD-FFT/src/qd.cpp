@@ -75,4 +75,35 @@ namespace QD {
         two_sum(a[3], e, s + 3, &e);
         renormalize(s, e);
     }
+
+    void sub(const qd a, const qd b, qd s) {
+        double t[4];
+        two_sum(a[0], -b[0], s, t);
+        two_sum(a[1], -b[1], s + 1, t + 1);
+        two_sum(s[1], t[0], s + 1, t);
+        two_sum(a[2], -b[2], s + 2, t + 2);
+        three_sum(s[2], t[1], t[0], s + 2, t, t + 1);
+        two_sum(a[3], -b[3], s + 3, t + 3);
+        three_sum(s[3], t[2], t[0], s + 3, t);
+        t[1] += t[0] + t[3];
+        renormalize(s, t[1]);
+    }
+
+    void sub(const qd a, double b, qd s) {
+        double e;
+        two_sum(a[0], -b, s, &e);
+        two_sum(a[1], e, s + 1, &e);
+        two_sum(a[2], e, s + 2, &e);
+        two_sum(a[3], e, s + 3, &e);
+        renormalize(s, e);
+    }
+
+    void sub(double a, const qd b, qd s) {
+        double e;
+        two_sum(-b[0], a, s, &e);
+        two_sum(-b[1], e, s + 1, &e);
+        two_sum(-b[2], e, s + 2, &e);
+        two_sum(-b[3], e, s + 3, &e);
+        renormalize(s, e);
+    }
 }  // namespace QD

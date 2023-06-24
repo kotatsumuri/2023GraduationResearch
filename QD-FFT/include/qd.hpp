@@ -8,4 +8,8 @@ namespace QD {
 
     void add(const qd a, const qd b, qd s);
     void add(const qd a, double b, qd s);
+
+    void sub(const qd a, const qd b, qd s);
+    void sub(const qd a, double b, qd s);
+    void sub(double a, const qd b, qd s);
 }  // namespace QD
