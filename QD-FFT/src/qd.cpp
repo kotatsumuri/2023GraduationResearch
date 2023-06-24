@@ -1,5 +1,7 @@
 #include "qd.hpp"
 
+#include <cmath>
+
 #include "util_calc.hpp"
 using namespace util::calc;
 
@@ -245,5 +247,36 @@ namespace QD {
         sub(t1, t0, t2);
         t2[0] = t2[0] / b;
         renormalize(d, t2[0]);
+    }
+
+    void sqrt(const qd a, qd b) {
+        if (a[0] != 0.0 || a[1] != 0.0 || a[2] != 0.0 || a[3] == 0.0) {
+            qd h;
+            qd t0, t1;
+            mul_pwr2(a, 0.5, h);
+            init(b, 1 / std::sqrt(a[0]));
+
+            mul(b, b, t0);
+            mul(h, t0, t1);
+            sub(0.5, t1, t0);
+            mul(b, t0, t1);
+            add(b, t1, t0);
+
+            mul(t0, t0, b);
+            mul(h, b, t1);
+            sub(0.5, t1, b);
+            mul(t0, b, t1);
+            add(t0, t1, b);
+
+            mul(b, b, t0);
+            mul(h, t0, t1);
+            sub(0.5, t1, t0);
+            mul(b, t0, t1);
+            add(b, t1, t0);
+
+            mul(a, t0, b);
+        } else {
+            zero(b);
+        }
     }
 }  // namespace QD

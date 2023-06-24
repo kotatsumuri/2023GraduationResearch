@@ -26,4 +26,6 @@ namespace QD {
     void div(const qd a, double b, qd d);
     void div(double a, const qd b, qd d);
     void div(double a, double b, qd d);
+
+    void sqrt(const qd a, qd b);
 }  // namespace QD
