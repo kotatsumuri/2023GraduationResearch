@@ -10,6 +10,7 @@ target_include_directories(util_calc
 add_library(qd
     STATIC
         qd.cpp
+        qd_util.cpp
     )
 
 target_include_directories(qd
