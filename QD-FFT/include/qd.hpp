@@ -3,6 +3,10 @@
 namespace QD {
     using qd = double[4];
 
+    inline void zero(qd a);
+    inline void init(qd a, double x0);
+    inline void init(qd a, double x0, double x1, double x2, double x3);
+
     void renormalize(qd a);
     void renormalize(qd a, double b);
 
