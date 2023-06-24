@@ -18,3 +18,5 @@ IndentCaseLabels: true
 IndentWidth: 4
 NamespaceIndentation: All
 Standard: Cpp11
+BinPackArguments: false
+BinPackParameters: true
