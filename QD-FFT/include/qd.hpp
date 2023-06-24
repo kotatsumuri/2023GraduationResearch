@@ -12,4 +12,9 @@ namespace QD {
     void sub(const qd a, const qd b, qd s);
     void sub(const qd a, double b, qd s);
     void sub(double a, const qd b, qd s);
+
+    void mul(const qd a, const qd b, qd p);
+    void mul(const qd a, double b, qd p);
+    void mul(double a, double b, qd p);
+    void mul_pwr2(const qd a, double b, qd p);
 }  // namespace QD

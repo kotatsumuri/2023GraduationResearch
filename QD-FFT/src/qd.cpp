@@ -106,4 +106,51 @@ namespace QD {
         two_sum(-b[3], e, s + 3, &e);
         renormalize(s, e);
     }
+
+    void mul(const qd a, const qd b, qd p) {
+        double t[17];
+        two_prod(a[0], b[0], p, p + 1);                // 0, 1
+        two_prod(a[0], b[1], t, t + 1);                // 1, 2
+        two_prod(a[1], b[0], t + 2, t + 3);            // 1, 2
+        three_sum(p[1], t[0], t[2], p + 1, t, t + 2);  // 1, 2, 3
+        two_prod(a[0], b[2], p + 2, t + 4);            // 2, 3
+        two_prod(a[1], b[1], t + 5, t + 6);            // 2, 3
+        two_prod(a[2], b[0], t + 7, t + 8);            // 2, 3
+        six_three_sum(t[1], t[3], t[0], p[2], t[5], t[7], p + 2, t,
+                      t + 1);                          // 2, 3, 4
+        two_prod(a[0], b[3], p + 3, t + 3);            // 3, 4
+        two_prod(a[1], b[2], t + 5, t + 7);            // 3, 4
+        two_prod(a[2], b[1], t + 9, t + 10);           // 3, 4
+        two_prod(a[3], b[0], t + 11, t + 12);          // 3, 4
+        nine_two_sum(t[2], t[4], t[6], t[8], t[0], p[3], t[5], t[9], t[11],
+                     p + 3, t);                        // 3, 4
+        t[0] = a[1] * b[3] + a[2] * b[2] + a[3] * b[1] + t[1] + t[3] + t[7] +
+               t[10] + t[12] + t[0];
+        renormalize(p, t[0]);
+    }
+
+    void mul(const qd a, double b, qd p) {
+        double t[4];
+        two_prod(a[0], b, p, t);
+        two_prod(a[1], b, p + 1, t + 1);
+        two_sum(p[1], t[0], p + 1, t);
+        two_prod(a[2], b, p + 2, t + 2);
+        three_sum(p[2], t[1], t[0], p + 2, t, t + 1);
+        p[3] = a[3] * b;
+        three_sum(p[3], t[2], t[0], p + 3, t);
+        t[0] += t[1];
+        renormalize(p, t[0]);
+    }
+
+    void mul(double a, double b, qd p) {
+        two_prod(a, b, p, p + 1);
+        p[2] = p[3] = 0;
+    }
+
+    void mul_pwr2(const qd a, double b, qd p) {
+        p[0] = a[0] * b;
+        p[1] = a[1] * b;
+        p[2] = a[2] * b;
+        p[3] = a[3] * b;
+    }
 }  // namespace QD
