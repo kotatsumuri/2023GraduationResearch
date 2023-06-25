@@ -74,7 +74,7 @@ void nine_two_sum(double a, double b, double c, double d, double e, double f,
     dd_add_dd_dd(*s, *e0, t[0], t[1], s, e0);
     two_sum(e, f, t, t + 1);
     two_sum(g, h, t + 2, t + 3);
-    dd_add_dd_dd(t[0], t[1], t[2], t[3], &t[0], &t[1]);
+    dd_add_dd_dd(t[0], t[1], t[2], t[3], t, t + 1);
     dd_add_dd_dd(*s, *e0, t[0], t[1], s, e0);
     three_sum(i, *s, *e0, s, e0);
 }

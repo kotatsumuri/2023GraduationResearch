@@ -251,7 +251,7 @@ void sqr(const qd a, qd p) {
 }
 
 void sqrt(const qd a, qd b) {
-    if (a[0] != 0.0 || a[1] != 0.0 || a[2] != 0.0 || a[3] == 0.0) {
+    if (a[0] != 0.0 || a[1] != 0.0 || a[2] != 0.0 || a[3] != 0.0) {
         qd h;
         qd t0, t1;
         mul_pwr2(a, 0.5, h);
@@ -1331,6 +1331,7 @@ void cos(unsigned long long int k, unsigned long long int n, qd a) {
             return;
         }
         copy(cos_table_2048[k], a);
+        return;
     }
 
     unsigned long long int harf_n = n >> 1;
