@@ -281,6 +281,37 @@ void sqrt(const qd a, qd b) {
     }
 }
 
+void sqrt(double a, qd b) {
+    if (a != 0) {
+        qd h;
+        qd t0, t1;
+        init(h, a * 0.5);
+        init(b, 1 / std::sqrt(a));
+
+        sqr(b, t0);
+        mul(h, t0, t1);
+        sub(0.5, t1, t0);
+        mul(b, t0, t1);
+        add(b, t1, t0);
+
+        sqr(t0, b);
+        mul(h, b, t1);
+        sub(0.5, t1, b);
+        mul(t0, b, t1);
+        add(t0, t1, b);
+
+        sqr(b, t0);
+        mul(h, t0, t1);
+        sub(0.5, t1, t0);
+        mul(b, t0, t1);
+        add(b, t1, t0);
+
+        mul(t0, a, b);
+    } else {
+        zero(b);
+    }
+}
+
 const qd cos_table_2048[] = {{1.0000000000000000e+00, 0.0000000000000000e+00,
                               0.0000000000000000e+00, 0.0000000000000000e+00},
                              {9.9999529380957619e-01, -1.9668064285322189e-17,
