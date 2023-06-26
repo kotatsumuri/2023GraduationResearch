@@ -20,6 +20,7 @@ add_library(qd
     STATIC
         qd.cpp
         qd_util.cpp
+        qd_io.cpp
     )
 
 target_include_directories(qd
