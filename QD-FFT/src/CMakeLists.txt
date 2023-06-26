@@ -16,3 +16,12 @@ add_library(qd
 target_include_directories(qd
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
+
+add_library(fft
+    STATIC
+        fft.cpp
+    )
+
+target_include_directories(fft
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    )
