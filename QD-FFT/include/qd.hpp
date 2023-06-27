@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string>
 namespace QD {
 using qd = double[4];
 
@@ -35,7 +35,11 @@ void div(double a, double b, qd d);
 
 void sqr(const qd a, qd p);
 void sqrt(const qd a, qd b);
+void sqrt(double a, qd b);
 
 void cos(unsigned long long int k, unsigned long long int n, qd a);
 void sin(unsigned long long int k, unsigned long long int n, qd a);
+
+// io
+std::string to_bin_string(const qd a);
 }  // namespace QD
