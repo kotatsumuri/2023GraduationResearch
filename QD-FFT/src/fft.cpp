@@ -99,9 +99,9 @@ void decimation_in_frequency(int initN, int n, QD::qd x[], QD::qd ix[],
         QD::sub(ix[i], ix[j], y[j]);
         QD::sub(x[j], x[i], iy[j]);
 
-        decimal_in_frequency(initN, harf_n, y, iy, x, ix, cos_table);
-        decimal_in_frequency(initN, harf_n, y + harf_n, iy + harf_n, x + harf_n,
-                             ix + harf_n, cos_table);
+        decimation_in_frequency(initN, harf_n, y, iy, x, ix, cos_table);
+        decimation_in_frequency(initN, harf_n, y + harf_n, iy + harf_n,
+                                x + harf_n, ix + harf_n, cos_table);
     }
     for (i = 0; i < harf_n; i++) {
         QD::copy(y[i], x[2 * i]);
