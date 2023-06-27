@@ -38,11 +38,15 @@ std::string to_bin_string(double a) {
     else
         ret += "-";
 
-    std::ostringstream ss;
-    ss << std::setw(4) << std::setfill('0') << std::abs(util::calc::ufp(a));
-    ret += ss.str() + "*";
-
-    if (util::calc::ufp(a) == -1024)
+    if (util::calc::ufp(a) == -1023) {
+        ret += "1022";
+        ret += "*";
+    } else {
+        std::ostringstream ss;
+        ss << std::setw(4) << std::setfill('0') << std::abs(util::calc::ufp(a));
+        ret += ss.str() + "*";
+    }
+    if (util::calc::ufp(a) == -1023)
         ret += "0.";
     else
         ret += "1.";
