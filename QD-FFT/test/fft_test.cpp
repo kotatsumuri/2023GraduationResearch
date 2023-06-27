@@ -51,7 +51,7 @@ int main() {
         std::cout << QD::to_bin_string(ix[i]) << std::endl;
     }
 
-    FFT::decimal_in_frequency(N, N, x, ix, y, iy, cos_table);
+    FFT::decimation_in_frequency(N, N, x, ix, y, iy, cos_table);
 
     for (int i = 0; i < N; i++) {
         std::cout << QD::to_bin_string(x[i]) << std::endl;
