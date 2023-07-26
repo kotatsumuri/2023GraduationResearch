@@ -8,7 +8,6 @@ void zero(qd a);
 void init(qd a, double x0);
 void init(qd a, double x0, double x1, double x2, double x3);
 void copy(const qd a, qd b);
-void swap(qd a, qd b);
 
 // calc
 void renormalize(qd a);
