@@ -103,11 +103,12 @@ void decimation_in_frequency(int initN, int n, QD::qd x[], QD::qd ix[],
         decimation_in_frequency(initN, harf_n, y + harf_n, iy + harf_n,
                                 x + harf_n, ix + harf_n, cos_table);
     }
+
     for (i = 0; i < harf_n; i++) {
-        QD::copy(y[i], x[2 * i]);
-        QD::copy(iy[i], ix[2 * i]);
-        QD::copy(y[i + harf_n], x[2 * i + 1]);
-        QD::copy(iy[i + harf_n], ix[2 * i + 1]);
+        QD::swap(y[i], x[2 * i]);
+        QD::swap(iy[i], ix[2 * i]);
+        QD::swap(y[i + harf_n], x[2 * i + 1]);
+        QD::swap(iy[i + harf_n], ix[2 * i + 1]);
     }
 }
 

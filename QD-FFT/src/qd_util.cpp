@@ -42,4 +42,10 @@ void minus(qd a) {
     a[2] = -a[2];
     a[3] = -a[3];
 }
+
+void swap(qd a, qd b) {
+    double* tmp = a;
+    a           = b;
+    b           = tmp;
 }
+}  // namespace QD
