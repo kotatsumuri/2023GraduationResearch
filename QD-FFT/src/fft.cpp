@@ -1,5 +1,6 @@
 #include "fft.hpp"
 
+#include <cmath>
 #include <iostream>
 #include <queue>
 
@@ -13,12 +14,12 @@ void make_cos_table(long long int N, QD::qd cos_table[]) {
     QD::init(cos_table[N / 4], 0.0);
     if (N <= 4)
         return;
-    std::queue<int> que;
-    QD::qd h;
-    long long int i, j, k;
     QD::sqrt(0.5, cos_table[N / 8]);
     if (N <= 8)
         return;
+    std::queue<int> que;
+    QD::qd h;
+    long long int i, j, k;
     que.push(N / 8);
     while (!que.empty()) {
         i = que.front();
@@ -32,6 +33,35 @@ void make_cos_table(long long int N, QD::qd cos_table[]) {
         QD::sub(2.0, h, cos_table[k]);
         QD::sqrt(cos_table[k], h);
         QD::mul_pwr2(h, 0.5, cos_table[k]);
+        if (!(j & 1)) {
+            que.push(j);
+            que.push(k);
+        }
+    }
+}
+
+void make_cos_table(long long int N, double cos_table[]) {
+    cos_table[0] = 1.0;
+    if (N <= 2)
+        return;
+    cos_table[N / 4] = 0.0;
+    if (N <= 4)
+        return;
+    cos_table[N / 8] = std::sqrt(0.5);
+    if (N <= 8)
+        return;
+    std::queue<int> que;
+    long long int i, j, k;
+    double h;
+    que.push(N / 8);
+    while (!que.empty()) {
+        i = que.front();
+        j = i / 2;
+        k = N / 4 - j;
+        que.pop();
+        h            = cos_table[i] * 2;
+        cos_table[j] = 0.5 * std::sqrt(2.0 + h);
+        cos_table[k] = 0.5 * std::sqrt(2.0 - h);
         if (!(j & 1)) {
             que.push(j);
             que.push(k);
@@ -117,6 +147,166 @@ void decimation_in_frequency(long long int initN, long long int n, QD::qd x[],
         std::swap(iy[0], ix[0]);
         std::swap(y[1], x[1]);
         std::swap(iy[1], ix[1]);
+    }
+}
+
+void decimation_in_frequency(long long int initN, long long int n, double x[],
+                             double ix[], double y[], double iy[],
+                             double cos_table[]) {
+    const long long int harf_n = n / 2;
+    // y[0] = x[0] + x[n / 2]
+    y[0]  = x[0] + x[harf_n];
+    iy[0] = ix[0] + ix[harf_n];
+    // y[n / 2] = x[0] - x[n / 2]
+    y[harf_n]  = x[0] - x[harf_n];
+    iy[harf_n] = ix[0] - ix[harf_n];
+
+    long long int i = 1;
+    if (n > 2) {
+        long long int j                 = 1 + harf_n;
+        long long int i_                = harf_n - 1;
+        long long int j_                = n - 1;
+        const long long int harf_harf_n = harf_n / 2;
+        const long long int initN_n     = initN / n;
+        const long long int initN_4     = initN / 4;
+
+        for (; i < harf_harf_n;) {
+            y[i]  = x[i] + x[j];
+            iy[i] = ix[i] + ix[j];
+
+            y[j]  = x[i] - x[j];
+            iy[j] = ix[i] - ix[j];
+
+            double a = cos_table[i * initN_n];
+            double b = cos_table[initN_4 - i * initN_n];
+
+            x[i]  = y[j] * a;
+            ix[i] = y[j] * b;
+            x[j]  = iy[j] * a;
+            ix[j] = iy[j] * b;
+            y[j]  = x[i] + ix[j];
+            iy[j] = x[j] - ix[i];
+
+            y[i_]  = x[i_] + x[j_];
+            iy[i_] = ix[i_] + ix[j_];
+
+            y[j_]  = x[j_] - x[i_];
+            iy[j_] = ix[j_] - ix[i_];
+
+            x[i_]  = y[j_] * a;
+            ix[i_] = y[j_] * b;
+            x[j_]  = iy[j_] * a;
+            ix[j_] = iy[j_] * b;
+            y[j_]  = x[i_] - ix[j_];
+            iy[j_] = x[j_] + ix[i_];
+
+            i++;
+            j++;
+            i_--;
+            j_--;
+        }
+
+        // y[n / 4] = x[n / 4] + x[3 * n / 4]
+        y[i]  = x[i] + x[j];
+        iy[i] = ix[i] + ix[j];
+        y[j]  = ix[i] - ix[j];
+        iy[j] = x[j] - x[i];
+
+        decimation_in_frequency(initN, harf_n, y, iy, x, ix, cos_table);
+        decimation_in_frequency(initN, harf_n, y + harf_n, iy + harf_n,
+                                x + harf_n, ix + harf_n, cos_table);
+
+        for (i = 0; i < harf_n; i++) {
+            x[2 * i]      = y[i];
+            ix[2 * i]     = iy[i];
+            x[2 * i + 1]  = y[i + harf_n];
+            ix[2 * i + 1] = iy[i + harf_n];
+        }
+    } else {
+        x[0]  = y[0];
+        ix[0] = iy[0];
+        x[1]  = y[1];
+        ix[1] = iy[1];
+    }
+}
+
+void inv_decimation_in_frequency(long long int initN, long long int n,
+                                 double x[], double ix[], double y[],
+                                 double iy[], double cos_table[]) {
+    const long long int harf_n = n / 2;
+    // y[0] = x[0] + x[n / 2]
+    y[0]  = x[0] + x[harf_n];
+    iy[0] = ix[0] + ix[harf_n];
+    // y[n / 2] = x[0] - x[n / 2]
+    y[harf_n]  = x[0] - x[harf_n];
+    iy[harf_n] = ix[0] - ix[harf_n];
+
+    long long int i = 1;
+    if (n > 2) {
+        long long int j                 = 1 + harf_n;
+        long long int i_                = harf_n - 1;
+        long long int j_                = n - 1;
+        const long long int harf_harf_n = harf_n / 2;
+        const long long int initN_n     = initN / n;
+        const long long int initN_4     = initN / 4;
+
+        for (; i < harf_harf_n;) {
+            y[i]  = x[i] + x[j];
+            iy[i] = ix[i] + ix[j];
+
+            y[j]  = x[i] - x[j];
+            iy[j] = ix[i] - ix[j];
+
+            double a = cos_table[i * initN_n];
+            double b = cos_table[initN_4 - i * initN_n];
+
+            x[i]  = y[j] * a;
+            ix[i] = y[j] * b;
+            x[j]  = iy[j] * a;
+            ix[j] = iy[j] * b;
+            y[j]  = x[i] - ix[j];
+            iy[j] = x[j] + ix[i];
+
+            y[i_]  = x[i_] + x[j_];
+            iy[i_] = ix[i_] + ix[j_];
+
+            y[j_]  = x[j_] - x[i_];
+            iy[j_] = ix[j_] - ix[i_];
+
+            x[i_]  = y[j_] * a;
+            ix[i_] = y[j_] * b;
+            x[j_]  = iy[j_] * a;
+            ix[j_] = iy[j_] * b;
+            y[j_]  = x[i_] + ix[j_];
+            iy[j_] = x[j_] - ix[i_];
+
+            i++;
+            j++;
+            i_--;
+            j_--;
+        }
+
+        // y[n / 4] = x[n / 4] + x[3 * n / 4]
+        y[i]  = x[i] + x[j];
+        iy[i] = ix[i] + ix[j];
+        y[j]  = ix[j] - ix[i];
+        iy[j] = x[i] - x[j];
+
+        inv_decimation_in_frequency(initN, harf_n, y, iy, x, ix, cos_table);
+        inv_decimation_in_frequency(initN, harf_n, y + harf_n, iy + harf_n,
+                                    x + harf_n, ix + harf_n, cos_table);
+
+        for (i = 0; i < harf_n; i++) {
+            std::swap(y[i], x[2 * i]);
+            std::swap(iy[i], ix[2 * i]);
+            std::swap(y[i + harf_n], x[2 * i + 1]);
+            std::swap(iy[i + harf_n], ix[2 * i + 1]);
+        }
+    } else {
+        x[0]  = y[0] / initN;
+        ix[0] = iy[0] / initN;
+        x[1]  = y[1] / initN;
+        ix[1] = iy[1] / initN;
     }
 }
 
