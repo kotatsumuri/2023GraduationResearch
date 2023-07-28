@@ -1,3 +1,5 @@
+#include <bitset>
+
 #include "qd.hpp"
 
 namespace QD {
@@ -41,6 +43,10 @@ void minus(qd a) {
     a[1] = -a[1];
     a[2] = -a[2];
     a[3] = -a[3];
+}
+
+bool equal(const qd a, const qd b) {
+    return !(a[0] != b[0] || a[1] != b[1] || a[2] != b[2] || a[3] != b[3]);
 }
 
 }  // namespace QD
