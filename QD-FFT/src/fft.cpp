@@ -7,7 +7,7 @@
 #include "qd.hpp"
 
 namespace FFT {
-void make_cos_table(long long int N, QD::qd cos_table[]) {
+void make_cos_table(uint16_t N, QD::qd cos_table[]) {
     QD::init(cos_table[0], 1.0);
     if (N <= 2)
         return;
@@ -19,7 +19,7 @@ void make_cos_table(long long int N, QD::qd cos_table[]) {
         return;
     std::queue<int> que;
     QD::qd h;
-    long long int i, j, k;
+    uint16_t i, j, k;
     que.push(N / 8);
     while (!que.empty()) {
         i = que.front();
@@ -40,7 +40,7 @@ void make_cos_table(long long int N, QD::qd cos_table[]) {
     }
 }
 
-void make_cos_table(long long int N, double cos_table[]) {
+void make_cos_table(uint16_t N, double cos_table[]) {
     cos_table[0] = 1.0;
     if (N <= 2)
         return;
@@ -51,7 +51,7 @@ void make_cos_table(long long int N, double cos_table[]) {
     if (N <= 8)
         return;
     std::queue<int> que;
-    long long int i, j, k;
+    uint16_t i, j, k;
     double h;
     que.push(N / 8);
     while (!que.empty()) {
@@ -69,10 +69,10 @@ void make_cos_table(long long int N, double cos_table[]) {
     }
 }
 
-void decimation_in_frequency(long long int initN, long long int n, QD::qd x[],
+void decimation_in_frequency(uint16_t initN, uint16_t n, QD::qd x[],
                              QD::qd ix[], QD::qd y[], QD::qd iy[],
                              QD::qd cos_table[]) {
-    const long long int harf_n = n / 2;
+    const uint16_t harf_n = n / 2;
     // y[0] = x[0] + x[n / 2]
     QD::add(x[0], x[harf_n], y[0]);
     QD::add(ix[0], ix[harf_n], iy[0]);
@@ -80,14 +80,14 @@ void decimation_in_frequency(long long int initN, long long int n, QD::qd x[],
     QD::sub(x[0], x[harf_n], y[harf_n]);
     QD::sub(ix[0], ix[harf_n], iy[harf_n]);
 
-    long long int i = 1;
+    uint16_t i = 1;
     if (n > 2) {
-        long long int j                 = 1 + harf_n;
-        long long int i_                = harf_n - 1;
-        long long int j_                = n - 1;
-        const long long int harf_harf_n = harf_n / 2;
-        const long long int initN_n     = initN / n;
-        const long long int initN_4     = initN / 4;
+        uint16_t j                 = 1 + harf_n;
+        uint16_t i_                = harf_n - 1;
+        uint16_t j_                = n - 1;
+        const uint16_t harf_harf_n = harf_n / 2;
+        const uint16_t initN_n     = initN / n;
+        const uint16_t initN_4     = initN / 4;
 
         for (; i < harf_harf_n;) {
             QD::add(x[i], x[j], y[i]);
@@ -150,10 +150,10 @@ void decimation_in_frequency(long long int initN, long long int n, QD::qd x[],
     }
 }
 
-void decimation_in_frequency(long long int initN, long long int n, double x[],
+void decimation_in_frequency(uint16_t initN, uint16_t n, double x[],
                              double ix[], double y[], double iy[],
                              double cos_table[]) {
-    const long long int harf_n = n / 2;
+    const uint16_t harf_n = n / 2;
     // y[0] = x[0] + x[n / 2]
     y[0]  = x[0] + x[harf_n];
     iy[0] = ix[0] + ix[harf_n];
@@ -161,14 +161,14 @@ void decimation_in_frequency(long long int initN, long long int n, double x[],
     y[harf_n]  = x[0] - x[harf_n];
     iy[harf_n] = ix[0] - ix[harf_n];
 
-    long long int i = 1;
+    uint16_t i = 1;
     if (n > 2) {
-        long long int j                 = 1 + harf_n;
-        long long int i_                = harf_n - 1;
-        long long int j_                = n - 1;
-        const long long int harf_harf_n = harf_n / 2;
-        const long long int initN_n     = initN / n;
-        const long long int initN_4     = initN / 4;
+        uint16_t j                 = 1 + harf_n;
+        uint16_t i_                = harf_n - 1;
+        uint16_t j_                = n - 1;
+        const uint16_t harf_harf_n = harf_n / 2;
+        const uint16_t initN_n     = initN / n;
+        const uint16_t initN_4     = initN / 4;
 
         for (; i < harf_harf_n;) {
             y[i]  = x[i] + x[j];
@@ -230,10 +230,10 @@ void decimation_in_frequency(long long int initN, long long int n, double x[],
     }
 }
 
-void inv_decimation_in_frequency(long long int initN, long long int n,
-                                 double x[], double ix[], double y[],
-                                 double iy[], double cos_table[]) {
-    const long long int harf_n = n / 2;
+void inv_decimation_in_frequency(uint16_t initN, uint16_t n, double x[],
+                                 double ix[], double y[], double iy[],
+                                 double cos_table[]) {
+    const uint16_t harf_n = n / 2;
     // y[0] = x[0] + x[n / 2]
     y[0]  = x[0] + x[harf_n];
     iy[0] = ix[0] + ix[harf_n];
@@ -241,14 +241,14 @@ void inv_decimation_in_frequency(long long int initN, long long int n,
     y[harf_n]  = x[0] - x[harf_n];
     iy[harf_n] = ix[0] - ix[harf_n];
 
-    long long int i = 1;
+    uint16_t i = 1;
     if (n > 2) {
-        long long int j                 = 1 + harf_n;
-        long long int i_                = harf_n - 1;
-        long long int j_                = n - 1;
-        const long long int harf_harf_n = harf_n / 2;
-        const long long int initN_n     = initN / n;
-        const long long int initN_4     = initN / 4;
+        uint16_t j                 = 1 + harf_n;
+        uint16_t i_                = harf_n - 1;
+        uint16_t j_                = n - 1;
+        const uint16_t harf_harf_n = harf_n / 2;
+        const uint16_t initN_n     = initN / n;
+        const uint16_t initN_4     = initN / 4;
 
         for (; i < harf_harf_n;) {
             y[i]  = x[i] + x[j];
@@ -310,10 +310,10 @@ void inv_decimation_in_frequency(long long int initN, long long int n,
     }
 }
 
-void inv_decimation_in_frequency(long long int initN, long long int n,
-                                 QD::qd x[], QD::qd ix[], QD::qd y[],
-                                 QD::qd iy[], QD::qd cos_table[]) {
-    const long long int harf_n = n / 2;
+void inv_decimation_in_frequency(uint16_t initN, uint16_t n, QD::qd x[],
+                                 QD::qd ix[], QD::qd y[], QD::qd iy[],
+                                 QD::qd cos_table[]) {
+    const uint16_t harf_n = n / 2;
     // y[0] = x[0] + x[n / 2]
     QD::add(x[0], x[harf_n], y[0]);
     QD::add(ix[0], ix[harf_n], iy[0]);
@@ -321,14 +321,14 @@ void inv_decimation_in_frequency(long long int initN, long long int n,
     QD::sub(x[0], x[harf_n], y[harf_n]);
     QD::sub(ix[0], ix[harf_n], iy[harf_n]);
 
-    long long int i = 1;
+    uint16_t i = 1;
     if (n > 2) {
-        long long int j                 = 1 + harf_n;
-        long long int i_                = harf_n - 1;
-        long long int j_                = n - 1;
-        const long long int harf_harf_n = harf_n / 2;
-        const long long int initN_n     = initN / n;
-        const long long int initN_4     = initN / 4;
+        uint16_t j                 = 1 + harf_n;
+        uint16_t i_                = harf_n - 1;
+        uint16_t j_                = n - 1;
+        const uint16_t harf_harf_n = harf_n / 2;
+        const uint16_t initN_n     = initN / n;
+        const uint16_t initN_4     = initN / 4;
 
         for (; i < harf_harf_n;) {
             QD::add(x[i], x[j], y[i]);
@@ -392,7 +392,7 @@ void inv_decimation_in_frequency(long long int initN, long long int n,
     }
 }
 
-void DFT(int N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
+void DFT(uint16_t N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
          QD::qd cos_table[]) {
     if (N == 2) {
         QD::add(x[0], x[1], y[0]);
@@ -422,13 +422,13 @@ void DFT(int N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
         QD::copy(_sin_table[N / 2 + i], _sin_table[N - i]);
     }
 
-    for (int i = 0; i < N; i++) {
+    for (uint16_t i = 0; i < N; i++) {
         QD::zero(y[i]);
     }
 
     QD::qd t;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    for (uint16_t i = 0; i < N; i++) {
+        for (uint16_t j = 0; j < N; j++) {
             QD::mul(x[j], _cos_table[i * j % N], t);
             QD::add(y[i], t, y[i]);
             QD::mul(ix[j], _sin_table[i * j % N], t);
@@ -440,12 +440,12 @@ void DFT(int N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
         }
     }
 
-    for (int i = 0; i < N; i++) {
+    for (uint16_t i = 0; i < N; i++) {
         std::swap(x[i], y[i]);
     }
 }
 
-void inv_DFT(int N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
+void inv_DFT(uint16_t N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
              QD::qd cos_table[]) {
     if (N == 2) {
         QD::add(x[0], x[1], y[0]);
@@ -464,7 +464,7 @@ void inv_DFT(int N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
     QD::init(_sin_table[N / 4], 1);
     QD::zero(_sin_table[N / 2]);
     QD::init(_sin_table[3 * N / 4], -1);
-    for (int i = 1; i < N / 4; i++) {
+    for (uint16_t i = 1; i < N / 4; i++) {
         QD::copy(cos_table[i], _cos_table[i]);
         QD::minus(cos_table[N / 4 - i], _cos_table[i + N / 4]);
         QD::copy(_cos_table[i], _cos_table[N - i]);
@@ -475,13 +475,13 @@ void inv_DFT(int N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
         QD::copy(_sin_table[N / 2 + i], _sin_table[N - i]);
     }
 
-    for (int i = 0; i < N; i++) {
+    for (uint16_t i = 0; i < N; i++) {
         QD::zero(y[i]);
     }
 
     QD::qd t;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    for (uint16_t i = 0; i < N; i++) {
+        for (uint16_t j = 0; j < N; j++) {
             QD::mul(x[j], _cos_table[i * j % N], t);
             QD::add(y[i], t, y[i]);
             QD::mul(ix[j], _sin_table[i * j % N], t);
@@ -494,7 +494,7 @@ void inv_DFT(int N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
         QD::mul_pwr2(y[i], 1.0 / N, y[i]);
     }
 
-    for (int i = 0; i < N; i++) {
+    for (uint16_t i = 0; i < N; i++) {
         std::swap(x[i], y[i]);
     }
 }

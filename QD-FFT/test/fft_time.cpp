@@ -6,12 +6,12 @@
 #include "qd.hpp"
 
 int main() {
-    const long long int M = 15;
-    const long long int K = 10;
-    long long int N       = 2;
-    for (long long int i = 0; i < M; i++, N *= 2) {
+    const uint16_t M = 15;
+    const uint16_t K = 10;
+    uint16_t N       = 2;
+    for (uint16_t i = 0; i < M; i++, N *= 2) {
         double_t microsec = 0;
-        for (long long int k = 0; k < K; k++) {
+        for (uint16_t k = 0; k < K; k++) {
             QD::qd cos_table[N / 4 + 1];
             QD::qd x[N];
             QD::qd ix[N];
@@ -20,7 +20,7 @@ int main() {
 
             FFT::make_cos_table(N, cos_table);
 
-            for (long long int j = 0; j < N; j++) {
+            for (uint16_t j = 0; j < N; j++) {
                 QD::rand(x[j]);
                 QD::rand(ix[j]);
             }
@@ -41,9 +41,9 @@ int main() {
     std::mt19937 engine{rnd()};
     std::uniform_real_distribution<> dist{0, 1};
     N = 2;
-    for (long long int i = 0; i < M; i++, N *= 2) {
+    for (uint16_t i = 0; i < M; i++, N *= 2) {
         double_t microsec = 0;
-        for (long long int k = 0; k < K; k++) {
+        for (uint16_t k = 0; k < K; k++) {
             double cos_table[N / 4 + 1];
             double x[N];
             double ix[N];
@@ -52,7 +52,7 @@ int main() {
 
             FFT::make_cos_table(N, cos_table);
 
-            for (long long int j = 0; j < N; j++) {
+            for (uint16_t j = 0; j < N; j++) {
                 x[j]  = dist(engine);
                 ix[j] = dist(engine);
             }
