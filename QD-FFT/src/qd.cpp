@@ -120,15 +120,21 @@ void mul(const qd a, const qd b, qd p) {
     two_prod(a[2], b[0], t + 7, t + 8);            // 2, 3
     six_three_sum(t[1], t[3], t[0], p[2], t[5], t[7], p + 2, t,
                   t + 1);                          // 2, 3, 4
-    two_prod(a[0], b[3], p + 3, t + 3);            // 3, 4
-    two_prod(a[1], b[2], t + 5, t + 7);            // 3, 4
-    two_prod(a[2], b[1], t + 9, t + 10);           // 3, 4
-    two_prod(a[3], b[0], t + 11, t + 12);          // 3, 4
+#ifdef SLOPPY_MUL
+    p[3] = a[0] * b[3] + a[1] * b[2] + a[2] * b[1] + a[3] * b[0] + t[0] + t[2] +
+           t[4] + t[6] + t[8];
+    renormalize(p, t[1]);
+#else
+    two_prod(a[0], b[3], p + 3, t + 3);    // 3, 4
+    two_prod(a[1], b[2], t + 5, t + 7);    // 3, 4
+    two_prod(a[2], b[1], t + 9, t + 10);   // 3, 4
+    two_prod(a[3], b[0], t + 11, t + 12);  // 3, 4
     nine_two_sum(t[2], t[4], t[6], t[8], t[0], p[3], t[5], t[9], t[11], p + 3,
-                 t);                               // 3, 4
+                 t);                       // 3, 4
     t[0] = a[1] * b[3] + a[2] * b[2] + a[3] * b[1] + t[1] + t[3] + t[7] +
            t[10] + t[12] + t[0];
     renormalize(p, t[0]);
+#endif
 }
 
 void mul(const qd a, double b, qd p) {
