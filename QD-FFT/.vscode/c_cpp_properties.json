@@ -7,7 +7,7 @@
                 "/usr/local/include"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/opt/rh/devtoolset-8/root/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "configurationProvider": "ms-vscode.cmake-tools"
