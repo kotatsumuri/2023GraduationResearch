@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "util_calc.hpp"
+#define SLOPPY_MUL 1
 using namespace util::calc;
 
 namespace QD {

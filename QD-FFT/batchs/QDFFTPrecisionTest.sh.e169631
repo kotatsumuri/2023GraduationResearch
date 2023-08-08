@@ -1,0 +1,16 @@
+ERROR: Unable to locate a modulefile for 'gcc'
+
+============================================================
+Request ID:             169631.nqsv
+Request Name:           QDFFTPrecisionTest.sh
+Queue:                  pmem-b@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Wed Aug  9 01:01:20 2023
+Started Request Time:   Wed Aug  9 01:01:42 2023
+Ended Request Time:     Wed Aug  9 01:02:03 2023
+Resources Information:
+  Elapse:               23S
+  Remaining Elapse:     577S
+============================================================

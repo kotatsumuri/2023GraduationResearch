@@ -1,0 +1,16 @@
+ERROR: Unable to locate a modulefile for 'gcc'
+
+============================================================
+Request ID:             169623.nqsv
+Request Name:           DoubleFFTTime.sh
+Queue:                  pmem-b@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Wed Aug  9 00:39:19 2023
+Started Request Time:   Wed Aug  9 00:39:43 2023
+Ended Request Time:     Wed Aug  9 00:39:43 2023
+Resources Information:
+  Elapse:               2S
+  Remaining Elapse:     598S
+============================================================

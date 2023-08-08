@@ -1,0 +1,16 @@
+ERROR: Unable to locate a modulefile for 'gcc'
+
+============================================================
+Request ID:             169625.nqsv
+Request Name:           QDFFTTime.sh
+Queue:                  pmem-b@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Wed Aug  9 00:41:50 2023
+Started Request Time:   Wed Aug  9 00:42:12 2023
+Ended Request Time:     Wed Aug  9 00:42:21 2023
+Resources Information:
+  Elapse:               11S
+  Remaining Elapse:     589S
+============================================================
