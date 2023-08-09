@@ -1400,7 +1400,7 @@ void sin(unsigned long long int k, unsigned long long int n, qd a) {
         zero(a);
         return;
     }
-    cos(abs(k - (n >> 2)), n, a);
+    cos(std::abs((long long int)(k - (n >> 2))), n, a);
 }
 
 }  // namespace QD

@@ -2,6 +2,7 @@
 #include <random>
 
 #include "qd.hpp"
+#include "util_calc.hpp"
 
 namespace QD {
 void zero(qd a) {
@@ -63,6 +64,23 @@ void rand(qd a) {
         d = dist(engine) * m;
         QD::add(a, d, a);
     }
+}
+
+int ulp(qd a) {
+    int ret = util::calc::ulp(a[3]);
+    int i = 2;
+    while(ret <= -1024) {
+        ret = util::calc::ulp(a[i]);
+        i--;
+    }
+    return ret;
+}
+
+void abs(const qd a, qd b) {
+    if(a[0] >= 0)
+        QD::copy(a, b);
+    else
+        QD::minus(a, b);    
 }
 
 }  // namespace QD
