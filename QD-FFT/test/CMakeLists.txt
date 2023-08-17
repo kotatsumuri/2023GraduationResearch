@@ -17,3 +17,7 @@ target_compile_options(DoubleFFTTime PUBLIC -O2 -Wall)
 add_executable(QDFFTErrorBits qd_fft_error_bits.cpp)
 target_link_libraries(QDFFTErrorBits fft qd util_calc util_io)
 target_compile_options(QDFFTErrorBits PUBLIC -O2 -Wall)
+
+add_executable(QDFFTProfile qd_fft_profile.cpp)
+target_link_libraries(QDFFTProfile fft qd util_calc util_io)
+target_compile_options(QDFFTProfile PUBLIC -O2 -Wall)
