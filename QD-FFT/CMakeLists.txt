@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.25)
 
 project(QD-FFT CXX)
 
-add_definitions(-std=c++17 -Wall)
+set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -pg")
 
 include_directories(/usr/local/include)
 link_directories(/usr/local/lib)
