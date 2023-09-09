@@ -5,17 +5,24 @@ int main() {
     const uint16_t N = (1 << 15);
 
     QD::qd cos_table[N / 4 + 1];
-    QD::qd x[N];
-    QD::qd ix[N];
-    QD::qd y[N];
-    QD::qd iy[N];
-
+    QD::qd x_[N];
+    QD::qd ix_[N];
+    QD::qd y_[N];
+    QD::qd iy_[N];
+    double* x[N];
+    double* ix[N];
+    double* y[N];
+    double* iy[N];
     FFT::make_cos_table(N, cos_table);
 
     for (uint16_t j = 0; j < N; j++) {
-        QD::rand(x[j]);
-        QD::rand(ix[j]);
+        QD::rand(x_[j]);
+        QD::rand(ix_[j]);
+        x[j]  = x_[j];
+        ix[j] = ix_[j];
+        y[j]  = y_[j];
+        iy[j] = iy_[j];
     }
 
-    FFT::decimation_in_frequency(N, N, x, ix, y, iy, cos_table);
+    FFT::fft(N, N, x, ix, y, iy, cos_table);
 }

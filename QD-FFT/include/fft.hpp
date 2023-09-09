@@ -20,4 +20,7 @@ void DFT(uint16_t N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
          QD::qd cos_table[]);
 void inv_DFT(uint16_t N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
              QD::qd cos_table[]);
+void fft(uint16_t initN, uint16_t n, double* x[], double* ix[], double* y[],
+         double* iy[], QD::qd* cos_table);
+void swap(double** a, double** b);
 }  // namespace FFT

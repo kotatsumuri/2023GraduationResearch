@@ -499,4 +499,90 @@ void inv_DFT(uint16_t N, QD::qd x[], QD::qd ix[], QD::qd y[], QD::qd iy[],
     }
 }
 
+void fft(uint16_t initN, uint16_t n, double* x[], double* ix[], double* y[],
+         double* iy[], QD::qd* cos_table) {
+    const uint16_t harf_n = n / 2;
+    // y[0] = x[0] + x[n / 2]
+    QD::add(x[0], x[harf_n], y[0]);
+    QD::add(ix[0], ix[harf_n], iy[0]);
+    // y[n / 2] = x[0] - x[n / 2]
+    QD::sub(x[0], x[harf_n], y[harf_n]);
+    QD::sub(ix[0], ix[harf_n], iy[harf_n]);
+
+    uint16_t i = 1;
+    if (n > 2) {
+        uint16_t j                 = 1 + harf_n;
+        uint16_t i_                = harf_n - 1;
+        uint16_t j_                = n - 1;
+        const uint16_t harf_harf_n = harf_n / 2;
+        const uint16_t initN_n     = initN / n;
+        const uint16_t initN_4     = initN / 4;
+
+        for (; i < harf_harf_n;) {
+            QD::add(x[i], x[j], y[i]);
+            QD::add(ix[i], ix[j], iy[i]);
+
+            QD::sub(x[i], x[j], y[j]);
+            QD::sub(ix[i], ix[j], iy[j]);
+
+            double* a = (double*)cos_table[i * initN_n];
+            double* b = (double*)cos_table[initN_4 - i * initN_n];
+
+            QD::mul(y[j], a, x[i]);
+            QD::mul(y[j], b, ix[i]);
+            QD::mul(iy[j], a, x[j]);
+            QD::mul(iy[j], b, ix[j]);
+            QD::add(x[i], ix[j], y[j]);
+            QD::sub(x[j], ix[i], iy[j]);
+
+            QD::add(x[i_], x[j_], y[i_]);
+            QD::add(ix[i_], ix[j_], iy[i_]);
+
+            QD::sub(x[j_], x[i_], y[j_]);
+            QD::sub(ix[j_], ix[i_], iy[j_]);
+
+            QD::mul(y[j_], a, x[i_]);
+            QD::mul(y[j_], b, ix[i_]);
+            QD::mul(iy[j_], a, x[j_]);
+            QD::mul(iy[j_], b, ix[j_]);
+            QD::sub(x[i_], ix[j_], y[j_]);
+            QD::add(x[j_], ix[i_], iy[j_]);
+
+            i++;
+            j++;
+            i_--;
+            j_--;
+        }
+
+        // y[n / 4] = x[n / 4] + x[3 * n / 4]
+        QD::add(x[i], x[j], y[i]);
+        QD::add(ix[i], ix[j], iy[i]);
+        // y[3 * n / 4] = x[n / 4] - x[3 * n / 4]
+        QD::sub(ix[i], ix[j], y[j]);
+        QD::sub(x[j], x[i], iy[j]);
+
+        fft(initN, harf_n, y, iy, x, ix, cos_table);
+        fft(initN, harf_n, y + harf_n, iy + harf_n, x + harf_n, ix + harf_n,
+            cos_table);
+
+        for (i = 0; i < harf_n; i++) {
+            swap(y + i, x + 2 * i);
+            swap(iy + i, ix + 2 * i);
+            swap(y + i + harf_n, x + 2 * i + 1);
+            swap(iy + i + harf_n, ix + 2 * i + 1);
+        }
+    } else {
+        swap(y, x);
+        swap(iy, ix);
+        swap(y + 1, x + 1);
+        swap(iy + 1, ix + 1);
+    }
+}
+
+void swap(double** a, double** b) {
+    double* tmp = *a;
+    *a          = *b;
+    *b          = tmp;
+}
+
 }  // namespace FFT
