@@ -1,0 +1,1 @@
+add_executable(StockhamTest stockham_test.cpp)
