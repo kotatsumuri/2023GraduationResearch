@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
-
 project(QD-FFT CXX)
+set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -O2")
 
-set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -pg")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/qd)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/fft)
 
-include_directories(/usr/local/include)
-link_directories(/usr/local/lib)
-
-add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory(bench)

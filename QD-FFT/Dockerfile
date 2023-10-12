@@ -28,3 +28,14 @@ RUN cd $HOME && \
     ./bootstrap.sh && \
     ./b2 toolset=gcc-11 --prefix=/usr/local -j9 && \
     ./b2 install toolset=gcc-11 --prefix=/usr/local -j9
+
+RUN cd $HOME && \
+    wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.19.tar.xz && \
+    apt-get install xz-utils && \
+    tar -xf ./linux-5.15.19.tar.xz && \
+    cd linux-5.15.19/tools//perf && \
+    apt -y install flex bison && \
+    make -C . && \
+    make install && \
+    cd $HOME && \
+    echo "export PATH=$PATH:/root/linux-5.15.19/tools/perf" >> .bashrc

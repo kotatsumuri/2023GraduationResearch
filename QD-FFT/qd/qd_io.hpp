@@ -1,5 +1,4 @@
-#include "util_io.hpp"
-
+#pragma once
 #include <bitset>
 #include <cmath>
 #include <iomanip>
@@ -7,9 +6,9 @@
 #include <sstream>
 #include <string>
 
-#include "util_calc.hpp"
+#include "qd.hpp"
+#include "qd_util.hpp"
 
-namespace util::io {
 std::string to_bin_string(double a) {
     std::string ret = "";
 
@@ -28,25 +27,25 @@ std::string to_bin_string(double a) {
         return ret;
     }
 
-    if (util::calc::sign(a) > 0)
+    if (a >= 0)
         ret += "+2^";
     else
         ret += "-2^";
 
-    if (util::calc::ufp(a) >= 0)
+    if (log_ufp(a) >= 0)
         ret += "+";
     else
         ret += "-";
 
-    if (util::calc::ufp(a) == -1023) {
-        ret += "1022";
+    if (log_ufp(a) == -1023) {
+        ret += "1023";
         ret += "*";
     } else {
         std::ostringstream ss;
-        ss << std::setw(4) << std::setfill('0') << std::abs(util::calc::ufp(a));
+        ss << std::setw(4) << std::setfill('0') << std::abs(log_ufp(a));
         ret += ss.str() + "*";
     }
-    if (util::calc::ufp(a) == -1023)
+    if (log_ufp(a) == -1023)
         ret += "0.";
     else
         ret += "1.";
@@ -58,4 +57,8 @@ std::string to_bin_string(double a) {
 
     return ret;
 }
-}  // namespace util::io
+
+std::string to_bin_string(const qd a) {
+    return to_bin_string(a[0]) + "|" + to_bin_string(a[1]) + "|" +
+           to_bin_string(a[2]) + "|" + to_bin_string(a[3]);
+}
