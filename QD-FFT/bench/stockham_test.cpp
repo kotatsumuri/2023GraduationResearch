@@ -4,8 +4,8 @@
 #include "qd.hpp"
 
 int main() {
-    int n = 8;
-    int p = 3;
+    int n = 16;
+    int p = 4;
     qd cos_table[n + 1];
     make_quater_cos_table(n, cos_table);
     qd x[n];

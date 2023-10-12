@@ -365,4 +365,9 @@ void inv_stockham(uint16_t n, uint16_t p, qd x[], qd ix[], qd y[], qd iy[],
     tmp = ix0;
     ix0 = ix1;
     ix1 = tmp;
+
+    for(int i = 0;i < n;i++) {
+        mul_pwr2(x0[i], 1.0 / n, x0[i]);
+        mul_pwr2(ix0[i], 1.0 / n, ix0[i]);
+    }
 }

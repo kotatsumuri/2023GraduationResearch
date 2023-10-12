@@ -1,1 +1,2 @@
 add_executable(StockhamTest stockham_test.cpp)
+add_executable(StockhamErrorTest stockham_error_test.cpp)
