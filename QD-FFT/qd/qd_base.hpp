@@ -153,6 +153,13 @@ inline void mul_pwr2(const qd a, double b, qd p) {
     p[3] = a[3] * b;
 }
 
+inline void div_pwr2(const qd a, double b, qd p) {
+    p[0] = a[0] / b;
+    p[1] = a[1] / b;
+    p[2] = a[2] / b;
+    p[3] = a[3] / b;
+}
+
 inline void sqr(const qd a, qd p) {
     double t[17];
     two_prod(a[0], a[0], p, p + 1);                // 0, 1

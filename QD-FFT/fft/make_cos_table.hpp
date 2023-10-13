@@ -36,3 +36,29 @@ void make_quater_cos_table(uint16_t n, qd cos_table[]) {
         }
     }
 }
+
+void make_cos_table(uint16_t n, qd cos_table[]) {
+    qd qcos_table[n / 4 + 1];
+    make_quater_cos_table(n, qcos_table);
+    for(int i = 0;i < n / 4;i++) {
+        copy(qcos_table[i], cos_table[i]);
+        copy(qcos_table[n / 4 - i], cos_table[i + n / 4]);
+        minus(cos_table[i + n / 4]);
+        copy(qcos_table[i], cos_table[i + n / 2]);
+        minus(cos_table[i + n / 2]);
+        copy(qcos_table[n / 4 - i], cos_table[i + 3 * n / 4]);
+    }
+}
+
+void make_sin_table(uint16_t n, qd sin_table[]) {
+    qd qcos_table[n / 4 + 1];
+    make_quater_cos_table(n, qcos_table);
+    for(int i = 0;i < n / 4;i++) {
+        copy(qcos_table[n / 4 - i], sin_table[i]);
+        copy(qcos_table[i], sin_table[i + n / 4]);
+        copy(qcos_table[n / 4 - i], sin_table[i + n / 2]);
+        minus(sin_table[i + n / 2]);
+        copy(qcos_table[i], sin_table[i + 3 * n / 4]);
+        minus(sin_table[i + 3 * n / 4]);
+    }
+}
