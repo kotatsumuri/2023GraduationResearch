@@ -1,6 +1,4 @@
 #pragma once
-#include <omp.h>
-
 #include <cstdint>
 
 #include "../qd/qd.hpp"
