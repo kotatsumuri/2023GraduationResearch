@@ -1,4 +1,6 @@
 #pragma once
+#include <omp.h>
+
 #include <cstdint>
 
 #include "../qd/qd.hpp"
@@ -13,6 +15,7 @@ void stockham(uint16_t n, uint16_t p, qd x[], qd ix[], qd y[], qd iy[], qd cos_t
     uint16_t m = 1;
 
     for (uint16_t t = 0; t < p; t++) {
+#pragma omp parallel for
         for (uint16_t j = 0; j < l; j++) {
             double *a = (double *)cos_table[j * n / (2 * l)];
             double *b = (double *)sin_table[j * n / (2 * l)];

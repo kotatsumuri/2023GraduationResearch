@@ -1,18 +1,16 @@
 #include "fft.hpp"
 #include "qd.hpp"
 
-int main() {
-    int p = 3;
+int main(int argc, char *argv[]) {
+    if (argc < 2)
+        return 1;
+    int p = atoi(argv[1]);
+    std::cout << "2^" << p << std::endl;
     int n = 1 << p;
     qd cos_table[n];
     qd sin_table[n];
     make_cos_table(n, cos_table);
     make_sin_table(n, sin_table);
-
-    qd sqrt_harf, harf;
-    sqrt(0.5, sqrt_harf);
-    sqr(sqrt_harf, harf);
-    // std::cout << to_bin_string(harf) << std::endl;
 
     for (int i = 0; i < n / 4; i++) {
         qd cos2, sin2, one, error;
