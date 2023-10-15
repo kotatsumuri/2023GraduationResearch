@@ -15,3 +15,4 @@ ContinuationIndentWidth: 4
 IndentCaseLabels: true
 IndentWidth: 4
 Standard: Cpp11
+ColumnLimit: 0

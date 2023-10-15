@@ -1,2 +1,4 @@
 add_executable(StockhamTest stockham_test.cpp)
 add_executable(StockhamErrorTest stockham_error_test.cpp)
+add_executable(CosTableTest cos_table_test.cpp)
+add_executable(DIFTest dif_test.cpp)

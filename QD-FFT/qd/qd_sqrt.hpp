@@ -9,7 +9,7 @@ inline void sqrt(const qd a, qd b) {
         qd h;
         qd t0, t1;
         mul_pwr2(a, 0.5, h);
-        init(b, 1 / std::sqrt(a[0]));
+        init(b, 1.0 / std::sqrt(a[0]));
 
         sqr(b, t0);
         mul(h, t0, t1);

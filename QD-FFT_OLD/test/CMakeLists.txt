@@ -21,3 +21,7 @@ target_compile_options(QDFFTErrorBits PUBLIC -O2 -Wall)
 add_executable(QDFFTProfile qd_fft_profile.cpp)
 target_link_libraries(QDFFTProfile fft qd util_calc util_io profiler tcmalloc)
 target_compile_options(QDFFTProfile PUBLIC -O2 -Wall)
+
+add_executable(QDFFTTest qd_fft_test.cpp)
+target_link_libraries(QDFFTTest fft qd util_calc util_io)
+target_compile_options(QDFFTTest PUBLIC -O2 -Wall)
