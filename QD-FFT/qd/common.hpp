@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 inline void split(double a, double* a_hi, double* a_lo) {
     *a_hi = (double)((1 << 27) + 1) * a;
@@ -32,11 +33,16 @@ inline void three_sum(double a, double b, double c, double* s, double* e0) {
 }
 
 inline void two_prod(double a, double b, double* p, double* e) {
+#if TWO_PROD_FMA
+    *p = a * b;
+    *e = std::fma(a, b, -(*p));
+#else
     double a_hi, a_lo, b_hi, b_lo;
     *p = a * b;
     split(a, &a_hi, &a_lo);
     split(b, &b_hi, &b_lo);
     *e = ((a_hi * b_hi - *p) + a_hi * b_lo + a_lo * b_hi) + a_lo * b_lo;
+#endif
 }
 
 inline void six_three_sum(double a, double b, double c, double d, double e,

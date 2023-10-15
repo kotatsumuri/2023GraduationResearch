@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 project(QD-FFT CXX)
-set(CMAKE_CXX_FLAGS "-std=c++17 -Wall")
+set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -DTWO_PROD_FMA")
 
 find_package(OpenMP REQUIRED)
 if(OpenMP_FOUND)
