@@ -4,20 +4,20 @@
 #include "../qd/qd.hpp"
 #include "fft_util.hpp"
 
-void stockham(uint16_t n, uint16_t p, qd x[], qd ix[], qd y[], qd iy[], qd cos_table[], qd sin_table[]) {
+void stockham(uint32_t n, uint32_t p, qd x[], qd ix[], qd y[], qd iy[], qd cos_table[], qd sin_table[]) {
     qd *x0     = x;
     qd *ix0    = ix;
     qd *x1     = y;
     qd *ix1    = iy;
-    uint16_t l = n >> 1;
-    uint16_t m = 1;
+    uint32_t l = n >> 1;
+    uint32_t m = 1;
 
-    for (uint16_t t = 0; t < p; t++) {
+    for (uint32_t t = 0; t < p; t++) {
 #pragma omp parallel for
-        for (uint16_t j = 0; j < l; j++) {
+        for (uint32_t j = 0; j < l; j++) {
             double *a = (double *)cos_table[j * n / (2 * l)];
             double *b = (double *)sin_table[j * n / (2 * l)];
-            for (uint16_t k = 0; k < m; k++) {
+            for (uint32_t k = 0; k < m; k++) {
                 double *c0  = (double *)x0[k + j * m];
                 double *ic0 = (double *)ix0[k + j * m];
 
@@ -63,19 +63,19 @@ void stockham(uint16_t n, uint16_t p, qd x[], qd ix[], qd y[], qd iy[], qd cos_t
     }
 }
 
-void inv_stockham(uint16_t n, uint16_t p, qd x[], qd ix[], qd y[], qd iy[], qd cos_table[], qd sin_table[]) {
+void inv_stockham(uint32_t n, uint32_t p, qd x[], qd ix[], qd y[], qd iy[], qd cos_table[], qd sin_table[]) {
     qd *x0     = x;
     qd *ix0    = ix;
     qd *x1     = y;
     qd *ix1    = iy;
-    uint16_t l = n >> 1;
-    uint16_t m = 1;
+    uint32_t l = n >> 1;
+    uint32_t m = 1;
 
-    for (uint16_t t = 0; t < p; t++) {
-        for (uint16_t j = 0; j < l; j++) {
+    for (uint32_t t = 0; t < p; t++) {
+        for (uint32_t j = 0; j < l; j++) {
             double *a = (double *)cos_table[j * n / (2 * l)];
             double *b = (double *)sin_table[j * n / (2 * l)];
-            for (uint16_t k = 0; k < m; k++) {
+            for (uint32_t k = 0; k < m; k++) {
                 double *c0  = (double *)x0[k + j * m];
                 double *ic0 = (double *)ix0[k + j * m];
 
@@ -120,18 +120,18 @@ void inv_stockham(uint16_t n, uint16_t p, qd x[], qd ix[], qd y[], qd iy[], qd c
         m <<= 1;
     }
 
-    for (uint16_t i = 0; i < n; i++) {
+    for (uint32_t i = 0; i < n; i++) {
         div_pwr2(x0[i], n, x0[i]);
         div_pwr2(ix0[i], n, ix0[i]);
     }
 }
 
-void dif(uint16_t N, u_int16_t n, double *x[], double *ix[], double *y[], double *iy[], qd cos_table[], qd sin_table[]) {
+void dif(uint32_t N, uint32_t n, double *x[], double *ix[], double *y[], double *iy[], qd cos_table[], qd sin_table[]) {
     if (n <= 1)
         return;
 
-    for (uint16_t i = 0; i < (n >> 1); i++) {
-        uint16_t j = i + (n >> 1);
+    for (uint32_t i = 0; i < (n >> 1); i++) {
+        uint32_t j = i + (n >> 1);
         add(x[i], x[j], y[i]);
         add(ix[i], ix[j], iy[i]);
 
@@ -152,7 +152,7 @@ void dif(uint16_t N, u_int16_t n, double *x[], double *ix[], double *y[], double
     dif(N, n >> 1, y, iy, x, ix, cos_table, sin_table);
     dif(N, n >> 1, y + (n >> 1), iy + (n >> 1), x + (n >> 1), ix + (n >> 1), cos_table, sin_table);
 
-    for (uint16_t i = 0; i < (n >> 1); i++) {
+    for (uint32_t i = 0; i < (n >> 1); i++) {
         swap(y + i, x + 2 * i);
         swap(iy + i, ix + 2 * i);
         swap(y + i + (n >> 1), x + 2 * i + 1);
@@ -160,15 +160,15 @@ void dif(uint16_t N, u_int16_t n, double *x[], double *ix[], double *y[], double
     }
 }
 
-void inv_dif(uint16_t N, u_int16_t n, double *x[], double *ix[], double *y[], double *iy[], qd cos_table[], qd sin_table[]) {
+void inv_dif(uint32_t N, uint32_t n, double *x[], double *ix[], double *y[], double *iy[], qd cos_table[], qd sin_table[]) {
     if (n <= 1) {
         div_pwr2(x[0], N, y[0]);
         div_pwr2(ix[0], N, iy[0]);
         return;
     }
 
-    for (uint16_t i = 0; i < (n >> 1); i++) {
-        uint16_t j = i + (n >> 1);
+    for (uint32_t i = 0; i < (n >> 1); i++) {
+        uint32_t j = i + (n >> 1);
         add(x[i], x[j], y[i]);
         add(ix[i], ix[j], iy[i]);
 
@@ -190,7 +190,7 @@ void inv_dif(uint16_t N, u_int16_t n, double *x[], double *ix[], double *y[], do
     inv_dif(N, n >> 1, y + (n >> 1), iy + (n >> 1), x + (n >> 1), ix + (n >> 1),
             cos_table, sin_table);
 
-    for (uint16_t i = 0; i < (n >> 1); i++) {
+    for (uint32_t i = 0; i < (n >> 1); i++) {
         swap(y + i, x + 2 * i);
         swap(iy + i, ix + 2 * i);
         swap(y + i + (n >> 1), x + 2 * i + 1);
