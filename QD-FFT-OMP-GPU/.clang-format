@@ -1,0 +1,18 @@
+---
+BasedOnStyle: "Google"
+AccessModifierOffset: -4
+AlignAfterOpenBracket: true
+AlignConsecutiveAssignments: true
+AllowShortIfStatementsOnASingleLine: false
+AlignOperands: true
+AlignTrailingComments: true
+AlwaysBreakTemplateDeclarations: true
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Attach
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+IndentCaseLabels: true
+IndentWidth: 4
+Standard: Cpp11
+ColumnLimit: 0
