@@ -13,6 +13,7 @@ void stockham(uint32_t n, uint32_t p, qd x[], qd ix[], qd y[], qd iy[], qd cos_t
     uint32_t m = 1;
 
     for (uint32_t t = 0; t < p; t++) {
+        #pragma omp target teams distribute parallel for
         for (uint32_t j = 0; j < l; j++) {
             double *a = (double *)cos_table[j * n / (2 * l)];
             double *b = (double *)sin_table[j * n / (2 * l)];

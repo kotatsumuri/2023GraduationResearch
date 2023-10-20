@@ -22,11 +22,11 @@ public:
 
     void stop() {
         std::chrono::system_clock::time_point stop_time = std::chrono::system_clock::now();
-        elapsed_msec += std::chrono::duration_cast<std::chrono::milliseconds>(stop_time - start_time).count();
+        elapsed_msec += std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time).count();
         count++;
     }
 
-    double calc_ave_msec() {
+    double calc_ave_microsec() {
         return elapsed_msec / (double)count;
     }
 };
