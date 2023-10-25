@@ -12,6 +12,11 @@ int main(int argc, char *argv[]) {
     make_cos_table(n, cos_table);
     make_sin_table(n, sin_table);
 
+    for (int i = 0;i < n;i++) {
+        std::cout << i << " " << to_bin_string(cos_table[i]) << std::endl;
+        std::cout << i << " " << to_bin_string(sin_table[i]) << std::endl;
+    }
+
     for (int i = 0; i < n / 4; i++) {
         qd cos2, sin2, one, error;
         sqr(cos_table[i], cos2);

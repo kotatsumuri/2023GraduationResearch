@@ -17,6 +17,9 @@ int main() {
     for (int i = 0; i < n; i++) {
         copy(cos_table[i], x[i]);
         copy(cos_table[i], ix[i]);
+        // init(x[i], 1);
+        // zero(ix[i]);
+        // init(ix[i], 1);
     }
     // for (int i = 0; i < n; i++) {
     //     std::cout << to_bin_string(x[i]) << std::endl;
@@ -28,24 +31,21 @@ int main() {
     //     init(x[i], 1);
     //     init(ix[i], 1);
     // }
-    stockham(n, p, x, ix, y, iy, cos_table, sin_table);
-    for (int i = 0; i < n; i++) {
-        std::cout << to_bin_string(x[i]) << std::endl;
-    }
-    for (int i = 0; i < n; i++) {
-        std::cout << to_bin_string(ix[i]) << std::endl;
-    }
+    sixstep_fft(n, p, x, ix, y, iy, cos_table, sin_table);
     // for (int i = 0; i < n; i++) {
-    //     std::cout << to_bin_string(y[i]) << std::endl;
+    //     std::cout << to_bin_string(x[i]) << std::endl;
     // }
     // for (int i = 0; i < n; i++) {
-    //     std::cout << to_bin_string(iy[i]) << std::endl;
+    //     std::cout << to_bin_string(ix[i]) << std::endl;
     // }
+    for (int i = 0; i < n; i++) {
+        std::cout << to_bin_string(y[i]) << std::endl;
+    }
+    for (int i = 0; i < n; i++) {
+        std::cout << to_bin_string(iy[i]) << std::endl;
+    }
 
-    if (!(p % 2))
-        inv_stockham(n, p, x, ix, y, iy, cos_table, sin_table);
-    else
-        inv_stockham(n, p, y, iy, x, ix, cos_table, sin_table);
+    inv_stockham(n, p, y, iy, x, ix, cos_table, sin_table);
 
     // for (int i = 0; i < n; i++) {
     //     std::cout << to_bin_string(cos_table[i]) << std::endl;
