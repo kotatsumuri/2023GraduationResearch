@@ -12,3 +12,18 @@ void swap(qd **a, qd **b) {
     *a      = *b;
     *b      = tmp;
 }
+
+void swap(qd a, qd b) {
+    double tmp = a[0];
+    a[0] = b[0];
+    b[0] = tmp;
+    tmp = a[1];
+    a[1] = b[1];
+    b[1] = tmp;
+    tmp = a[2];
+    a[2] = b[2];
+    b[2] = tmp;
+    tmp = a[3];
+    a[3] = b[3];
+    b[3] = tmp;
+}

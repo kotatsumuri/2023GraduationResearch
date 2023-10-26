@@ -197,3 +197,116 @@ void inv_dif(uint32_t N, uint32_t n, double *x[], double *ix[], double *y[], dou
         swap(iy + i + (n >> 1), ix + 2 * i + 1);
     }
 }
+
+void stockham_for_sixstep(uint32_t n, uint32_t p, uint32_t u, qd x[], qd ix[], qd y[], qd iy[], qd cos_table[], qd sin_table[]) {
+    qd *x0     = x;
+    qd *ix0    = ix;
+    qd *x1     = y;
+    qd *ix1    = iy;
+    uint32_t l = n >> 1;
+    uint32_t m = 1;
+
+    for (uint32_t t = 0; t < p; t++) {
+        for (uint32_t j = 0; j < l; j++) {
+            double *a = (double *)cos_table[j * n / (2 * l) * u];
+            double *b = (double *)sin_table[j * n / (2 * l) * u];
+            for (uint32_t k = 0; k < m; k++) {
+                double *c0  = (double *)x0[k + j * m];
+                double *ic0 = (double *)ix0[k + j * m];
+
+                double *c1  = (double *)x0[k + j * m + l * m];
+                double *ic1 = (double *)ix0[k + j * m + l * m];
+
+                double *xt1  = (double *)x1[k + 2 * j * m + m];
+                double *ixt1 = (double *)ix1[k + 2 * j * m + m];
+
+                // c0 + c1
+                // x1[k + 2jm] <- c0 + c1
+                add(c0, c1, x1[k + 2 * j * m]);
+                // ix1[k + 2jm] <- ic0 + ic1
+                add(ic0, ic1, ix1[k + 2 * j * m]);
+
+                // (a - bj) * (c0 + ic0j - (c1 + ic1j))
+                // = a * (c0 - c1) + b * (ic0 - ic1) + j * (a * (ic0 - ic1) - b
+                // * (c0 - c1)) xt1 <- c0 - c1
+                sub(c0, c1, xt1);
+                // ixt1 <- ic0 - ic1
+                sub(ic0, ic1, ixt1);
+                // c0 <- a * xt1 = a * (c0 - c1)
+                mul(a, xt1, c0);
+                // ic0 <- a * ixt1 = a * (ic0 - ic1)
+                mul(a, ixt1, ic0);
+                // c1 <- b * ixt1 = b * (ic0 - ic1)
+                mul(b, ixt1, c1);
+                // ic1 <- b * xt1 = b * (c0 - c1)
+                mul(b, xt1, ic1);
+                // x1[k + 2jm + m] = xt1 <- c0 + c1 = a * (c0 - c1) + b * (ic0 -
+                // ic1)
+                add(c0, c1, xt1);
+                // ix1[k + 2jm + m] = ixt1 <- ic0 - ic1 = a * (ic0 - ic1) - b *
+                // (c0 - c1)
+                sub(ic0, ic1, ixt1);
+            }
+        }
+        swap(&x0, &x1);
+        swap(&ix0, &ix1);
+
+        l >>= 1;
+        m <<= 1;
+    }
+
+    if ((p % 2)) {
+        for (uint32_t i = 0;i < n;i++) {
+            copy(y[i], x[i]);
+            copy(iy[i], ix[i]);
+        }
+    }
+}
+
+void sixstep_fft(uint32_t N, uint32_t logN, qd x[], qd ix[], qd y[], qd iy[], qd cos_table[], qd sin_table[]) {
+    uint32_t n1 = 1 << (logN / 2);
+    uint32_t n2 = 1 << ((logN + 1) / 2);
+
+    #pragma omp parallel for
+    for (uint32_t i = 0;i < n1;i++) {
+        for (uint32_t j = 0;j < n2;j++) {
+            copy(x[i * n2 + j], y[j * n1 + i]);
+            copy(ix[i * n2 + j], iy[j * n1 + i]);
+        }
+    }
+
+    uint32_t u = N / n1;
+    #pragma omp target teams distribute parallel for
+    for (uint32_t j = 0;j < n2;j++) {
+        stockham_for_sixstep(n1, (logN) / 2, u, y + j * n1, iy + j * n1, x + j * n1, ix + j * n1, cos_table, sin_table);
+    }
+
+    #pragma omp target teams distribute parallel for
+    for (uint32_t j = 0;j < n2;j++) {
+        for (uint32_t i = 0;i < n1;i++) {
+            qd tmp0, tmp1;
+            double *a = (double *)cos_table[i * j];
+            double *b = (double *)sin_table[i * j];
+            mul(y[j * n1 + i], a, x[i * n2 + j]);
+            mul(y[j * n1 + i], b, tmp0);
+            mul(iy[j * n1 + i], a, ix[i * n2 + j]);
+            mul(iy[j * n1 + i], b, tmp1);
+            add(x[i * n2 + j], tmp1, x[i * n2 + j]);
+            sub(ix[i * n2 + j], tmp0, ix[i * n2 + j]);
+        }
+    }
+
+    u = N / n2;
+    #pragma omp target teams distribute parallel for
+    for (uint32_t i = 0;i < n1;i++) {
+        stockham_for_sixstep(n2, (logN + 1) / 2, u, x + i * n2, ix + i * n2, y + i * n2, iy + i * n2, cos_table, sin_table);
+    }
+
+    #pragma omp parallel for
+    for (uint32_t i = 0;i < n1;i++) {
+        for (uint32_t j = 0;j < n2;j++) {
+            copy(x[i * n2 + j], y[j * n1 + i]);
+            copy(ix[i * n2 + j], iy[j * n1 + i]);
+        }
+    }
+}
