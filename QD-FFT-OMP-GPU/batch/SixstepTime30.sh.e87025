@@ -1,0 +1,17 @@
+
+%NQSV(INFO): Batch job received signal SIGKILL. (Exceeded per-req elapse time limit)
+
+============================================================
+Request ID:             87025.nqsv
+Request Name:           SixstepTime30.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Thu Nov  2 08:35:53 2023
+Started Request Time:   Thu Nov  2 08:36:40 2023
+Ended Request Time:     Thu Nov  2 08:46:49 2023
+Resources Information:
+  Elapse:               609S
+  Remaining Elapse:     0S
+============================================================

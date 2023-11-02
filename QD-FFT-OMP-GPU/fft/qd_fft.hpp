@@ -207,10 +207,11 @@ void stockham_for_sixstep(uint32_t n, uint32_t p, uint32_t u, qd x[], qd ix[], q
     uint32_t m = 1;
 
     for (uint32_t t = 0; t < p; t++) {
+        #pragma omp parallel for collapse(2)
         for (uint32_t j = 0; j < l; j++) {
-            double *a = (double *)cos_table[j * n / (2 * l) * u];
-            double *b = (double *)sin_table[j * n / (2 * l) * u];
             for (uint32_t k = 0; k < m; k++) {
+                double *a = (double *)cos_table[j * n / (2 * l) * u];
+                double *b = (double *)sin_table[j * n / (2 * l) * u];
                 double *c0  = (double *)x0[k + j * m];
                 double *ic0 = (double *)ix0[k + j * m];
 
@@ -266,47 +267,52 @@ void stockham_for_sixstep(uint32_t n, uint32_t p, uint32_t u, qd x[], qd ix[], q
 void sixstep_fft(uint32_t N, uint32_t logN, qd x[], qd ix[], qd y[], qd iy[], qd cos_table[], qd sin_table[]) {
     uint32_t n1 = 1 << (logN / 2);
     uint32_t n2 = 1 << ((logN + 1) / 2);
+    uint32_t u1 = N / n1;
+    uint32_t u2 = N / n2;
+    uint32_t harf_logN1 = logN / 2;
+    uint32_t harf_logN2 = (logN + 1) / 2;
 
-    #pragma omp parallel for
-    for (uint32_t i = 0;i < n1;i++) {
-        for (uint32_t j = 0;j < n2;j++) {
-            copy(x[i * n2 + j], y[j * n1 + i]);
-            copy(ix[i * n2 + j], iy[j * n1 + i]);
-        }
-    }
-
-    uint32_t u = N / n1;
-    #pragma omp target teams distribute parallel for
-    for (uint32_t j = 0;j < n2;j++) {
-        stockham_for_sixstep(n1, (logN) / 2, u, y + j * n1, iy + j * n1, x + j * n1, ix + j * n1, cos_table, sin_table);
-    }
-
-    #pragma omp target teams distribute parallel for
-    for (uint32_t j = 0;j < n2;j++) {
+    #pragma omp target data map(to:n1, n2, u1, u2, N, harf_logN1, harf_logN2, x[:N], ix[:N], cos_table[:N], sin_table[:N]) map(from:y[:N], iy[:N])
+    {
+        #pragma omp target teams distribute parallel for collapse(2)
         for (uint32_t i = 0;i < n1;i++) {
-            qd tmp0, tmp1;
-            double *a = (double *)cos_table[i * j];
-            double *b = (double *)sin_table[i * j];
-            mul(y[j * n1 + i], a, x[i * n2 + j]);
-            mul(y[j * n1 + i], b, tmp0);
-            mul(iy[j * n1 + i], a, ix[i * n2 + j]);
-            mul(iy[j * n1 + i], b, tmp1);
-            add(x[i * n2 + j], tmp1, x[i * n2 + j]);
-            sub(ix[i * n2 + j], tmp0, ix[i * n2 + j]);
+            for (uint32_t j = 0;j < n2;j++) {
+                copy(x[i * n2 + j], y[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
+            }
         }
-    }
 
-    u = N / n2;
-    #pragma omp target teams distribute parallel for
-    for (uint32_t i = 0;i < n1;i++) {
-        stockham_for_sixstep(n2, (logN + 1) / 2, u, x + i * n2, ix + i * n2, y + i * n2, iy + i * n2, cos_table, sin_table);
-    }
-
-    #pragma omp parallel for
-    for (uint32_t i = 0;i < n1;i++) {
+        #pragma omp target teams distribute
         for (uint32_t j = 0;j < n2;j++) {
-            copy(x[i * n2 + j], y[j * n1 + i]);
-            copy(ix[i * n2 + j], iy[j * n1 + i]);
+            stockham_for_sixstep(n1, harf_logN1, u1, y + j * n1, iy + j * n1, x + j * n1, ix + j * n1, cos_table, sin_table);
+        }
+
+        #pragma omp target teams distribute parallel for collapse(2)
+        for (uint32_t j = 0;j < n2;j++) {
+            for (uint32_t i = 0;i < n1;i++) {
+                qd tmp0, tmp1;
+                double *a = (double *)cos_table[i * j];
+                double *b = (double *)sin_table[i * j];
+                mul(y[j * n1 + i], a, x[i * n2 + j]);
+                mul(y[j * n1 + i], b, tmp0);
+                mul(iy[j * n1 + i], a, ix[i * n2 + j]);
+                mul(iy[j * n1 + i], b, tmp1);
+                add(x[i * n2 + j], tmp1, x[i * n2 + j]);
+                sub(ix[i * n2 + j], tmp0, ix[i * n2 + j]);
+            }
+        }
+
+        #pragma omp target teams distribute
+        for (uint32_t i = 0;i < n1;i++) {
+            stockham_for_sixstep(n2, harf_logN2, u2, x + i * n2, ix + i * n2, y + i * n2, iy + i * n2, cos_table, sin_table);
+        }
+
+        #pragma omp target teams distribute parallel for collapse(2)
+        for (uint32_t i = 0;i < n1;i++) {
+            for (uint32_t j = 0;j < n2;j++) {
+                copy(x[i * n2 + j], y[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
+            }
         }
     }
 }

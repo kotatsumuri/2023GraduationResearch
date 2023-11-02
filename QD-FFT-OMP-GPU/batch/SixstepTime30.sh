@@ -4,4 +4,4 @@
 #PBS -l elapstim_req=00:10:00
 
 cd $PBS_O_WORKDIR
-../build/bench/SixstepTime 16
+../build/bench/SixstepTime 30

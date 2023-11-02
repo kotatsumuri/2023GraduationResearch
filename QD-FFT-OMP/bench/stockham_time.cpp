@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
             rand(x[i]);
             rand(ix[i]);
         }
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             timer.start();
             stockham(n, p, x, ix, y, iy, cos_table, sin_table);
             timer.stop();
