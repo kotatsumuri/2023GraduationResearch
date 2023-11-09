@@ -1,19 +1,25 @@
 #pragma once
 #include "../qd/qd.hpp"
 
-void swap(double **a, double **b) {
+inline void swap(double **a, double **b) {
     double *tmp = *a;
     *a          = *b;
     *b          = tmp;
 }
 
-void swap(qd **a, qd **b) {
+inline void swap(double ***a, double ***b) {
+    double **tmp = *a;
+    *a          = *b;
+    *b          = tmp;
+}
+
+inline void swap(qd **a, qd **b) {
     qd *tmp = *a;
     *a      = *b;
     *b      = tmp;
 }
 
-void swap(qd a, qd b) {
+inline void swap(qd a, qd b) {
     double tmp = a[0];
     a[0] = b[0];
     b[0] = tmp;

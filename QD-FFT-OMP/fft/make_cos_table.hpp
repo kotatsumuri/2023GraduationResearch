@@ -72,3 +72,19 @@ void make_sin_table(uint32_t n, qd sin_table[]) {
         minus(sin_table[i + 3 * n / 4]);
     }
 }
+
+void make_sin_table(uint32_t n, qd sin_table[], qd cos_table[]) {
+    if (n == 2) {
+        init(sin_table[0], 0);
+        init(sin_table[1], 0);
+        return;
+    }
+    for(uint32_t i = 0;i < n / 4;i++) {
+        copy(cos_table[n / 4 - i], sin_table[i]);
+        copy(cos_table[i], sin_table[i + n / 4]);
+        copy(cos_table[n / 4 - i], sin_table[i + n / 2]);
+        minus(sin_table[i + n / 2]);
+        copy(cos_table[i], sin_table[i + 3 * n / 4]);
+        minus(sin_table[i + 3 * n / 4]);
+    }
+}

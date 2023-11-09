@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
             rand(x[i]);
             rand(ix[i]);
         }
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             timer.start();
             sixstep_fft(n, p, x, ix, y, iy, cos_table, sin_table);
             timer.stop();

@@ -3,6 +3,22 @@
         "*.tcc": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "array": "cpp",
+        "unordered_map": "cpp",
+        "memory": "cpp",
+        "optional": "cpp",
+        "fstream": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "stop_token": "cpp",
+        "streambuf": "cpp",
+        "thread": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "variant": "cpp",
+        "vector": "cpp",
+        "condition_variable": "cpp"
     }
 }
