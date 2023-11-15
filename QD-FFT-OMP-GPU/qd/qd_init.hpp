@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 #include "qd.hpp"
 
 inline void zero(qd a) {

@@ -10,19 +10,19 @@ int main(int argc, char *argv[]) {
     int n = 1 << p;
     double cos_table_n[n * 4];
     double sin_table_n[n * 4];
-    uint32_t n1 = 1 << (p / 2);
-    uint32_t n2 = 1 << ((p + 1) / 2);
+    uint64_t n1 = 1 << (p / 2);
+    uint64_t n2 = 1 << ((p + 1) / 2);
     double cos_table_n1[n1 * 4];
     double sin_table_n1[n1 * 4];
     double cos_table_n2[n2 * 4];
     double sin_table_n2[n2 * 4];
     make_cos_table(n, cos_table_n);
     make_sin_table(n, sin_table_n, cos_table_n);
-    for (uint32_t i = 0;i < n1;i++) {
+    for (uint64_t i = 0;i < n1;i++) {
         copy(cos_table_n + i * (n / n1) * 4, cos_table_n1 + i * 4);
         copy(sin_table_n + i * (n / n1) * 4, sin_table_n1 + i * 4);
     }
-    for (uint32_t i = 0;i < n2;i++) {
+    for (uint64_t i = 0;i < n2;i++) {
         copy(cos_table_n + i * (n / n2) * 4, cos_table_n2 + i * 4);
         copy(sin_table_n + i * (n / n2) * 4, sin_table_n2 + i * 4);
     }

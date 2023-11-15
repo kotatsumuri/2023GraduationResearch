@@ -1,0 +1,16 @@
+/var/opt/nec/nqsv/jsv/jobfile/0.92445.10/user_script: line 7: 1164450 Killed                  ../build/bench/SixstepTime 32 48
+
+============================================================
+Request ID:             92445.nqsv
+Request Name:           SixstepTime.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Fri Nov 10 12:46:57 2023
+Started Request Time:   Fri Nov 10 12:47:43 2023
+Ended Request Time:     Fri Nov 10 13:17:50 2023
+Resources Information:
+  Elapse:               1807S
+  Remaining Elapse:     5393S
+============================================================

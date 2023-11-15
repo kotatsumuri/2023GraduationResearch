@@ -7,11 +7,11 @@ int main(int argc, char *argv[]) {
         return 1;
     int p = atoi(argv[1]);
     std::cout << "2^" << p << std::endl;
-    int n = 1 << p;
+    uint64_t n = 1 << p;
     qd cos_table[n];
-    qd sin_table[n];
+    qd sin_table[n];    
     make_cos_table(n, cos_table);
-    make_sin_table(n, sin_table);
+    make_sin_table(n, sin_table, cos_table);
     qd x[n];
     qd ix[n];
     qd y[n];

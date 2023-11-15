@@ -4,7 +4,7 @@
 
 #include "../qd/qd.hpp"
 
-void make_quater_cos_table(uint32_t n, qd cos_table[]) {
+void make_quater_cos_table(uint64_t n, qd cos_table[]) {
     init(cos_table[0], 1.0);
     if (n <= 2)
         return;
@@ -16,7 +16,7 @@ void make_quater_cos_table(uint32_t n, qd cos_table[]) {
         return;
     std::queue<int> que;
     qd h;
-    uint32_t i, j, k;
+    uint64_t i, j, k;
     que.push(n / 8);
     while (!que.empty()) {
         i = que.front();
@@ -37,7 +37,7 @@ void make_quater_cos_table(uint32_t n, qd cos_table[]) {
     }
 }
 
-void make_cos_table(uint32_t n, qd cos_table[]) {
+void make_cos_table(uint64_t n, qd cos_table[]) {
     qd qcos_table[n / 4 + 1];
     if (n == 2) {
         init(cos_table[0], 1);
@@ -45,7 +45,7 @@ void make_cos_table(uint32_t n, qd cos_table[]) {
         return;
     }
     make_quater_cos_table(n, qcos_table);
-    for(uint32_t i = 0;i < n / 4;i++) {
+    for(uint64_t i = 0;i < n / 4;i++) {
         copy(qcos_table[i], cos_table[i]);
         copy(qcos_table[n / 4 - i], cos_table[i + n / 4]);
         minus(cos_table[i + n / 4]);
@@ -55,7 +55,7 @@ void make_cos_table(uint32_t n, qd cos_table[]) {
     }
 }
 
-void make_sin_table(uint32_t n, qd sin_table[]) {
+void make_sin_table(uint64_t n, qd sin_table[]) {
     qd qcos_table[n / 4 + 1];
     if (n == 2) {
         init(sin_table[0], 0);
@@ -63,7 +63,7 @@ void make_sin_table(uint32_t n, qd sin_table[]) {
         return;
     }
     make_quater_cos_table(n, qcos_table);
-    for(uint32_t i = 0;i < n / 4;i++) {
+    for(uint64_t i = 0;i < n / 4;i++) {
         copy(qcos_table[n / 4 - i], sin_table[i]);
         copy(qcos_table[i], sin_table[i + n / 4]);
         copy(qcos_table[n / 4 - i], sin_table[i + n / 2]);
@@ -73,13 +73,13 @@ void make_sin_table(uint32_t n, qd sin_table[]) {
     }
 }
 
-void make_sin_table(uint32_t n, qd sin_table[], qd cos_table[]) {
+void make_sin_table(uint64_t n, qd sin_table[], qd cos_table[]) {
     if (n == 2) {
         init(sin_table[0], 0);
         init(sin_table[1], 0);
         return;
     }
-    for(uint32_t i = 0;i < n / 4;i++) {
+    for(uint64_t i = 0;i < n / 4;i++) {
         copy(cos_table[n / 4 - i], sin_table[i]);
         copy(cos_table[i], sin_table[i + n / 4]);
         copy(cos_table[n / 4 - i], sin_table[i + n / 2]);
