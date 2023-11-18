@@ -44,7 +44,7 @@ void make_cos_table(uint64_t n, qd cos_table[]) {
         return;
     }
     make_quater_cos_table(n, cos_table);
-    for(uint64_t i = 0;i < (n >> 2);i++) {
+    for (uint64_t i = 0; i < (n >> 2); i++) {
         copy(cos_table[(n >> 2) - i], cos_table[i + (n >> 2)]);
         minus(cos_table[i + (n >> 2)]);
         copy(cos_table[i], cos_table[i + (n >> 1)]);
@@ -61,7 +61,7 @@ void make_sin_table(uint64_t n, qd sin_table[]) {
         return;
     }
     make_quater_cos_table(n, qcos_table);
-    for(uint64_t i = 0;i < n / 4;i++) {
+    for (uint64_t i = 0; i < n / 4; i++) {
         copy(qcos_table[n / 4 - i], sin_table[i]);
         copy(qcos_table[i], sin_table[i + n / 4]);
         copy(qcos_table[n / 4 - i], sin_table[i + n / 2]);
@@ -77,7 +77,7 @@ void make_sin_table(uint64_t n, qd sin_table[], qd cos_table[]) {
         init(sin_table[1], 0);
         return;
     }
-    for(uint64_t i = 0;i < (n >> 2);i++) {
+    for (uint64_t i = 0; i < (n >> 2); i++) {
         copy(cos_table[(n >> 2) - i], sin_table[i]);
         copy(cos_table[i], sin_table[i + (n >> 2)]);
         copy(cos_table[(n >> 2) - i], sin_table[i + (n >> 1)]);
@@ -128,7 +128,7 @@ void make_cos_table(uint64_t n, double cos_table[]) {
         return;
     }
     make_quater_cos_table(n, qcos_table);
-    for(uint64_t i = 0;i < n / 4;i++) {
+    for (uint64_t i = 0; i < n / 4; i++) {
         copy(qcos_table + i * 4, cos_table + i * 4);
         copy(qcos_table + (n / 4 - i) * 4, cos_table + (i + n / 4) * 4);
         minus(cos_table + (i + n / 4) * 4);
@@ -144,7 +144,7 @@ void make_sin_table(uint64_t n, double sin_table[], double cos_table[]) {
         init(sin_table + 4, 0);
         return;
     }
-    for(uint64_t i = 0;i < n / 4;i++) {
+    for (uint64_t i = 0; i < n / 4; i++) {
         copy(cos_table + (n / 4 - i) * 4, sin_table + i * 4);
         copy(cos_table + i * 4, sin_table + (i + n / 4) * 4);
         copy(cos_table + (n / 4 - i) * 4, sin_table + (i + n / 2) * 4);

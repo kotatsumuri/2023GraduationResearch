@@ -1,6 +1,8 @@
+#include <fft.hpp>
+#include <iostream>
+#include <qd.hpp>
+
 #include "bench_util.hpp"
-#include "fft.hpp"
-#include "qd.hpp"
 
 int main(int argc, char *argv[]) {
     if (argc < 2)

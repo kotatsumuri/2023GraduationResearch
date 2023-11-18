@@ -3,6 +3,9 @@
         "*.tcc": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "*.ipp": "cpp"
-    }
+        "*.ipp": "cpp",
+        "cmath": "cpp",
+        "cstdint": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

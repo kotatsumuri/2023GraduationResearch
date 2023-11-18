@@ -1,6 +1,8 @@
+#include <fft.hpp>
+#include <iostream>
+#include <qd.hpp>
+
 #include "bench_util.hpp"
-#include "fft.hpp"
-#include "qd.hpp"
 
 int main(int argc, char *argv[]) {
     if (argc < 2)
@@ -18,11 +20,11 @@ int main(int argc, char *argv[]) {
     double sin_table_n2[n2 * 4];
     make_cos_table(n, cos_table_n);
     make_sin_table(n, sin_table_n, cos_table_n);
-    for (uint64_t i = 0;i < n1;i++) {
+    for (uint64_t i = 0; i < n1; i++) {
         copy(cos_table_n + i * (n / n1) * 4, cos_table_n1 + i * 4);
         copy(sin_table_n + i * (n / n1) * 4, sin_table_n1 + i * 4);
     }
-    for (uint64_t i = 0;i < n2;i++) {
+    for (uint64_t i = 0; i < n2; i++) {
         copy(cos_table_n + i * (n / n2) * 4, cos_table_n2 + i * 4);
         copy(sin_table_n + i * (n / n2) * 4, sin_table_n2 + i * 4);
     }

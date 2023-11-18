@@ -1,6 +1,7 @@
+#include <fft.hpp>
+#include <qd.hpp>
+
 #include "bench_util.hpp"
-#include "fft.hpp"
-#include "qd.hpp"
 
 int main(int argc, char *argv[]) {
     if (argc < 2)
@@ -9,7 +10,7 @@ int main(int argc, char *argv[]) {
     std::cout << "2^" << p << std::endl;
     uint64_t n = 1 << p;
     qd cos_table[n];
-    qd sin_table[n];    
+    qd sin_table[n];
     make_cos_table(n, cos_table);
     make_sin_table(n, sin_table, cos_table);
     qd x[n];
@@ -29,7 +30,6 @@ int main(int argc, char *argv[]) {
             copy(x[i], correct[i]);
             copy(ix[i], icorrect[i]);
         }
-
         sixstep_fft(n, p, x, ix, y, iy, cos_table, sin_table);
         inv_stockham(n, p, y, iy, x, ix, cos_table, sin_table);
 
@@ -38,8 +38,7 @@ int main(int argc, char *argv[]) {
                 error_bit_sum += error_bit(correct[i], x[i]);
                 error_bit_sum += error_bit(icorrect[i], ix[i]);
             }
-        }
-        else {
+        } else {
             for (int i = 0; i < n; i++) {
                 error_bit_sum += error_bit(correct[i], y[i]);
                 error_bit_sum += error_bit(icorrect[i], iy[i]);

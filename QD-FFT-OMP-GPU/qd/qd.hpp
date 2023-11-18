@@ -1,7 +1,6 @@
 #pragma once
 
-using qd = double[4];
-
+#include "qd_type.hpp"
 #include "common.hpp"
 #include "qd_base.hpp"
 #include "qd_init.hpp"

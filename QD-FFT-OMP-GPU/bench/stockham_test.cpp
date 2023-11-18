@@ -1,7 +1,6 @@
+#include <fft.hpp>
 #include <iostream>
-
-#include "fft.hpp"
-#include "qd.hpp"
+#include <qd.hpp>
 
 int main() {
     int p = 3;

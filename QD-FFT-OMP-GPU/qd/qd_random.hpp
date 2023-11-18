@@ -2,7 +2,6 @@
 #include <random>
 
 #include "qd.hpp"
-#include "qd_init.hpp"
 
 void rand(qd a) {
     static std::random_device rnd;

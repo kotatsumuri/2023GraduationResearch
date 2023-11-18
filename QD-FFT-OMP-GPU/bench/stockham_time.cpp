@@ -1,17 +1,17 @@
 #include <omp.h>
 
 #include <chrono>
+#include <fft.hpp>
 #include <iostream>
+#include <qd.hpp>
 
 #include "Timer.hpp"
-#include "fft.hpp"
-#include "qd.hpp"
 
 int main(int argc, char *argv[]) {
     if (argc < 2)
         return 1;
-    
-    for(int p = 1;p <= atoi(argv[1]);p++) {
+
+    for (int p = 1; p <= atoi(argv[1]); p++) {
         int n = 1 << p;
         Timer timer;
         qd cos_table[n];
