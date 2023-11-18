@@ -18,3 +18,9 @@ void print_vector(uint64_t n, const qd *x) {
         std::cout << to_bin_string(x[i]) << std::endl;
     }
 }
+
+void rand_vector(uint64_t n, qd *x) {
+    for (uint64_t i = 0; i < n; i++) {
+        rand(x[i]);
+    }
+}

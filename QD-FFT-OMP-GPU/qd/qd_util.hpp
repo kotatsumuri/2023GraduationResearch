@@ -14,7 +14,7 @@ inline int log_ufp(qd a) {
     while (ret <= -1024 || i < 4) ret = log_ufp(a[i++]);
     return ret;
 }
-inline int log_ulp(qd a) {
+inline int log_ulp(const qd a) {
     int ret = log_ulp(a[3]);
     int i   = 2;
     while (ret <= -1024 - 52) ret = log_ulp(a[i--]);
