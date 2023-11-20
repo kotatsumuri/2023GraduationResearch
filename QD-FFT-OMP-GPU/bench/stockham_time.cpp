@@ -5,8 +5,8 @@
 #include <iostream>
 #include <qd.hpp>
 
+#include "Arg.hpp"
 #include "Timer.hpp"
-#include "arg.hpp"
 
 int main(int argc, char *argv[]) {
     Arg arg       = Arg(argc, 2, argv);

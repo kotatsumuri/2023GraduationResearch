@@ -2,7 +2,7 @@
 #include <iostream>
 #include <qd.hpp>
 
-#include "arg.hpp"
+#include "Arg.hpp"
 #include "bench_util.hpp"
 
 int main(int argc, char *argv[]) {
