@@ -9,7 +9,6 @@ int main(int argc, char *argv[]) {
     Arg arg       = Arg(argc, 2, argv);
     bool is_debug = arg.has("--debug");
     bool is_cos   = arg.has("--cos");
-    bool is_range = arg.has("--range");
 
     int p = atoi(arg.argv[1]);
     int n = 1ull << p;
@@ -41,6 +40,7 @@ int main(int argc, char *argv[]) {
         std::cout << "ix" << std::endl;
         print_vector(n, ix);
     }
+
     inv_dif(n, x, ix, cos_table, sin_table);
     if (is_debug) {
         std::cout << "inv_dif" << std::endl;
@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
         std::cout << "ix" << std::endl;
         print_vector(n, ix);
     }
+
     std::cout << average_error_bit(n, actual_x, x) << std::endl;
     std::cout << average_error_bit(n, actual_ix, ix) << std::endl;
 

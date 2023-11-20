@@ -2,51 +2,68 @@
 #include <iostream>
 #include <qd.hpp>
 
+#include "arg.hpp"
 #include "bench_util.hpp"
 
 int main(int argc, char *argv[]) {
-    if (argc < 2)
-        return 1;
-    int p = atoi(argv[1]);
-    std::cout << "2^" << p << std::endl;
-    int n = 1 << p;
-    qd cos_table[n];
-    qd sin_table[n];
-    make_cos_table(n, cos_table);
-    make_sin_table(n, sin_table);
-    qd x[n];
-    qd ix[n];
-    qd y[n];
-    qd iy[n];
-    qd correct[n];
-    qd icorrect[n];
-    int K = 100;
+    Arg arg          = Arg(argc, 2, argv);
+    bool is_debug    = arg.has("--debug");
+    bool is_cos_real = arg.has("--cos-real");
+    bool is_cos_imag = arg.has("--cos-imag");
 
-    double ave = 0;
-    for (int t = 0; t < K; t++) {
-        long long int error_bit_sum = 0;
-        for (int i = 0; i < n; i++) {
-            rand(x[i]);
-            rand(ix[i]);
-            copy(x[i], correct[i]);
-            copy(ix[i], icorrect[i]);
-        }
+    uint64_t p = atoi(arg.argv[1]);
+    uint64_t n = 1ull << p;
 
-        stockham(n, p, x, ix, y, iy, cos_table, sin_table);
+    qd w[n], iw[n];
+    make_cos_table(n, w);
+    make_sin_table(n, iw, w);
 
-        if (!(p % 2))
-            inv_stockham(n, p, x, ix, y, iy, cos_table, sin_table);
-        else
-            inv_stockham(n, p, y, iy, x, ix, cos_table, sin_table);
-
-        for (int i = 0; i < n; i++) {
-            error_bit_sum += error_bit(correct[i], x[i]);
-            error_bit_sum += error_bit(icorrect[i], ix[i]);
-        }
-        ave += double(error_bit_sum) / double(2 * n);
+    qd *x  = (qd *)calloc(n, sizeof(qd));
+    qd *ix = (qd *)calloc(n, sizeof(qd));
+    zero(n, x);
+    zero(n, ix);
+    if (is_cos_real) {
+        copy_vector(n, w, x);
+    }
+    if (is_cos_imag) {
+        copy_vector(n, w, ix);
+    }
+    if (!is_cos_real && !is_cos_imag) {
+        rand_vector(n, x);
+        rand_vector(n, ix);
     }
 
-    std::cout << ave / K << std::endl;
+    qd actual_x[n];
+    qd actual_ix[n];
+    copy_vector(n, x, actual_x);
+    copy_vector(n, ix, actual_ix);
+
+    if (is_debug) {
+        std::cout << "x" << std::endl;
+        print_vector(n, x);
+        std::cout << "ix" << std::endl;
+        print_vector(n, ix);
+    }
+    stockham(n, p, &x, &ix, w, iw);
+    if (is_debug) {
+        std::cout << "dif" << std::endl;
+        std::cout << "x" << std::endl;
+        print_vector(n, x);
+        std::cout << "ix" << std::endl;
+        print_vector(n, ix);
+    }
+
+    inv_stockham(n, p, &x, &ix, w, iw);
+    if (is_debug) {
+        std::cout << "inv_dif" << std::endl;
+        std::cout << "x" << std::endl;
+        print_vector(n, x);
+        std::cout << "ix" << std::endl;
+        print_vector(n, ix);
+    }
+
+    std::cout << average_error_bit(n, actual_x, x) << std::endl;
+    std::cout << average_error_bit(n, actual_ix, ix) << std::endl;
 
     return 0;
 }

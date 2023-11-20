@@ -1,9 +1,10 @@
 add_executable(CosTableErrorTest cos_table_error_test.cpp)
-add_executable(StockhamTest stockham_test.cpp)
-add_executable(StockhamErrorTest stockham_error_test.cpp)
+
 add_executable(DIFErrorTest dif_error_test.cpp)
-add_executable(OmpTest omp_test.cpp)
+
+add_executable(StockhamErrorTest stockham_error_test.cpp)
 add_executable(StockhamTime stockham_time.cpp)
+
 add_executable(SixstepTime sixstep_time.cpp)
 add_executable(SixstepTime-outswap sixstep_time.cpp)
 target_compile_definitions(SixstepTime-outswap PRIVATE QD_FFT_OUT_SWAP)
