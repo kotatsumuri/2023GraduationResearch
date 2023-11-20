@@ -1,7 +1,7 @@
 add_executable(CosTableErrorTest cos_table_error_test.cpp)
 add_executable(StockhamTest stockham_test.cpp)
 add_executable(StockhamErrorTest stockham_error_test.cpp)
-add_executable(DIFTest dif_test.cpp)
+add_executable(DIFErrorTest dif_error_test.cpp)
 add_executable(OmpTest omp_test.cpp)
 add_executable(StockhamTime stockham_time.cpp)
 add_executable(SixstepTime sixstep_time.cpp)
