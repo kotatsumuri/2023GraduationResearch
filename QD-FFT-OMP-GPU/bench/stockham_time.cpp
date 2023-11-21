@@ -29,6 +29,12 @@ int main(int argc, char *argv[]) {
     make_sin_table(end_n, base_iw, base_w);
 
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
+        Timer timer;
+        qd *x  = (qd *)calloc(n, sizeof(qd));
+        qd *ix = (qd *)calloc(n, sizeof(qd));
+        rand_vector(n, x);
+        rand_vector(n, ix);
+
         if (n != end_n) {
             qd w[n];
             qd iw[n];
@@ -37,15 +43,6 @@ int main(int argc, char *argv[]) {
                 copy(base_w[end_n / n * i], w[i]);
                 copy(base_iw[end_n / n * i], iw[i]);
             }
-        }
-
-        Timer timer;
-        qd *x  = (qd *)calloc(n, sizeof(qd));
-        qd *ix = (qd *)calloc(n, sizeof(qd));
-        rand_vector(n, x);
-        rand_vector(n, ix);
-
-        if (n != end_n) {
             for (uint64_t k = 0; k < K; k++) {
                 timer.start();
                 stockham(n, p, &x, &ix, w, iw);
