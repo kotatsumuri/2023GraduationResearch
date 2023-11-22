@@ -2,7 +2,7 @@
 #include <iostream>
 #include <qd.hpp>
 
-#include "Arg.hpp"
+#include <Arg.hpp>
 
 int main(int argc, char *argv[]) {
     Arg arg(argc, 2, argv);

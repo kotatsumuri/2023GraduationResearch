@@ -7,5 +7,6 @@ project(QD-FFT CXX)
 
 include_directories(qd)
 include_directories(fft)
+include_directories(bench_util)
 
 add_subdirectory(bench)

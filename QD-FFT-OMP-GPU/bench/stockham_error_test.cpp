@@ -1,9 +1,8 @@
+#include <Arg.hpp>
+#include <bench_util.hpp>
 #include <fft.hpp>
 #include <iostream>
 #include <qd.hpp>
-
-#include "Arg.hpp"
-#include "bench_util.hpp"
 
 int main(int argc, char *argv[]) {
     Arg arg          = Arg(argc, 2, argv);

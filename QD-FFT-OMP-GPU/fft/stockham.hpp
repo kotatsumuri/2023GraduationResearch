@@ -1,4 +1,5 @@
 #pragma once
+#include "../bench_util/Timer.hpp"
 #include "../qd/qd.hpp"
 #include "butterfly.hpp"
 #include "fft_util.hpp"
@@ -55,6 +56,14 @@ void stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
     Stockham::fft(n, p, x, ix, &y, &iy, w, iw);
+}
+
+void stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
+    qd *y  = (qd *)calloc(n, sizeof(qd));
+    qd *iy = (qd *)calloc(n, sizeof(qd));
+    timer.start();
+    Stockham::fft(n, p, x, ix, &y, &iy, w, iw);
+    timer.stop();
 }
 
 void inv_stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {

@@ -5,8 +5,8 @@
 #include <iostream>
 #include <qd.hpp>
 
-#include "Arg.hpp"
-#include "Timer.hpp"
+#include <Arg.hpp>
+#include <Timer.hpp>
 
 int main(int argc, char *argv[]) {
     Arg arg       = Arg(argc, 2, argv);
@@ -44,15 +44,11 @@ int main(int argc, char *argv[]) {
                 copy(base_iw[end_n / n * i], iw[i]);
             }
             for (uint64_t k = 0; k < K; k++) {
-                timer.start();
-                stockham(n, p, &x, &ix, w, iw);
-                timer.stop();
+                stockham(n, p, &x, &ix, w, iw, timer);
             }
         } else {
             for (uint64_t k = 0; k < K; k++) {
-                timer.start();
-                stockham(n, p, &x, &ix, base_w, base_iw);
-                timer.stop();
+                stockham(n, p, &x, &ix, base_w, base_iw, timer);
             }
         }
         std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
