@@ -1,23 +1,22 @@
+#include <Arg.hpp>
 #include <fft.hpp>
 #include <iostream>
 #include <qd.hpp>
 
-#include <Arg.hpp>
-
 int main(int argc, char *argv[]) {
-    Arg arg(argc, 2, argv);
+    Arg arg(argc, argv, 2, {"--debug", "--range"}, {}, {});
 
-    bool debug_flag = arg.has("--debug");
-    bool range_flag = arg.has("--range");
+    bool debug_flag = arg.has_flag("--debug");
+    bool range_flag = arg.has_flag("--range");
 
-    uint64_t p       = atoi(arg.argv[1]);
+    uint64_t p       = atoi(arg._argv[1]);
     uint64_t start_n = 1ull;
     uint64_t end_n   = 1ull << p;
     if (!range_flag)
         start_n = end_n;
 
+    std::cout << "n, max_error, min_error, ave_error" << std::endl;
     for (uint64_t n = start_n; n <= end_n; n <<= 1) {
-        std::cout << "n: " << n << std::endl;
         qd cos_table[n];
         qd sin_table[n];
         make_cos_table(n, cos_table);
@@ -50,10 +49,7 @@ int main(int argc, char *argv[]) {
             print_vector(n, sin_table);
             std::cout << std::endl;
         }
-
-        std::cout << "max_error: " << max_error << std::endl;
-        std::cout << "min_error: " << min_error << std::endl;
-        std::cout << "ave_error: " << ave_error / (n >> 2) << std::endl;
+        std::cout << n << ", " << max_error << ", " << min_error << ", " << ave_error / (n >> 2) << std::endl;
     }
     return 0;
 }

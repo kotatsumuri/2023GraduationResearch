@@ -5,12 +5,12 @@
 #include <qd.hpp>
 
 int main(int argc, char *argv[]) {
-    Arg arg          = Arg(argc, 2, argv);
-    bool is_debug    = arg.has("--debug");
-    bool is_cos_real = arg.has("--cos-real");
-    bool is_cos_imag = arg.has("--cos-imag");
+    Arg arg          = Arg(argc, argv, 2, {"--debug", "--cos-real", "--cos-imag"}, {}, {});
+    bool is_debug    = arg.has_flag("--debug");
+    bool is_cos_real = arg.has_flag("--cos-real");
+    bool is_cos_imag = arg.has_flag("--cos-imag");
 
-    uint64_t p = atoi(arg.argv[1]);
+    uint64_t p = atoi(arg._argv[1]);
     uint64_t n = 1ull << p;
 
     qd w[n], iw[n];

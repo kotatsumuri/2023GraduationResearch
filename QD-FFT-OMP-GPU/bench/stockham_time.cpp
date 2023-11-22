@@ -1,22 +1,21 @@
 #include <omp.h>
 
+#include <Arg.hpp>
+#include <Timer.hpp>
 #include <chrono>
 #include <fft.hpp>
 #include <iostream>
 #include <qd.hpp>
 
-#include <Arg.hpp>
-#include <Timer.hpp>
-
 int main(int argc, char *argv[]) {
-    Arg arg       = Arg(argc, 2, argv);
-    bool is_range = arg.has("--range");
+    Arg arg       = Arg(argc, argv, 2, {"--debug", "--range"}, {"-loops"}, {10});
+    bool is_range = arg.has_flag("--range");
 
     uint64_t start_p = 1ull;
-    uint64_t end_p   = atoi(arg.argv[1]);
+    uint64_t end_p   = atoi(arg._argv[1]);
     uint64_t start_n = 1ull;
     uint64_t end_n   = 1ull << end_p;
-    uint64_t K       = 10;
+    uint64_t K       = arg.get_option("-loops");
 
     if (!is_range) {
         start_p = end_p;
