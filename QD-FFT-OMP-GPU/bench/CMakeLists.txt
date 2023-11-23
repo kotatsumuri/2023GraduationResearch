@@ -5,10 +5,14 @@ add_executable(DIFErrorTest dif_error_test.cpp)
 add_executable(StockhamErrorTest stockham_error_test.cpp)
 add_executable(StockhamTime stockham_time.cpp)
 
-add_executable(SixstepTime sixstep_time.cpp)
-add_executable(SixstepTime-outswap sixstep_time.cpp)
-target_compile_definitions(SixstepTime-outswap PRIVATE QD_FFT_OUT_SWAP)
+# add_executable(StockhamOMPErrorTest stockham_omp_error_test.cpp)
+add_executable(StockhamOMPTime stockham_omp_time.cpp)
+
+add_executable(StockhamGPUTime stockham_gpu_time.cpp)
+
 add_executable(SixstepErrorTest sixstep_error_test.cpp)
-target_compile_definitions(SixstepErrorTest PRIVATE QD_FFT_OUT_SWAP)
-add_executable(Sixstep2ErrorTest sixstep2_error_test.cpp)
-add_executable(Sixstep2Time sixstep2_time.cpp)
+add_executable(SixstepTime sixstep_time.cpp)
+
+add_executable(SixstepOMPErrorTest sixstep_omp_error_test.cpp)
+add_executable(SixstepOMPTime sixstep_omp_time.cpp)
+

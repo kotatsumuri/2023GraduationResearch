@@ -5,7 +5,6 @@
 
 int main(int argc, char *argv[]) {
     Arg arg(argc, argv, 2, {"--debug", "--range"}, {}, {});
-
     bool debug_flag = arg.has_flag("--debug");
     bool range_flag = arg.has_flag("--range");
 

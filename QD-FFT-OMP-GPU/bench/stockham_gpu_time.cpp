@@ -8,7 +8,7 @@
 #include <qd.hpp>
 
 int main(int argc, char *argv[]) {
-    Arg arg(argc, argv, 2, {"--debug", "--range"}, {"-loops"}, {10});
+    Arg arg       = Arg(argc, argv, 2, {"--debug", "--range"}, {"-loops"}, {10});
     bool is_range = arg.has_flag("--range");
 
     uint64_t start_p = 1ull;
@@ -22,10 +22,14 @@ int main(int argc, char *argv[]) {
         start_n = end_n;
     }
 
-    qd *base_w  = (qd *)calloc(end_n, sizeof(qd));
-    qd *base_iw = (qd *)calloc(end_n, sizeof(qd));
+    qd base_w[end_n];
+    qd base_iw[end_n];
     make_cos_table(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
+
+    {
+        qd *x = (qd *)calloc(2, sizeof(qd));
+    }
 
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
         Timer timer;
@@ -35,20 +39,19 @@ int main(int argc, char *argv[]) {
         rand_vector(n, ix);
 
         if (n != end_n) {
-            qd *w  = (qd *)calloc(n, sizeof(qd));
-            qd *iw = (qd *)calloc(n, sizeof(qd));
+            qd w[n];
+            qd iw[n];
 
             for (uint64_t i = 0; i < n; i++) {
                 copy(base_w[end_n / n * i], w[i]);
                 copy(base_iw[end_n / n * i], iw[i]);
             }
-
             for (uint64_t k = 0; k < K; k++) {
-                sixstep(n, p, &x, &ix, w, iw, timer);
+                stockham_gpu(n, p, x, ix, w, iw, timer);
             }
         } else {
             for (uint64_t k = 0; k < K; k++) {
-                sixstep(n, p, &x, &ix, base_w, base_iw, timer);
+                stockham_gpu(n, p, x, ix, base_w, base_iw, timer);
             }
         }
         std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
