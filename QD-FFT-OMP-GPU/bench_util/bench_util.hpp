@@ -17,3 +17,15 @@ double average_error_bit(uint64_t n, const qd *real, const qd *actual) {
     }
     return sum / n;
 }
+
+qd *warming_up(qd *a, qd *b, uint64_t n) {
+    qd *c = (qd *)calloc(n, sizeof(qd));
+#pragma omp target data map(to : a[0 : n], b[0 : n]) map(from : c[0 : n])
+    {
+#pragma omp target teams distribute parallel for
+        for (uint64_t i = 0; i < n; i++) {
+            add(a[i], b[i], c[i]);
+        }
+    }
+    return c;
+}

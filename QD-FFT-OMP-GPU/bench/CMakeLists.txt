@@ -9,6 +9,7 @@ add_executable(StockhamTime stockham_time.cpp)
 add_executable(StockhamOMPTime stockham_omp_time.cpp)
 
 add_executable(StockhamGPUTime stockham_gpu_time.cpp)
+add_executable(StockhamGPUErrorTest stockham_gpu_error_test.cpp)
 
 add_executable(SixstepErrorTest sixstep_error_test.cpp)
 add_executable(SixstepTime sixstep_time.cpp)

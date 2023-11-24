@@ -5,7 +5,7 @@
 #include "fft_util.hpp"
 
 namespace StockhamOMP {
-void fft(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], qd w[], qd iw[]) {
+void fft(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], qd iw[]) {
     uint64_t l = n >> 1;
     uint64_t m = 1;
 
@@ -15,15 +15,15 @@ void fft(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], qd w[], q
             for (uint64_t k = 0; k < m; k++) {
                 double *a = (double *)w[j * n / (2 * l)];
                 double *b = (double *)iw[j * n / (2 * l)];
-                butterfly((*x)[k + j * m], (*ix)[k + j * m],
-                          (*x)[k + j * m + l * m], (*ix)[k + j * m + l * m],
-                          (*y)[k + 2 * j * m], (*iy)[k + 2 * j * m],
-                          (*y)[k + 2 * j * m + m], (*iy)[k + 2 * j * m + m],
+                butterfly(x[k + j * m], ix[k + j * m],
+                          x[k + j * m + l * m], ix[k + j * m + l * m],
+                          y[k + 2 * j * m], iy[k + 2 * j * m],
+                          y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
                           a, b);
             }
         }
-        swap(x, y);
-        swap(ix, iy);
+        swap(&x, &y);
+        swap(&ix, &iy);
         l >>= 1;
         m <<= 1;
     }
@@ -57,14 +57,22 @@ void ifft(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], qd w[], 
 void stockham_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
-    StockhamOMP::fft(n, p, x, ix, &y, &iy, w, iw);
+    StockhamOMP::fft(n, p, *x, *ix, y, iy, w, iw);
+    if (p & 1) {
+        *x  = y;
+        *ix = iy;
+    }
 }
 
 void stockham_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
     timer.start();
-    StockhamOMP::fft(n, p, x, ix, &y, &iy, w, iw);
+    StockhamOMP::fft(n, p, *x, *ix, y, iy, w, iw);
+    if (p & 1) {
+        *x  = y;
+        *ix = iy;
+    }
     timer.stop();
 }
 

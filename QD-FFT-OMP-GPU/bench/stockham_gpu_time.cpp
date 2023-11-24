@@ -2,6 +2,7 @@
 
 #include <Arg.hpp>
 #include <Timer.hpp>
+#include <bench_util.hpp>
 #include <chrono>
 #include <fft.hpp>
 #include <iostream>
@@ -9,6 +10,7 @@
 
 int main(int argc, char *argv[]) {
     Arg arg       = Arg(argc, argv, 2, {"--debug", "--range"}, {"-loops"}, {10});
+    bool is_debug = arg.has_flag("--debug");
     bool is_range = arg.has_flag("--range");
 
     uint64_t start_p = 1ull;
@@ -27,8 +29,12 @@ int main(int argc, char *argv[]) {
     make_cos_table(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
 
-    {
-        qd *x = (qd *)calloc(2, sizeof(qd));
+    if (warming_up(base_w, base_iw, end_n) == NULL) {
+        exit(1);
+    } else {
+        if (is_debug) {
+            std::cout << "Warming up is done." << std::endl;
+        }
     }
 
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
@@ -47,11 +53,11 @@ int main(int argc, char *argv[]) {
                 copy(base_iw[end_n / n * i], iw[i]);
             }
             for (uint64_t k = 0; k < K; k++) {
-                stockham_gpu(n, p, x, ix, w, iw, timer);
+                stockham_gpu(n, p, &x, &ix, w, iw, timer);
             }
         } else {
             for (uint64_t k = 0; k < K; k++) {
-                stockham_gpu(n, p, x, ix, base_w, base_iw, timer);
+                stockham_gpu(n, p, &x, &ix, base_w, base_iw, timer);
             }
         }
         std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
