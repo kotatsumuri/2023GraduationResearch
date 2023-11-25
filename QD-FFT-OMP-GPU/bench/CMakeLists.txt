@@ -5,7 +5,7 @@ add_executable(DIFErrorTest dif_error_test.cpp)
 add_executable(StockhamErrorTest stockham_error_test.cpp)
 add_executable(StockhamTime stockham_time.cpp)
 
-# add_executable(StockhamOMPErrorTest stockham_omp_error_test.cpp)
+add_executable(StockhamOMPErrorTest stockham_omp_error_test.cpp)
 add_executable(StockhamOMPTime stockham_omp_time.cpp)
 
 add_executable(StockhamGPUTime stockham_gpu_time.cpp)
