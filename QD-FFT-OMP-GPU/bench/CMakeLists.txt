@@ -17,3 +17,6 @@ add_executable(SixstepTime sixstep_time.cpp)
 add_executable(SixstepOMPErrorTest sixstep_omp_error_test.cpp)
 add_executable(SixstepOMPTime sixstep_omp_time.cpp)
 
+add_executable(SixstepGPUErrorTest sixstep_gpu_error_test.cpp)
+add_executable(SixstepGPUTime sixstep_gpu_time.cpp)
+

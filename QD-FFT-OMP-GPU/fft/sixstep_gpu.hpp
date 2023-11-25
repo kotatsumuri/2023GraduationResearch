@@ -71,7 +71,7 @@ inline void inv_twist(qd x, qd ix, qd y, qd iy, qd a, qd b) {
     add(ix, tmp0, ix);
 }
 
-void sixstep(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], qd iw[]) {
+void sixstep_even(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], qd iw[]) {
     uint64_t p1 = p >> 1;
     uint64_t p2 = p - p1;
     uint64_t n1 = 1ull << p1;
@@ -79,13 +79,78 @@ void sixstep(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], q
     uint64_t u1 = n >> p1;
     uint64_t u2 = n >> p2;
 
-#pragma omp target data
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
     {
 #pragma omp target teams distribute parallel for collapse(2)
         for (uint64_t i = 0; i < n1; i++) {
             for (uint64_t j = 0; j < n2; j++) {
                 copy(x[i * n2 + j], y[j * n1 + i]);
-                copy((*ix)[i * n2 + j], (*iy)[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
+            }
+        }
+
+#pragma omp target teams distribute parallel for
+        for (uint64_t j = 0; j < n2; j++) {
+            fft(n1, p1, u1, y + j * n1, iy + j * n1, x + j * n1, ix + j * n1, w, iw);
+        }
+
+        if (p1 & 1) {
+            swap(&x, &y);
+            swap(&ix, &iy);
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t j = 0; j < n2; j++) {
+            for (uint64_t i = 0; i < n1; i++) {
+                double *a = (double *)w[i * j];
+                double *b = (double *)iw[i * j];
+                twist(x[i * n2 + j], ix[i * n2 + j], y[j * n1 + i], iy[j * n1 + i], a, b);
+            }
+        }
+
+#pragma omp target teams distribute parallel for
+        for (uint64_t i = 0; i < n1; i++) {
+            fft(n2, p2, u2, x + i * n2, ix + i * n2, y + i * n2, iy + i * n2, w, iw);
+        }
+
+        if (p2 & 1) {
+            swap(&x, &y);
+            swap(&ix, &iy);
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t i = 0; i < n1; i++) {
+            for (uint64_t j = 0; j < n2; j++) {
+                copy(x[i * n2 + j], y[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
+            }
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t i = 0; i < n1; i++) {
+            for (uint64_t j = 0; j < n2; j++) {
+                copy(y[j * n1 + i], x[j * n1 + i]);
+                copy(iy[j * n1 + i], ix[j * n1 + i]);
+            }
+        }
+    }
+}
+
+void sixstep_odd(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], qd iw[]) {
+    uint64_t p1 = p >> 1;
+    uint64_t p2 = p - p1;
+    uint64_t n1 = 1ull << p1;
+    uint64_t n2 = 1ull << p2;
+    uint64_t u1 = n >> p1;
+    uint64_t u2 = n >> p2;
+
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
+    {
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t i = 0; i < n1; i++) {
+            for (uint64_t j = 0; j < n2; j++) {
+                copy(x[i * n2 + j], y[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
             }
         }
 
@@ -128,7 +193,7 @@ void sixstep(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], q
     }
 }
 
-void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], qd w[], qd iw[]) {
+void inv_sixstep_even(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], qd iw[]) {
     uint64_t p1 = p >> 1;
     uint64_t p2 = p - p1;
     uint64_t n1 = 1ull << p1;
@@ -136,43 +201,116 @@ void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], q
     uint64_t u1 = n >> p1;
     uint64_t u2 = n >> p2;
 
-    for (uint64_t i = 0; i < n1; i++) {
-        for (uint64_t j = 0; j < n2; j++) {
-            copy((*x)[i * n2 + j], (*y)[j * n1 + i]);
-            copy((*ix)[i * n2 + j], (*iy)[j * n1 + i]);
-        }
-    }
-
-    for (uint64_t j = 0; j < n2; j++) {
-        ifft(n1, p1, u1, (*y) + j * n1, (*iy) + j * n1, (*x) + j * n1, (*ix) + j * n1, w, iw);
-    }
-
-    if (p1 & 1) {
-        swap(x, y);
-        swap(ix, iy);
-    }
-
-    for (uint64_t j = 0; j < n2; j++) {
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
+    {
+#pragma omp target teams distribute parallel for collapse(2)
         for (uint64_t i = 0; i < n1; i++) {
-            double *a = (double *)w[i * j];
-            double *b = (double *)iw[i * j];
-            inv_twist((*x)[i * n2 + j], (*ix)[i * n2 + j], (*y)[j * n1 + i], (*iy)[j * n1 + i], a, b);
+            for (uint64_t j = 0; j < n2; j++) {
+                copy(x[i * n2 + j], y[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
+            }
+        }
+
+#pragma omp target teams distribute parallel for
+        for (uint64_t j = 0; j < n2; j++) {
+            ifft(n1, p1, u1, y + j * n1, iy + j * n1, x + j * n1, ix + j * n1, w, iw);
+        }
+
+        if (p1 & 1) {
+            swap(&x, &y);
+            swap(&ix, &iy);
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t j = 0; j < n2; j++) {
+            for (uint64_t i = 0; i < n1; i++) {
+                double *a = (double *)w[i * j];
+                double *b = (double *)iw[i * j];
+                inv_twist(x[i * n2 + j], ix[i * n2 + j], y[j * n1 + i], iy[j * n1 + i], a, b);
+            }
+        }
+
+#pragma omp target teams distribute parallel for
+        for (uint64_t i = 0; i < n1; i++) {
+            ifft(n2, p2, u2, x + i * n2, ix + i * n2, y + i * n2, iy + i * n2, w, iw);
+        }
+
+        if (p2 & 1) {
+            swap(&x, &y);
+            swap(&ix, &iy);
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t i = 0; i < n1; i++) {
+            for (uint64_t j = 0; j < n2; j++) {
+                copy(x[i * n2 + j], y[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
+            }
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t i = 0; i < n1; i++) {
+            for (uint64_t j = 0; j < n2; j++) {
+                div_pwr2(y[j * n1 + i], n, x[j * n1 + i]);
+                div_pwr2(iy[j * n1 + i], n, ix[j * n1 + i]);
+            }
         }
     }
+}
 
-    for (uint64_t i = 0; i < n1; i++) {
-        ifft(n2, p2, u2, (*x) + i * n2, (*ix) + i * n2, (*y) + i * n2, (*iy) + i * n2, w, iw);
-    }
+void inv_sixstep_odd(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], qd iw[]) {
+    uint64_t p1 = p >> 1;
+    uint64_t p2 = p - p1;
+    uint64_t n1 = 1ull << p1;
+    uint64_t n2 = 1ull << p2;
+    uint64_t u1 = n >> p1;
+    uint64_t u2 = n >> p2;
 
-    if (p2 & 1) {
-        swap(x, y);
-        swap(ix, iy);
-    }
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
+    {
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t i = 0; i < n1; i++) {
+            for (uint64_t j = 0; j < n2; j++) {
+                copy(x[i * n2 + j], y[j * n1 + i]);
+                copy(ix[i * n2 + j], iy[j * n1 + i]);
+            }
+        }
 
-    for (uint64_t i = 0; i < n1; i++) {
+#pragma omp target teams distribute parallel for
         for (uint64_t j = 0; j < n2; j++) {
-            div_pwr2((*x)[i * n2 + j], n, (*y)[j * n1 + i]);
-            div_pwr2((*ix)[i * n2 + j], n, (*iy)[j * n1 + i]);
+            ifft(n1, p1, u1, y + j * n1, iy + j * n1, x + j * n1, ix + j * n1, w, iw);
+        }
+
+        if (p1 & 1) {
+            swap(&x, &y);
+            swap(&ix, &iy);
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t j = 0; j < n2; j++) {
+            for (uint64_t i = 0; i < n1; i++) {
+                double *a = (double *)w[i * j];
+                double *b = (double *)iw[i * j];
+                inv_twist(x[i * n2 + j], ix[i * n2 + j], y[j * n1 + i], iy[j * n1 + i], a, b);
+            }
+        }
+
+#pragma omp target teams distribute parallel for
+        for (uint64_t i = 0; i < n1; i++) {
+            ifft(n2, p2, u2, x + i * n2, ix + i * n2, y + i * n2, iy + i * n2, w, iw);
+        }
+
+        if (p2 & 1) {
+            swap(&x, &y);
+            swap(&ix, &iy);
+        }
+
+#pragma omp target teams distribute parallel for collapse(2)
+        for (uint64_t i = 0; i < n1; i++) {
+            for (uint64_t j = 0; j < n2; j++) {
+                div_pwr2(x[i * n2 + j], n, y[j * n1 + i]);
+                div_pwr2(ix[i * n2 + j], n, iy[j * n1 + i]);
+            }
         }
     }
 }
@@ -181,35 +319,39 @@ void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], q
 void sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
-    SixStepGPU::sixstep(n, p, x, ix, y, iy, w, iw);
-    swap(x, &y);
-    swap(ix, &iy);
+    if (p & 1)
+        SixStepGPU::sixstep_odd(n, p, *x, *ix, y, iy, w, iw);
+    else
+        SixStepGPU::sixstep_even(n, p, *x, *ix, y, iy, w, iw);
 }
 
 void sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
     timer.start();
-    SixStepGPU::sixstep(n, p, x, ix, y, iy, w, iw);
+    if (p & 1)
+        SixStepGPU::sixstep_odd(n, p, *x, *ix, y, iy, w, iw);
+    else
+        SixStepGPU::sixstep_even(n, p, *x, *ix, y, iy, w, iw);
     timer.stop();
-    swap(x, &y);
-    swap(ix, &iy);
 }
 
 void inv_sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
-    SixStepGPU::inv_sixstep(n, p, x, ix, &y, &iy, w, iw);
-    swap(x, &y);
-    swap(ix, &iy);
+    if (p & 1)
+        SixStepGPU::inv_sixstep_odd(n, p, *x, *ix, y, iy, w, iw);
+    else
+        SixStepGPU::inv_sixstep_even(n, p, *x, *ix, y, iy, w, iw);
 }
 
 void inv_sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
     timer.start();
-    SixStepGPU::inv_sixstep(n, p, x, ix, &y, &iy, w, iw);
+    if (p & 1)
+        SixStepGPU::inv_sixstep_odd(n, p, *x, *ix, y, iy, w, iw);
+    else
+        SixStepGPU::inv_sixstep_even(n, p, *x, *ix, y, iy, w, iw);
     timer.stop();
-    swap(x, &y);
-    swap(ix, &iy);
 }
