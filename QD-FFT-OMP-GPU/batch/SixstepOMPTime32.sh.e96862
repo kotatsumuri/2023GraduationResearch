@@ -1,0 +1,16 @@
+/var/opt/nec/nqsv/jsv/jobfile/0.96862.10/user_script: line 7: 1792312 Killed                  ../build/bench/SixstepOMPTime 31 4 16 32 48 96 --range -loops 100
+
+============================================================
+Request ID:             96862.nqsv
+Request Name:           SixstepOMPTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sat Nov 25 23:05:28 2023
+Started Request Time:   Sat Nov 25 23:06:14 2023
+Ended Request Time:     Sat Nov 25 23:18:47 2023
+Resources Information:
+  Elapse:               752S
+  Remaining Elapse:     6448S
+============================================================

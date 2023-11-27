@@ -1,0 +1,16 @@
+/var/opt/nec/nqsv/jsv/jobfile/0.96861.10/user_script: line 7: 1902917 Killed                  ../build/bench/StockhamOMPTime 31 4 16 32 48 96 --range -loops 100
+
+============================================================
+Request ID:             96861.nqsv
+Request Name:           StockhamOMPTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sat Nov 25 23:05:16 2023
+Started Request Time:   Sat Nov 25 23:06:03 2023
+Ended Request Time:     Sat Nov 25 23:18:28 2023
+Resources Information:
+  Elapse:               745S
+  Remaining Elapse:     6455S
+============================================================

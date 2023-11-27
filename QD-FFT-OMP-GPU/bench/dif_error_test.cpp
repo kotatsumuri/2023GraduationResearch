@@ -20,14 +20,14 @@ int main(int argc, char *argv[]) {
         start_n = end_n;
     }
 
-    qd* base_w = (qd *)calloc(end_n, sizeof(qd));
-    qd* base_iw = (qd *)calloc(end_n, sizeof(qd));
+    qd *base_w  = (qd *)calloc(end_n, sizeof(qd));
+    qd *base_iw = (qd *)calloc(end_n, sizeof(qd));
     make_cos_table(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
 
     std::cout << "n, real-average-error-bit, imag-average-error-bit, average-error-bit" << std::endl;
-    for (uint64_t n = start_n, p = start_p; n <= end_n;n <<= 1, p++) {
-        qd *w = base_w;
+    for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
+        qd *w  = base_w;
         qd *iw = base_iw;
         if (n != end_n) {
             w  = (qd *)calloc(n, sizeof(qd));
@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
             rand_vector(n, ix);
         }
 
-        qd* actual_x = (qd *)calloc(n, sizeof(qd));
-        qd* actual_ix = (qd *)calloc(n, sizeof(qd));
+        qd *actual_x  = (qd *)calloc(n, sizeof(qd));
+        qd *actual_ix = (qd *)calloc(n, sizeof(qd));
         copy_vector(n, x, actual_x);
         copy_vector(n, ix, actual_ix);
 
@@ -88,6 +88,12 @@ int main(int argc, char *argv[]) {
         std::cout << ave_error_bit_real << ", ";
         std::cout << ave_error_bit_imag << ", ";
         std::cout << (ave_error_bit_real + ave_error_bit_imag) / 2 << std::endl;
+        free(x);
+        free(ix);
+        free(actual_x);
+        free(actual_ix);
+        free(w);
+        free(iw);
     }
     return 0;
 }

@@ -1,0 +1,48 @@
+Out of memory allocating 17179869184 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84943110144/15735586816
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x150517ffe010 device:0x14f516000000 size:17179869184 presentcount:0+1 line:148 name:ix[:n]
+host:0x150917fff010 device:0x14f916000000 size:17179869184 presentcount:0+1 line:148 name:x[:n]
+host:0x150f56b12010 device:0x14ed16000000 size:17179869184 presentcount:0+1 line:148 name:iw[:n]
+host:0x151356b13010 device:0x14f116000000 size:17179869184 presentcount:0+1 line:148 name:w[:n]
+allocated block device:0x14ed16000000 size:17179869184 thread:1
+allocated block device:0x14f116000000 size:17179869184 thread:1
+allocated block device:0x14f516000000 size:17179869184 thread:1
+allocated block device:0x14f916000000 size:17179869184 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/fft/sixstep_gpu.hpp
+ Function: _ZN10SixStepGPU11sixstep_oddEmmPA4_dS1_S1_S1_S1_S1_:139
+ Line: 148
+
+Out of memory allocating 34359738368 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84943110144/15735586816
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x14e709ffe010 device:0x14c708000000 size:34359738368 presentcount:0+1 line:83 name:ix[:n]
+host:0x14ef09fff010 device:0x14cf08000000 size:34359738368 presentcount:0+1 line:83 name:x[:n]
+allocated block device:0x14c708000000 size:34359738368 thread:1
+allocated block device:0x14cf08000000 size:34359738368 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/fft/sixstep_gpu.hpp
+ Function: _ZN10SixStepGPU12sixstep_evenEmmPA4_dS1_S1_S1_S1_S1_:74
+ Line: 83
+
+/var/opt/nec/nqsv/jsv/jobfile/0.96889.10/user_script: line 10: 2654417 Killed                  ../build/bench/SixstepGPUTime 31 -loops 100
+
+============================================================
+Request ID:             96889.nqsv
+Request Name:           SixstepGPUTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sun Nov 26 16:23:19 2023
+Started Request Time:   Sun Nov 26 16:24:04 2023
+Ended Request Time:     Sun Nov 26 17:22:35 2023
+Resources Information:
+  Elapse:               3511S
+  Remaining Elapse:     3689S
+============================================================

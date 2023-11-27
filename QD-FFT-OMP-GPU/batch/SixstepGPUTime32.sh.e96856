@@ -1,0 +1,27 @@
+Out of memory allocating 68,719,476,736 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84,943,110,144/15,735,586,816
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x152812833010 device:0x14f5d4000000 size:68719476736 presentcount:0+1 line:24 name:a[:n]
+allocated block device:0x14f5d4000000 size:68719476736 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/bench_util/bench_util.hpp
+ Function: _Z10warming_upPA4_dS0_m:21
+ Line: 24
+
+
+============================================================
+Request ID:             96856.nqsv
+Request Name:           SixstepGPUTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sat Nov 25 21:18:32 2023
+Started Request Time:   Sat Nov 25 21:19:17 2023
+Ended Request Time:     Sat Nov 25 22:00:24 2023
+Resources Information:
+  Elapse:               2467S
+  Remaining Elapse:     4733S
+============================================================

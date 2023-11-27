@@ -59,9 +59,12 @@ void stockham_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     qd *iy = (qd *)calloc(n, sizeof(qd));
     StockhamOMP::fft(n, p, *x, *ix, y, iy, w, iw);
     if (p & 1) {
-        *x  = y;
-        *ix = iy;
+        swap(x, &y);
+        swap(ix, &iy);
     }
+
+    free(y);
+    free(iy);
 }
 
 void stockham_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -70,10 +73,12 @@ void stockham_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Ti
     timer.start();
     StockhamOMP::fft(n, p, *x, *ix, y, iy, w, iw);
     if (p & 1) {
-        *x  = y;
-        *ix = iy;
+        swap(x, &y);
+        swap(ix, &iy);
     }
     timer.stop();
+    free(y);
+    free(iy);
 }
 
 void inv_stockham_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
@@ -84,4 +89,6 @@ void inv_stockham_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]
         div_pwr2((*x)[i], n, (*x)[i]);
         div_pwr2((*ix)[i], n, (*ix)[i]);
     }
+    free(y);
+    free(iy);
 }

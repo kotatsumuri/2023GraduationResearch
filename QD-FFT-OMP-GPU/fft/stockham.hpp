@@ -56,6 +56,8 @@ void stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
     Stockham::fft(n, p, x, ix, &y, &iy, w, iw);
+    free(y);
+    free(iy);
 }
 
 void stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -64,6 +66,8 @@ void stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer 
     timer.start();
     Stockham::fft(n, p, x, ix, &y, &iy, w, iw);
     timer.stop();
+    free(y);
+    free(iy);
 }
 
 void inv_stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
@@ -74,4 +78,6 @@ void inv_stockham(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
         div_pwr2((*x)[i], n, (*x)[i]);
         div_pwr2((*ix)[i], n, (*ix)[i]);
     }
+    free(y);
+    free(iy);
 }

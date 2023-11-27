@@ -1,0 +1,16 @@
+/var/opt/nec/nqsv/jsv/jobfile/0.96858.10/user_script: line 7: 1695938 Killed                  ../build/bench/StockhamGPUTime 31 --range -loops 100
+
+============================================================
+Request ID:             96858.nqsv
+Request Name:           StockhamGPUTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sat Nov 25 22:12:26 2023
+Started Request Time:   Sat Nov 25 22:13:12 2023
+Ended Request Time:     Sat Nov 25 23:49:47 2023
+Resources Information:
+  Elapse:               5795S
+  Remaining Elapse:     1405S
+============================================================

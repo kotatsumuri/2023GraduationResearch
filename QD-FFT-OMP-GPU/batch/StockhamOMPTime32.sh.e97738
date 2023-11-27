@@ -1,0 +1,17 @@
+
+%NQSV(INFO): Batch job received signal SIGKILL. (Exceeded per-req elapse time limit)
+
+============================================================
+Request ID:             97738.nqsv
+Request Name:           StockhamOMPTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Mon Nov 27 13:35:31 2023
+Started Request Time:   Mon Nov 27 13:36:15 2023
+Ended Request Time:     Mon Nov 27 15:36:23 2023
+Resources Information:
+  Elapse:               7208S
+  Remaining Elapse:     0S
+============================================================

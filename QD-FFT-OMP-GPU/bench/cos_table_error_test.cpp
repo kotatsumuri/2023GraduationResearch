@@ -16,8 +16,8 @@ int main(int argc, char *argv[]) {
 
     std::cout << "n, max_error, min_error, ave_error" << std::endl;
     for (uint64_t n = start_n; n <= end_n; n <<= 1) {
-        qd cos_table[n];
-        qd sin_table[n];
+        qd *cos_table = (qd *)calloc(n, sizeof(qd));
+        qd *sin_table = (qd *)calloc(n, sizeof(qd));
         make_cos_table(n, cos_table);
         make_sin_table(n, sin_table, cos_table);
 
@@ -49,6 +49,8 @@ int main(int argc, char *argv[]) {
             std::cout << std::endl;
         }
         std::cout << n << ", " << max_error << ", " << min_error << ", " << ave_error / (n >> 2) << std::endl;
+        free(cos_table);
+        free(sin_table);
     }
     return 0;
 }

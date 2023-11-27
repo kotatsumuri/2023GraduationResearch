@@ -323,6 +323,8 @@ void sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
         SixStepGPU::sixstep_odd(n, p, *x, *ix, y, iy, w, iw);
     else
         SixStepGPU::sixstep_even(n, p, *x, *ix, y, iy, w, iw);
+    free(y);
+    free(iy);
 }
 
 void sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -334,6 +336,8 @@ void sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Tim
     else
         SixStepGPU::sixstep_even(n, p, *x, *ix, y, iy, w, iw);
     timer.stop();
+    free(y);
+    free(iy);
 }
 
 void inv_sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
@@ -343,6 +347,8 @@ void inv_sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[])
         SixStepGPU::inv_sixstep_odd(n, p, *x, *ix, y, iy, w, iw);
     else
         SixStepGPU::inv_sixstep_even(n, p, *x, *ix, y, iy, w, iw);
+    free(y);
+    free(iy);
 }
 
 void inv_sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -354,4 +360,6 @@ void inv_sixstep_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[],
     else
         SixStepGPU::inv_sixstep_even(n, p, *x, *ix, y, iy, w, iw);
     timer.stop();
+    free(y);
+    free(iy);
 }

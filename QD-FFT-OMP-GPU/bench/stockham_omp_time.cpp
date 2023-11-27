@@ -8,10 +8,10 @@
 #include <qd.hpp>
 
 int main(int argc, char *argv[]) {
-    Arg arg(argc, argv, 4, {"--debug", "--range"}, {"-loops"}, {10});
+    Arg arg(argc, argv, 4, {"--debug", "--range"}, {"-loops", "-start"}, {10, 1});
     bool is_range = arg.has_flag("--range");
 
-    uint64_t start_p = 1ull;
+    uint64_t start_p = arg.get_option("-start");
     uint64_t end_p   = atoi(arg._argv[1]);
     uint64_t start_n = 1ull << start_p;
     uint64_t end_n   = 1ull << end_p;
@@ -52,6 +52,10 @@ int main(int argc, char *argv[]) {
             }
             std::cout << thread_num << ", " << n << "," << timer.calc_ave_microsec() << std::endl;
         }
+        free(x);
+        free(ix);
+        free(w);
+        free(iw);
     }
 
     return 0;

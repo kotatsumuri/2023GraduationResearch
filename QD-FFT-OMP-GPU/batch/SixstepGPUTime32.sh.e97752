@@ -1,0 +1,33 @@
+Out of memory allocating 17179869184 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84943110144/15735586816
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x14936fffc010 device:0x148f6e000000 size:17179869184 presentcount:0+1 line:148 name:iw[:n]
+host:0x14976fffd010 device:0x14a448000000 size:17179869184 presentcount:0+1 line:148 name:w[:n]
+host:0x149b6fffe010 device:0x14a848000000 size:17179869184 presentcount:0+1 line:148 name:ix[:n]
+host:0x149f6ffff010 device:0x147f6a000000 size:17179869184 presentcount:0+1 line:148 name:x[:n]
+allocated block device:0x147f6a000000 size:17179869184 thread:1
+allocated block device:0x148f6e000000 size:17179869184 thread:1
+allocated block device:0x14a448000000 size:17179869184 thread:1
+allocated block device:0x14a848000000 size:17179869184 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/fft/sixstep_gpu.hpp
+ Function: _ZN10SixStepGPU11sixstep_oddEmmPA4_dS1_S1_S1_S1_S1_:139
+ Line: 148
+
+
+============================================================
+Request ID:             97752.nqsv
+Request Name:           SixstepGPUTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Mon Nov 27 13:36:10 2023
+Started Request Time:   Mon Nov 27 13:36:56 2023
+Ended Request Time:     Mon Nov 27 15:01:21 2023
+Resources Information:
+  Elapse:               5065S
+  Remaining Elapse:     2135S
+============================================================

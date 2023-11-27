@@ -1,0 +1,48 @@
+Out of memory allocating 17179869184 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84943110144/15735586816
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x148029ffe010 device:0x147028000000 size:17179869184 presentcount:0+1 line:38 name:ix[:n]
+host:0x148429fff010 device:0x147428000000 size:17179869184 presentcount:0+1 line:38 name:x[:n]
+host:0x148a6c699010 device:0x146828000000 size:17179869184 presentcount:0+1 line:38 name:iw[:n]
+host:0x148e6c69a010 device:0x146c28000000 size:17179869184 presentcount:0+1 line:38 name:w[:n]
+allocated block device:0x146828000000 size:17179869184 thread:1
+allocated block device:0x146c28000000 size:17179869184 thread:1
+allocated block device:0x147028000000 size:17179869184 thread:1
+allocated block device:0x147428000000 size:17179869184 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/fft/stockham_gpu.hpp
+ Function: _ZN11StockhamGPU7fft_oddEmmPA4_dS1_S1_S1_S1_S1_:34
+ Line: 38
+
+Out of memory allocating 34359738368 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84943110144/15735586816
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x151de1ffe010 device:0x14fde0000000 size:34359738368 presentcount:0+1 line:12 name:ix[:n]
+host:0x1525e1fff010 device:0x1505e0000000 size:34359738368 presentcount:0+1 line:12 name:x[:n]
+allocated block device:0x14fde0000000 size:34359738368 thread:1
+allocated block device:0x1505e0000000 size:34359738368 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/fft/stockham_gpu.hpp
+ Function: _ZN11StockhamGPU8fft_evenEmmPA4_dS1_S1_S1_S1_S1_:8
+ Line: 12
+
+/var/opt/nec/nqsv/jsv/jobfile/0.96888.10/user_script: line 10: 2566814 Killed                  ../build/bench/StockhamGPUTime 31 -loops 100
+
+============================================================
+Request ID:             96888.nqsv
+Request Name:           StockhamGPUTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sun Nov 26 16:18:08 2023
+Started Request Time:   Sun Nov 26 16:18:53 2023
+Ended Request Time:     Sun Nov 26 17:17:26 2023
+Resources Information:
+  Elapse:               3513S
+  Remaining Elapse:     3687S
+============================================================

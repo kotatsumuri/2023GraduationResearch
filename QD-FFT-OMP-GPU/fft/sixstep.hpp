@@ -1,8 +1,8 @@
 #pragma once
+#include "../bench_util/Timer.hpp"
 #include "../qd/qd.hpp"
 #include "butterfly.hpp"
 #include "fft_util.hpp"
-#include "../bench_util/Timer.hpp"
 
 namespace SixStep {
 inline void fft(uint64_t n, uint64_t p, uint64_t u, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[]) {
@@ -38,10 +38,10 @@ inline void ifft(uint64_t n, uint64_t p, uint64_t u, qd *x, qd *ix, qd *y, qd *i
             double *b = (double *)iw[j * n / (2 * l) * u];
             for (uint64_t k = 0; k < m; k++) {
                 inv_butterfly(x[k + j * m], ix[k + j * m],
-                          x[k + j * m + l * m], ix[k + j * m + l * m],
-                          y[k + 2 * j * m], iy[k + 2 * j * m],
-                          y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                          a, b);
+                              x[k + j * m + l * m], ix[k + j * m + l * m],
+                              y[k + 2 * j * m], iy[k + 2 * j * m],
+                              y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
+                              a, b);
             }
         }
         swap(&x, &y);
@@ -95,15 +95,15 @@ void sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], qd w[
         swap(ix, iy);
     }
 
-    for (uint64_t j = 0;j < n2;j++) {
-        for (uint64_t i = 0;i < n1;i++) {
+    for (uint64_t j = 0; j < n2; j++) {
+        for (uint64_t i = 0; i < n1; i++) {
             double *a = (double *)w[i * j];
             double *b = (double *)iw[i * j];
             twist((*x)[i * n2 + j], (*ix)[i * n2 + j], (*y)[j * n1 + i], (*iy)[j * n1 + i], a, b);
         }
     }
 
-    for (uint64_t i = 0;i < n1;i++) {
+    for (uint64_t i = 0; i < n1; i++) {
         fft(n2, p2, u2, (*x) + i * n2, (*ix) + i * n2, (*y) + i * n2, (*iy) + i * n2, w, iw);
     }
 
@@ -144,15 +144,15 @@ void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd *y[], qd *iy[], q
         swap(ix, iy);
     }
 
-    for (uint64_t j = 0;j < n2;j++) {
-        for (uint64_t i = 0;i < n1;i++) {
+    for (uint64_t j = 0; j < n2; j++) {
+        for (uint64_t i = 0; i < n1; i++) {
             double *a = (double *)w[i * j];
             double *b = (double *)iw[i * j];
             inv_twist((*x)[i * n2 + j], (*ix)[i * n2 + j], (*y)[j * n1 + i], (*iy)[j * n1 + i], a, b);
         }
     }
 
-    for (uint64_t i = 0;i < n1;i++) {
+    for (uint64_t i = 0; i < n1; i++) {
         ifft(n2, p2, u2, (*x) + i * n2, (*ix) + i * n2, (*y) + i * n2, (*iy) + i * n2, w, iw);
     }
 
@@ -176,6 +176,8 @@ void sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     SixStep::sixstep(n, p, x, ix, &y, &iy, w, iw);
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }
 
 void sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -186,6 +188,8 @@ void sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &
     timer.stop();
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }
 
 void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
@@ -194,6 +198,8 @@ void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     SixStep::inv_sixstep(n, p, x, ix, &y, &iy, w, iw);
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }
 
 void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -204,4 +210,6 @@ void inv_sixstep(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Tim
     timer.stop();
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }

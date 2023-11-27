@@ -22,8 +22,8 @@ int main(int argc, char *argv[]) {
         start_n = end_n;
     }
 
-    qd base_w[end_n];
-    qd base_iw[end_n];
+    qd *base_w  = (qd *)calloc(end_n, sizeof(qd));
+    qd *base_iw = (qd *)calloc(end_n, sizeof(qd));
     make_cos_table(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
 
@@ -34,9 +34,11 @@ int main(int argc, char *argv[]) {
         rand_vector(n, x);
         rand_vector(n, ix);
 
+        qd *w  = base_w;
+        qd *iw = base_iw;
         if (n != end_n) {
-            qd w[n];
-            qd iw[n];
+            w  = (qd *)calloc(n, sizeof(qd));
+            iw = (qd *)calloc(n, sizeof(qd));
 
             for (uint64_t i = 0; i < n; i++) {
                 copy(base_w[end_n / n * i], w[i]);
@@ -51,6 +53,10 @@ int main(int argc, char *argv[]) {
             }
         }
         std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
+        free(x);
+        free(ix);
+        free(w);
+        free(iw);
     }
 
     return 0;

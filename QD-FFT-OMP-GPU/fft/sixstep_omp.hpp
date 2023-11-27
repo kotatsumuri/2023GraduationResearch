@@ -186,6 +186,8 @@ void sixstep_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     SixStepOMP::sixstep(n, p, x, ix, &y, &iy, w, iw);
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }
 
 void sixstep_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -196,6 +198,8 @@ void sixstep_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Tim
     timer.stop();
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }
 
 void inv_sixstep_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
@@ -204,6 +208,8 @@ void inv_sixstep_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[])
     SixStepOMP::inv_sixstep(n, p, x, ix, &y, &iy, w, iw);
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }
 
 void inv_sixstep_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -214,4 +220,6 @@ void inv_sixstep_omp(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[],
     timer.stop();
     swap(x, &y);
     swap(ix, &iy);
+    free(y);
+    free(iy);
 }

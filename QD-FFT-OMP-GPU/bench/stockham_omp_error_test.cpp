@@ -95,7 +95,14 @@ int main(int argc, char *argv[]) {
             std::cout << ave_error_bit_real << ", ";
             std::cout << ave_error_bit_imag << ", ";
             std::cout << (ave_error_bit_real + ave_error_bit_imag) / 2 << std::endl;
+
+            free(x);
+            free(ix);
+            free(actual_x);
+            free(actual_ix);
         }
+        free(w);
+        free(iw);
     }
     return 0;
 }

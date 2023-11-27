@@ -135,6 +135,8 @@ void stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
         StockhamGPU::fft_odd(n, p, *x, *ix, y, iy, w, iw);
     else
         StockhamGPU::fft_even(n, p, *x, *ix, y, iy, w, iw);
+    free(y);
+    free(iy);
 }
 
 void stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
@@ -146,6 +148,8 @@ void stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Ti
     else
         StockhamGPU::fft_even(n, p, *x, *ix, y, iy, w, iw);
     timer.stop();
+    free(y);
+    free(iy);
 }
 
 void inv_stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
@@ -155,4 +159,6 @@ void inv_stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]
         StockhamGPU::ifft_odd(n, p, *x, *ix, y, iy, w, iw);
     else
         StockhamGPU::ifft_even(n, p, *x, *ix, y, iy, w, iw);
+    free(y);
+    free(iy);
 }

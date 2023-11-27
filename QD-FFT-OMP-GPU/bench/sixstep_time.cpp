@@ -34,24 +34,29 @@ int main(int argc, char *argv[]) {
         rand_vector(n, x);
         rand_vector(n, ix);
 
+        qd *w  = base_w;
+        qd *iw = base_iw;
+
         if (n != end_n) {
-            qd *w  = (qd *)calloc(n, sizeof(qd));
-            qd *iw = (qd *)calloc(n, sizeof(qd));
+            w  = (qd *)calloc(n, sizeof(qd));
+            iw = (qd *)calloc(n, sizeof(qd));
 
             for (uint64_t i = 0; i < n; i++) {
                 copy(base_w[end_n / n * i], w[i]);
                 copy(base_iw[end_n / n * i], iw[i]);
             }
-
-            for (uint64_t k = 0; k < K; k++) {
-                sixstep(n, p, &x, &ix, w, iw, timer);
-            }
-        } else {
-            for (uint64_t k = 0; k < K; k++) {
-                sixstep(n, p, &x, &ix, base_w, base_iw, timer);
-            }
         }
+
+        for (uint64_t k = 0; k < K; k++) {
+            sixstep(n, p, &x, &ix, w, iw, timer);
+        }
+
         std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
+
+        free(x);
+        free(ix);
+        free(w);
+        free(iw);
     }
 
     return 0;
