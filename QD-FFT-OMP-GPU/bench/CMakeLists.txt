@@ -21,3 +21,4 @@ add_executable(SixstepGPUErrorTest sixstep_gpu_error_test.cpp)
 add_executable(SixstepGPUTime sixstep_gpu_time.cpp)
 
 add_executable(StockhamGPUN4ErrorTest stockham_gpu_n4_error_test.cpp)
+add_executable(StockhamGPUN4Time stockham_gpu_n4_time.cpp)
