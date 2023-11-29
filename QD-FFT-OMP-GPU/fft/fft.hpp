@@ -6,4 +6,5 @@
 #include "sixstep_omp.hpp"
 #include "stockham.hpp"
 #include "stockham_gpu.hpp"
+#include "stockham_gpu_n4.hpp"
 #include "stockham_omp.hpp"
