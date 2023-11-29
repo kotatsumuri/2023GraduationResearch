@@ -8,7 +8,7 @@ namespace StockhamGPU {
 inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[]) {
     uint64_t l = n >> 1;
     uint64_t m = 1;
-#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
@@ -34,7 +34,7 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
 inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w[], qd iw[]) {
     uint64_t l = n >> 1;
     uint64_t m = 1;
-#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
@@ -66,7 +66,7 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
 inline void ifft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[]) {
     uint64_t l = n >> 1;
     uint64_t m = 1;
-#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
@@ -98,7 +98,7 @@ inline void ifft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w
 inline void ifft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[]) {
     uint64_t l = n >> 1;
     uint64_t m = 1;
-#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n], iw[ : n]) map(alloc : y[ : n], iy[ : n])
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
