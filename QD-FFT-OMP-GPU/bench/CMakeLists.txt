@@ -1,4 +1,5 @@
 add_executable(CosTableErrorTest cos_table_error_test.cpp)
+add_executable(CosTableGPUErrorTest cos_table_gpu_error_test.cpp)
 
 add_executable(DIFErrorTest dif_error_test.cpp)
 
@@ -22,3 +23,6 @@ add_executable(SixstepGPUTime sixstep_gpu_time.cpp)
 
 add_executable(StockhamGPUN4ErrorTest stockham_gpu_n4_error_test.cpp)
 add_executable(StockhamGPUN4Time stockham_gpu_n4_time.cpp)
+
+add_executable(StockhamGPUN4ComplexErrorTest stockham_gpu_n4_complex_error_test.cpp)
+add_executable(StockhamGPUN4ComplexTime stockham_gpu_n4_complex_time.cpp)

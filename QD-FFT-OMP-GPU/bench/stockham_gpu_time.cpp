@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
     qd *base_w  = (qd *)calloc(end_n, sizeof(qd));
     qd *base_iw = (qd *)calloc(end_n, sizeof(qd));
-    make_cos_table(end_n, base_w);
+    make_cos_table_gpu(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
 
     if (warming_up(base_w, base_iw, 1 << 3) == NULL) {
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     }
 
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
-        Timer timer;
+        Timer timer, h2d_timer, d2h_timer, kernel_timer;
         qd *x  = (qd *)calloc(n, sizeof(qd));
         qd *ix = (qd *)calloc(n, sizeof(qd));
         rand_vector(n, x);
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
         if (n != end_n) {
             w  = (qd *)calloc(n, sizeof(qd));
             iw = (qd *)calloc(n, sizeof(qd));
-
+#pragma omp parallel for
             for (uint64_t i = 0; i < n; i++) {
                 copy(base_w[end_n / n * i], w[i]);
                 copy(base_iw[end_n / n * i], iw[i]);
@@ -57,10 +57,13 @@ int main(int argc, char *argv[]) {
         }
 
         for (uint64_t k = 0; k < K; k++) {
-            stockham_gpu(n, p, &x, &ix, w, iw, timer);
+            stockham_gpu(n, p, &x, &ix, w, iw, timer, h2d_timer, d2h_timer, kernel_timer);
         }
 
-        std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
+        std::cout << n << "," << timer.calc_ave_microsec() << ",";
+        std::cout << h2d_timer.calc_ave_microsec() << ",";
+        std::cout << d2h_timer.calc_ave_microsec() << ",";
+        std::cout << kernel_timer.elapsed_microsec_once() / K << std::endl;
         free(x);
         free(ix);
         free(w);

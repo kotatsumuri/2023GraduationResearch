@@ -1,10 +1,12 @@
 #pragma once
 #include "dif.hpp"
 #include "make_cos_table.hpp"
+#include "make_cos_table_gpu.hpp"
 #include "sixstep.hpp"
 #include "sixstep_gpu.hpp"
 #include "sixstep_omp.hpp"
 #include "stockham.hpp"
 #include "stockham_gpu.hpp"
 #include "stockham_gpu_n4.hpp"
+#include "stockham_gpu_n4_complex.hpp"
 #include "stockham_omp.hpp"

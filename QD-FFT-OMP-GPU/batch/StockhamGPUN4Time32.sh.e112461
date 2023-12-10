@@ -1,0 +1,31 @@
+Out of memory allocating 34359738368 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84943110144/7143555072
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x147ecdffe010 device:0x149526000000 size:34359738368 presentcount:0+1 line:12 name:ix[:n]
+host:0x1486cdfff010 device:0x149d26000000 size:34359738368 presentcount:0+1 line:12 name:x[:n]
+host:0x14a527fff010 device:0x149324000000 size:8589934624 presentcount:0+1 line:12 name:w[:?+1]
+allocated block device:0x149324000000 size:8589935104 thread:1
+allocated block device:0x149526000000 size:34359738368 thread:1
+allocated block device:0x149d26000000 size:34359738368 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/fft/stockham_gpu_n4.hpp
+ Function: _ZN13StockhamGPUN48fft_evenEmmPA4_dS1_S1_S1_S1_:8
+ Line: 12
+
+
+============================================================
+Request ID:             112461.nqsv
+Request Name:           StockhamGPUN4Time32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Wed Nov 29 23:46:17 2023
+Started Request Time:   Thu Nov 30 00:16:33 2023
+Ended Request Time:     Thu Nov 30 02:06:02 2023
+Resources Information:
+  Elapse:               6573S
+  Remaining Elapse:     627S
+============================================================

@@ -24,9 +24,9 @@ int main(int argc, char *argv[]) {
         start_n = end_n;
     }
 
-    qd *base_w  = (qd *)calloc(end_n / 4 + 1, sizeof(qd));
-    make_quater_cos_table(end_n, base_w);
-
+    qd *base_w = (qd *)calloc(end_n / 4 + 1, sizeof(qd));
+    make_quater_cos_table_gpu(end_n, base_w);
+    std::cout << "n, average-time, h2d-time, d2h-time, kernel-time, hd2-time(%), d2h-time(%), kernel-time(%)" << std::endl;
     if (warming_up(base_w, base_w, 1 << 3) == NULL) {
         exit(1);
     } else {
@@ -36,26 +36,32 @@ int main(int argc, char *argv[]) {
     }
 
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
-        Timer timer;
+        Timer timer, d2h_timer, h2d_timer, kernel_timer;
         qd *x  = (qd *)calloc(n, sizeof(qd));
         qd *ix = (qd *)calloc(n, sizeof(qd));
         rand_vector(n, x);
         rand_vector(n, ix);
 
-        qd *w  = base_w;
+        qd *w = base_w;
         if (n != end_n) {
-            w  = (qd *)calloc(n / 4 + 1, sizeof(qd));
-
+            w = (qd *)calloc(n / 4 + 1, sizeof(qd));
+#pragma omp parallel for
             for (uint64_t i = 0; i < n / 4; i++) {
                 copy(base_w[end_n / n * i], w[i]);
             }
         }
 
         for (uint64_t k = 0; k < K; k++) {
-            stockham_gpu_n4(n, p, &x, &ix, w, timer);
+            stockham_gpu_n4(n, p, &x, &ix, w, timer, h2d_timer, d2h_timer, kernel_timer);
         }
 
-        std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
+        std::cout << n << "," << timer.calc_ave_microsec() << ",";
+        std::cout << h2d_timer.calc_ave_microsec() << ",";
+        std::cout << d2h_timer.calc_ave_microsec() << ",";
+        std::cout << kernel_timer.elapsed_microsec_once() / K << ",";
+        std::cout << h2d_timer.calc_ave_microsec() / timer.calc_ave_microsec() * 100 << ",";
+        std::cout << d2h_timer.calc_ave_microsec() / timer.calc_ave_microsec() * 100 << ",";
+        std::cout << kernel_timer.elapsed_microsec_once() / K / timer.calc_ave_microsec() * 100 << std::endl;
         free(x);
         free(ix);
         free(w);

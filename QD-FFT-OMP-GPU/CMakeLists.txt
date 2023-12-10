@@ -5,11 +5,6 @@ set(CMAKE_BUILD_TYPE "Release")
 
 project(QD-FFT CXX)
 
-find_package(OpenMP REQUIRED)
-if(OpenMP_FOUND)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
 include_directories(qd)
 include_directories(fft)
 include_directories(bench_util)

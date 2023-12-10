@@ -13,7 +13,7 @@ inline void swap(double ***a, double ***b) {
     *b           = tmp;
 }
 
-inline void swap(qd **a, qd **b) {
+inline void swap(qd restrict **a, qd restrict **b) {
     qd *tmp = *a;
     *a      = *b;
     *b      = tmp;
@@ -38,4 +38,16 @@ inline void swap(qd a, qd b) {
     tmp        = a[3];
     a[3]       = b[3];
     b[3]       = tmp;
+}
+
+inline void swap(qd_complex *a, qd_complex *b) {
+    qd_complex tmp = *a;
+    *a             = *b;
+    *b             = tmp;
+}
+
+inline void swap(qd_complex **a, qd_complex **b) {
+    qd_complex *tmp = *a;
+    *a              = *b;
+    *b              = tmp;
 }

@@ -30,4 +30,8 @@ public:
     double calc_ave_microsec() {
         return elapsed_microsec / (double)count;
     }
+
+    double elapsed_microsec_once() {
+        return elapsed_microsec;
+    }
 };

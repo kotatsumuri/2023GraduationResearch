@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
     qd *base_w  = (qd *)calloc(end_n, sizeof(qd));
     qd *base_iw = (qd *)calloc(end_n, sizeof(qd));
-    make_cos_table(end_n, base_w);
+    make_cos_table_gpu(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
 
     std::cout << "n, real-average-error-bit, imag-average-error-bit, average-error-bit" << std::endl;
@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
         if (n != end_n) {
             w  = (qd *)calloc(n, sizeof(qd));
             iw = (qd *)calloc(n, sizeof(qd));
+#pragma omp parallel for
             for (uint64_t i = 0; i < n; i++) {
                 copy(base_w[end_n / n * i], w[i]);
                 copy(base_iw[end_n / n * i], iw[i]);

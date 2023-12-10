@@ -1,6 +1,7 @@
 #pragma once
-#include <qd.hpp>
+#include <omp.h>
 
+#include <qd.hpp>
 double error_bit(const qd real, const qd actual) {
     qd c;
     sub(actual, real, c);
@@ -12,10 +13,23 @@ double error_bit(const qd real, const qd actual) {
 
 double average_error_bit(uint64_t n, const qd *real, const qd *actual) {
     double sum = 0;
+    omp_set_num_threads(48);
+#pragma omp parallel for reduction(+ : sum)
     for (uint64_t i = 0; i < n; i++) {
         sum += error_bit(real[i], actual[i]);
     }
     return sum / n;
+}
+
+double average_error_bit(uint64_t n, const qd_complex *real, const qd_complex *actual) {
+    double sum = 0;
+    omp_set_num_threads(48);
+#pragma omp parallel for reduction(+ : sum)
+    for (uint64_t i = 0; i < n; i++) {
+        sum += error_bit(real[i].re, actual[i].re);
+        sum += error_bit(real[i].im, actual[i].im);
+    }
+    return sum / (2 * n);
 }
 
 qd *warming_up(qd *a, qd *b, uint64_t n) {

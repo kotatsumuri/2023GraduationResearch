@@ -1,4 +1,6 @@
 #pragma once
+#include <omp.h>
+
 #include <cstdint>
 #include <queue>
 
@@ -77,6 +79,8 @@ void make_sin_table(uint64_t n, qd sin_table[], qd cos_table[]) {
         init(sin_table[1], 0);
         return;
     }
+    omp_set_num_threads(48);
+#pragma omp parallel for
     for (uint64_t i = 0; i < (n >> 2); i++) {
         copy(cos_table[(n >> 2) - i], sin_table[i]);
         copy(cos_table[i], sin_table[i + (n >> 2)]);

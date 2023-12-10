@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
     qd *base_w  = (qd *)calloc(end_n, sizeof(qd));
     qd *base_iw = (qd *)calloc(end_n, sizeof(qd));
-    make_cos_table(end_n, base_w);
+    make_cos_table_gpu(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
 
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
@@ -39,18 +39,15 @@ int main(int argc, char *argv[]) {
         if (n != end_n) {
             w  = (qd *)calloc(n, sizeof(qd));
             iw = (qd *)calloc(n, sizeof(qd));
-
+#pragma omp parallel for
             for (uint64_t i = 0; i < n; i++) {
                 copy(base_w[end_n / n * i], w[i]);
                 copy(base_iw[end_n / n * i], iw[i]);
             }
-            for (uint64_t k = 0; k < K; k++) {
-                stockham(n, p, &x, &ix, w, iw, timer);
-            }
-        } else {
-            for (uint64_t k = 0; k < K; k++) {
-                stockham(n, p, &x, &ix, base_w, base_iw, timer);
-            }
+        }
+
+        for (uint64_t k = 0; k < K; k++) {
+            stockham(n, p, &x, &ix, w, iw, timer);
         }
         std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
         free(x);

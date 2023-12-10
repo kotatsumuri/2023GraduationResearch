@@ -5,9 +5,9 @@
 #include <qd.hpp>
 
 int main(int argc, char *argv[]) {
-    Arg arg          = Arg(argc, argv, 2, {"--debug", "--range"}, {}, {});
-    bool is_debug    = arg.has_flag("--debug");
-    bool is_range    = arg.has_flag("--range");
+    Arg arg       = Arg(argc, argv, 2, {"--debug", "--range"}, {}, {});
+    bool is_debug = arg.has_flag("--debug");
+    bool is_range = arg.has_flag("--range");
 
     uint64_t start_p = 2ull;
     uint64_t end_p   = atoi(arg._argv[1]);
@@ -18,8 +18,8 @@ int main(int argc, char *argv[]) {
         start_n = end_n;
     }
 
-    qd *base_w  = (qd *)calloc(end_n / 4 + 1, sizeof(qd));
-    make_quater_cos_table(end_n, base_w);
+    qd *base_w = (qd *)calloc(end_n / 4 + 1, sizeof(qd));
+    make_quater_cos_table_gpu(end_n, base_w);
 
     if (warming_up(base_w, base_w, end_n / 4 + 1) == NULL) {
         exit(1);
@@ -31,9 +31,10 @@ int main(int argc, char *argv[]) {
 
     std::cout << "n, real-average-error-bit, imag-average-error-bit, average-error-bit" << std::endl;
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
-        qd *w  = base_w;
+        qd *w = base_w;
         if (n != end_n) {
-            w  = (qd *)calloc(n / 4 + 1, sizeof(qd));
+            w = (qd *)calloc(n / 4 + 1, sizeof(qd));
+#pragma omp parallel for
             for (uint64_t i = 0; i < n / 4; i++) {
                 copy(base_w[end_n / n * i], w[i]);
             }

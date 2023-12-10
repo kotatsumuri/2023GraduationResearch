@@ -4,4 +4,4 @@
 #PBS -l elapstim_req=02:00:00
 
 cd $PBS_O_WORKDIR
-../build/bench/StockhamGPUTime 30 --range -loops 100
+../build/bench/StockhamGPUTime 29 --range -loops 10

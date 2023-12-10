@@ -27,7 +27,7 @@ inline void renormalize(qd a) {
     }
 }
 
-inline void renormalize(qd a, double b) {
+inline void renormalize(qd restrict a, double b) {
     double s, e, t[5];
     int k, i;
 
@@ -52,7 +52,7 @@ inline void renormalize(qd a, double b) {
     }
 }
 
-inline void add(const qd a, const qd b, qd s) {
+inline void add(const qd a, const qd b, qd restrict s) {
     double t[4];
     two_sum(a[0], b[0], s, t);
     two_sum(a[1], b[1], s + 1, t + 1);
@@ -65,7 +65,7 @@ inline void add(const qd a, const qd b, qd s) {
     renormalize(s, t[1]);
 }
 
-inline void add(const qd a, double b, qd s) {
+inline void add(const qd a, double b, qd restrict s) {
     double e;
     two_sum(a[0], b, s, &e);
     two_sum(a[1], e, s + 1, &e);
@@ -74,7 +74,7 @@ inline void add(const qd a, double b, qd s) {
     renormalize(s, e);
 }
 
-inline void sub(const qd a, const qd b, qd s) {
+inline void sub(const qd a, const qd b, qd restrict s) {
     double t[4];
     two_sum(a[0], -b[0], s, t);
     two_sum(a[1], -b[1], s + 1, t + 1);
@@ -87,7 +87,7 @@ inline void sub(const qd a, const qd b, qd s) {
     renormalize(s, t[1]);
 }
 
-inline void sub(const qd a, double b, qd s) {
+inline void sub(const qd a, double b, qd restrict s) {
     double e;
     two_sum(a[0], -b, s, &e);
     two_sum(a[1], e, s + 1, &e);
@@ -96,7 +96,7 @@ inline void sub(const qd a, double b, qd s) {
     renormalize(s, e);
 }
 
-inline void sub(double a, const qd b, qd s) {
+inline void sub(double a, const qd b, qd restrict s) {
     double e;
     two_sum(-b[0], a, s, &e);
     two_sum(-b[1], e, s + 1, &e);
@@ -105,7 +105,7 @@ inline void sub(double a, const qd b, qd s) {
     renormalize(s, e);
 }
 
-inline void mul(const qd a, const qd b, qd p) {
+inline void mul(const qd a, const qd b, qd restrict p) {
     double t[17];
     two_prod(a[0], b[0], p, p + 1);                // 0, 1
     two_prod(a[0], b[1], t, t + 1);                // 1, 2
@@ -133,7 +133,7 @@ inline void mul(const qd a, const qd b, qd p) {
 #endif
 }
 
-void mul(const qd a, double b, qd p) {
+void mul(const qd a, double b, qd restrict p) {
     double t[4];
     two_prod(a[0], b, p, t);
     two_prod(a[1], b, p + 1, t + 1);
@@ -146,21 +146,21 @@ void mul(const qd a, double b, qd p) {
     renormalize(p, t[0]);
 }
 
-inline void mul_pwr2(const qd a, double b, qd p) {
+inline void mul_pwr2(const qd a, double b, qd restrict p) {
     p[0] = a[0] * b;
     p[1] = a[1] * b;
     p[2] = a[2] * b;
     p[3] = a[3] * b;
 }
 
-inline void div_pwr2(const qd a, double b, qd p) {
+inline void div_pwr2(const qd a, double b, qd restrict p) {
     p[0] = a[0] / b;
     p[1] = a[1] / b;
     p[2] = a[2] / b;
     p[3] = a[3] / b;
 }
 
-inline void sqr(const qd a, qd p) {
+inline void sqr(const qd a, qd restrict p) {
     double t[17];
     two_prod(a[0], a[0], p, p + 1);                // 0, 1
     two_prod(a[0], a[1], t, t + 1);                // 1, 2
@@ -182,7 +182,7 @@ inline void sqr(const qd a, qd p) {
     renormalize(p, t[0]);
 }
 
-inline void fabs(const qd a, qd b) {
+inline void fabs(const qd a, qd restrict b) {
     if (a[0] >= 0)
         copy(a, b);
     else

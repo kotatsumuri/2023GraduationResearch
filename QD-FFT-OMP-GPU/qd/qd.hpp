@@ -2,6 +2,11 @@
 
 using qd = double[4];
 
+struct qd_complex {
+    qd re;
+    qd im;
+};
+
 #include "common.hpp"
 #include "qd_base.hpp"
 #include "qd_init.hpp"

@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
     qd *base_w  = (qd *)calloc(end_n, sizeof(qd));
     qd *base_iw = (qd *)calloc(end_n, sizeof(qd));
-    make_cos_table(end_n, base_w);
+    make_cos_table_gpu(end_n, base_w);
     make_sin_table(end_n, base_iw, base_w);
 
     std::cout << "n, real-average-error-bit, imag-average-error-bit, average-error-bit" << std::endl;

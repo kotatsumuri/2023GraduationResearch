@@ -5,7 +5,7 @@
 #include "fft_util.hpp"
 
 namespace StockhamOMP {
-void fft(uint64_t n, uint64_t p, qd x[], qd ix[], qd y[], qd iy[], qd w[], qd iw[]) {
+void fft(uint64_t n, uint64_t p, qd restrict x[], qd restrict ix[], qd restrict y[], qd restrict iy[], qd restrict w[], qd restrict iw[]) {
     uint64_t l = n >> 1;
     uint64_t m = 1;
 
