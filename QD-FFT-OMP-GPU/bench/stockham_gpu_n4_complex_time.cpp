@@ -34,9 +34,9 @@ int main(int argc, char *argv[]) {
             std::cout << "Warming up is done." << std::endl;
         }
     }
-
+    std::cout << "n, average-time, h2d-time, d2h-time, kernel-time, hd2-time(%), d2h-time(%), kernel-time(%)" << std::endl;
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
-        Timer timer;
+        Timer timer, h2d_timer, d2h_timer, kernel_timer;
         qd_complex *x = (qd_complex *)calloc(n, sizeof(qd_complex));
         rand_vector(n, x);
 
@@ -50,10 +50,16 @@ int main(int argc, char *argv[]) {
         }
 
         for (uint64_t k = 0; k < K; k++) {
-            stockham_gpu_n4_complex(n, p, &x, w, timer);
+            stockham_gpu_n4_complex(n, p, &x, w, timer, h2d_timer, d2h_timer, kernel_timer);
         }
 
-        std::cout << n << "," << timer.calc_ave_microsec() << std::endl;
+        std::cout << n << "," << timer.calc_ave_microsec() << ",";
+        std::cout << h2d_timer.calc_ave_microsec() << ",";
+        std::cout << d2h_timer.calc_ave_microsec() << ",";
+        std::cout << kernel_timer.elapsed_microsec_once() / K << ",";
+        std::cout << h2d_timer.calc_ave_microsec() / timer.calc_ave_microsec() * 100 << ",";
+        std::cout << d2h_timer.calc_ave_microsec() / timer.calc_ave_microsec() * 100 << ",";
+        std::cout << kernel_timer.elapsed_microsec_once() / K / timer.calc_ave_microsec() * 100 << std::endl;
         free(x);
         free(w);
     }

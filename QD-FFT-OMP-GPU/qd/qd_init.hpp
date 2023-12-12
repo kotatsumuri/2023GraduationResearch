@@ -43,3 +43,8 @@ inline void minus(qd a) {
     a[2] = -a[2];
     a[3] = -a[3];
 }
+
+inline void copy(const qd_complex a, qd_complex& restrict b) {
+    copy(a.re, b.re);
+    copy(a.im, b.im);
+}

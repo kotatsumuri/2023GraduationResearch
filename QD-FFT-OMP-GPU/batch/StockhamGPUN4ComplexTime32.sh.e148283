@@ -1,0 +1,15 @@
+
+============================================================
+Request ID:             148283.nqsv
+Request Name:           StockhamGPUN4ComplexTime32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Tue Dec 12 11:06:55 2023
+Started Request Time:   Tue Dec 12 11:07:32 2023
+Ended Request Time:     Tue Dec 12 11:32:15 2023
+Resources Information:
+  Elapse:               1487S
+  Remaining Elapse:     5713S
+============================================================

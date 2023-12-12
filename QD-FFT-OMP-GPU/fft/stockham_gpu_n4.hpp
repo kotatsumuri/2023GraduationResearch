@@ -33,11 +33,16 @@ inline void fft_even(uint64_t n, uint64_t p, qd restrict *x, qd restrict *ix, qd
                     }
                     idx_a     = n4 - idx_a;
                     double *b = (double *)w[idx_a];
-                    butterfly(x[k + (j << mp)], ix[k + (j << mp)],
-                              x[k + (j << mp) + n2], ix[k + (j << mp) + n2],
-                              y[k + (j << (mp + 1))], iy[k + (j << (mp + 1))],
-                              y[k + (j << (mp + 1)) + m], iy[k + (j << (mp + 1)) + m],
-                              a, b);
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);
@@ -76,11 +81,16 @@ inline void fft_odd(uint64_t n, uint64_t p, qd restrict *x, qd restrict *ix, qd 
                     }
                     idx_a     = n4 - idx_a;
                     double *b = (double *)w[idx_a];
-                    butterfly(x[k + (j << mp)], ix[k + (j << mp)],
-                              x[k + (j << mp) + n2], ix[k + (j << mp) + n2],
-                              y[k + (j << (mp + 1))], iy[k + (j << (mp + 1))],
-                              y[k + (j << (mp + 1)) + m], iy[k + (j << (mp + 1)) + m],
-                              a, b);
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);
@@ -128,11 +138,16 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
                     }
                     idx_a     = n4 - idx_a;
                     double *b = (double *)w[idx_a];
-                    butterfly(x[k + j * m], ix[k + j * m],
-                              x[k + j * m + l * m], ix[k + j * m + l * m],
-                              y[k + 2 * j * m], iy[k + 2 * j * m],
-                              y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                              a, b);
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             kernel_timer.stop();
@@ -177,11 +192,16 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
                     }
                     idx_a     = n4 - idx_a;
                     double *b = (double *)w[idx_a];
-                    butterfly(x[k + j * m], ix[k + j * m],
-                              x[k + j * m + l * m], ix[k + j * m + l * m],
-                              y[k + 2 * j * m], iy[k + 2 * j * m],
-                              y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                              a, b);
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             kernel_timer.stop();
@@ -229,11 +249,16 @@ inline void ifft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w
                     }
                     idx_a     = n4 - idx_a;
                     double *b = (double *)w[idx_a];
-                    inv_butterfly(x[k + j * m], ix[k + j * m],
-                                  x[k + j * m + l * m], ix[k + j * m + l * m],
-                                  y[k + 2 * j * m], iy[k + 2 * j * m],
-                                  y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                                  a, b);
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    inv_butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);
@@ -278,11 +303,16 @@ inline void ifft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
                     }
                     idx_a     = n4 - idx_a;
                     double *b = (double *)w[idx_a];
-                    inv_butterfly(x[k + j * m], ix[k + j * m],
-                                  x[k + j * m + l * m], ix[k + j * m + l * m],
-                                  y[k + 2 * j * m], iy[k + 2 * j * m],
-                                  y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                                  a, b);
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    inv_butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);

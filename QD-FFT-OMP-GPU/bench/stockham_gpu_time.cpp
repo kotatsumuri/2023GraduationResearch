@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Warming up is done." << std::endl;
         }
     }
+    std::cout << "n, average-time, h2d-time, d2h-time, kernel-time, hd2-time(%), d2h-time(%), kernel-time(%)" << std::endl;
 
     for (uint64_t n = start_n, p = start_p; n <= end_n; n <<= 1, p++) {
         Timer timer, h2d_timer, d2h_timer, kernel_timer;
@@ -63,7 +64,10 @@ int main(int argc, char *argv[]) {
         std::cout << n << "," << timer.calc_ave_microsec() << ",";
         std::cout << h2d_timer.calc_ave_microsec() << ",";
         std::cout << d2h_timer.calc_ave_microsec() << ",";
-        std::cout << kernel_timer.elapsed_microsec_once() / K << std::endl;
+        std::cout << kernel_timer.elapsed_microsec_once() / K << ",";
+        std::cout << h2d_timer.calc_ave_microsec() / timer.calc_ave_microsec() * 100 << ",";
+        std::cout << d2h_timer.calc_ave_microsec() / timer.calc_ave_microsec() * 100 << ",";
+        std::cout << kernel_timer.elapsed_microsec_once() / K / timer.calc_ave_microsec() * 100 << std::endl;
         free(x);
         free(ix);
         free(w);

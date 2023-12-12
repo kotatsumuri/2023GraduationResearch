@@ -1,3 +1,4 @@
+
 #pragma once
 #include "../bench_util/Timer.hpp"
 #include "../qd/qd.hpp"
@@ -6,53 +7,73 @@
 
 namespace StockhamGPU {
 inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[]) {
-    uint64_t l = n >> 1;
-    uint64_t m = 1;
+    uint64_t n2 = n >> 1;
+    uint64_t l  = n2;
+    uint64_t m  = 1;
+    uint64_t lp = p - 1;
+    uint64_t mp = 0;
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    double *a = (double *)w[j * n / (2 * l)];
-                    double *b = (double *)iw[j * n / (2 * l)];
-                    butterfly(x[k + j * m], ix[k + j * m],
-                              x[k + j * m + l * m], ix[k + j * m + l * m],
-                              y[k + 2 * j * m], iy[k + 2 * j * m],
-                              y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                              a, b);
+                    double *a = (double *)w[j << (p - (1 + lp))];
+                    double *b = (double *)iw[j << (p - (1 + lp))];
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);
             swap(&ix, &iy);
             l >>= 1;
             m <<= 1;
+            mp++;
+            lp--;
         }
     }
 }
 
 inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w[], qd iw[]) {
-    uint64_t l = n >> 1;
-    uint64_t m = 1;
+    uint64_t n2 = n >> 1;
+    uint64_t l  = n2;
+    uint64_t m  = 1;
+    uint64_t lp = p - 1;
+    uint64_t mp = 0;
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    double *a = (double *)w[j * n / (2 * l)];
-                    double *b = (double *)iw[j * n / (2 * l)];
-                    butterfly(x[k + j * m], ix[k + j * m],
-                              x[k + j * m + l * m], ix[k + j * m + l * m],
-                              y[k + 2 * j * m], iy[k + 2 * j * m],
-                              y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                              a, b);
+                    double *a = (double *)w[j << (p - (1 + lp))];
+                    double *b = (double *)iw[j << (p - (1 + lp))];
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);
             swap(&ix, &iy);
             l >>= 1;
             m <<= 1;
+            mp++;
+            lp--;
         }
 
 #pragma omp target teams distribute parallel for
@@ -64,8 +85,11 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
 }
 
 inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[], Timer &h2d_timer, Timer &d2h_timer, Timer &kernel_timer) {
-    uint64_t l = n >> 1;
-    uint64_t m = 1;
+    uint64_t n2 = n >> 1;
+    uint64_t l  = n2;
+    uint64_t m  = 1;
+    uint64_t lp = p - 1;
+    uint64_t mp = 0;
     h2d_timer.start();
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
@@ -75,13 +99,18 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    double *a = (double *)w[j * n / (2 * l)];
-                    double *b = (double *)iw[j * n / (2 * l)];
-                    butterfly(x[k + j * m], ix[k + j * m],
-                              x[k + j * m + l * m], ix[k + j * m + l * m],
-                              y[k + 2 * j * m], iy[k + 2 * j * m],
-                              y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                              a, b);
+                    double *a = (double *)w[j << (p - (1 + lp))];
+                    double *b = (double *)iw[j << (p - (1 + lp))];
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             kernel_timer.stop();
@@ -89,6 +118,8 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
             swap(&ix, &iy);
             l >>= 1;
             m <<= 1;
+            mp++;
+            lp--;
         }
         d2h_timer.start();
     }
@@ -96,8 +127,11 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
 }
 
 inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w[], qd iw[], Timer &h2d_timer, Timer &d2h_timer, Timer &kernel_timer) {
-    uint64_t l = n >> 1;
-    uint64_t m = 1;
+    uint64_t n2 = n >> 1;
+    uint64_t l  = n2;
+    uint64_t m  = 1;
+    uint64_t lp = p - 1;
+    uint64_t mp = 0;
     h2d_timer.start();
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
@@ -107,13 +141,18 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    double *a = (double *)w[j * n / (2 * l)];
-                    double *b = (double *)iw[j * n / (2 * l)];
-                    butterfly(x[k + j * m], ix[k + j * m],
-                              x[k + j * m + l * m], ix[k + j * m + l * m],
-                              y[k + 2 * j * m], iy[k + 2 * j * m],
-                              y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                              a, b);
+                    double *a = (double *)w[j << (p - (1 + lp))];
+                    double *b = (double *)iw[j << (p - (1 + lp))];
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             kernel_timer.stop();
@@ -121,6 +160,8 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
             swap(&ix, &iy);
             l >>= 1;
             m <<= 1;
+            mp++;
+            lp--;
         }
 
 #pragma omp target teams distribute parallel for
@@ -134,27 +175,37 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
 }
 
 inline void ifft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[]) {
-    uint64_t l = n >> 1;
-    uint64_t m = 1;
+    uint64_t n2 = n >> 1;
+    uint64_t l  = n2;
+    uint64_t m  = 1;
+    uint64_t lp = p - 1;
+    uint64_t mp = 0;
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    double *a = (double *)w[j * n / (2 * l)];
-                    double *b = (double *)iw[j * n / (2 * l)];
-                    inv_butterfly(x[k + j * m], ix[k + j * m],
-                                  x[k + j * m + l * m], ix[k + j * m + l * m],
-                                  y[k + 2 * j * m], iy[k + 2 * j * m],
-                                  y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                                  a, b);
+                    double *a = (double *)w[j << (p - (1 + lp))];
+                    double *b = (double *)iw[j << (p - (1 + lp))];
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    inv_butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);
             swap(&ix, &iy);
             l >>= 1;
             m <<= 1;
+            mp++;
+            lp--;
         }
 
 #pragma omp target teams distribute parallel for
@@ -166,27 +217,37 @@ inline void ifft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w
 }
 
 inline void ifft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[], qd iw[]) {
-    uint64_t l = n >> 1;
-    uint64_t m = 1;
+    uint64_t n2 = n >> 1;
+    uint64_t l  = n2;
+    uint64_t m  = 1;
+    uint64_t lp = p - 1;
+    uint64_t mp = 0;
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         for (uint64_t t = 0; t < p; t++) {
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    double *a = (double *)w[j * n / (2 * l)];
-                    double *b = (double *)iw[j * n / (2 * l)];
-                    inv_butterfly(x[k + j * m], ix[k + j * m],
-                                  x[k + j * m + l * m], ix[k + j * m + l * m],
-                                  y[k + 2 * j * m], iy[k + 2 * j * m],
-                                  y[k + 2 * j * m + m], iy[k + 2 * j * m + m],
-                                  a, b);
+                    double *a = (double *)w[j << (p - (1 + lp))];
+                    double *b = (double *)iw[j << (p - (1 + lp))];
+                    qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
+                    copy(x[k + (j << mp)], x0);
+                    copy(ix[k + (j << mp)], ix0);
+                    copy(x[k + (j << mp) + n2], x1);
+                    copy(ix[k + (j << mp) + n2], ix1);
+                    inv_butterfly(x0, ix0, x1, ix1, y0, iy0, y1, iy1, a, b);
+                    copy(y0, y[k + (j << (mp + 1))]);
+                    copy(iy0, iy[k + (j << (mp + 1))]);
+                    copy(y1, y[k + (j << (mp + 1)) + m]);
+                    copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
             swap(&x, &y);
             swap(&ix, &iy);
             l >>= 1;
             m <<= 1;
+            mp++;
+            lp--;
         }
 
 #pragma omp target teams distribute parallel for
