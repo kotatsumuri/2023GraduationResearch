@@ -1,0 +1,17 @@
+
+%NQSV(INFO): Batch job received signal SIGKILL. (Exceeded per-req elapse time limit)
+
+============================================================
+Request ID:             163862.nqsv
+Request Name:           StockhamGPUBenchFFTSpeed.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sat Jan 13 15:00:31 2024
+Started Request Time:   Sat Jan 13 15:01:00 2024
+Ended Request Time:     Sat Jan 13 17:01:05 2024
+Resources Information:
+  Elapse:               7208S
+  Remaining Elapse:     0S
+============================================================

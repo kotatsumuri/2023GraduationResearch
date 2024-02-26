@@ -1,0 +1,15 @@
+
+============================================================
+Request ID:             164185.nqsv
+Request Name:           StockhamOMPBenchFFTSpeed.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Sun Jan 14 13:49:21 2024
+Started Request Time:   Sun Jan 14 13:49:51 2024
+Ended Request Time:     Sun Jan 14 14:37:05 2024
+Resources Information:
+  Elapse:               2838S
+  Remaining Elapse:     4362S
+============================================================

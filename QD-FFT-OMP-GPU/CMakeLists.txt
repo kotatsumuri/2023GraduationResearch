@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.25)
-set(CMAKE_CXX_COMPILER /system/apps/ubuntu/20.04-202304/nvhpc/23.7/Linux_x86_64/23.7/compilers/bin/nvc++)
-set(CMAKE_CXX_FLAGS "-fast -mp=gpu -gpu=cc90 -Minfo=accel,opt,mp -Wall -DTWO_PROD_FMA")
-set(CMAKE_BUILD_TYPE "Release")
-
+if (CMAKE_BUILD_TYPE STREQUAL "GPU")
+    set(CMAKE_CXX_COMPILER /system/apps/ubuntu/20.04-202304/nvhpc/23.7/Linux_x86_64/23.7/compilers/bin/nvc++)
+    set(CMAKE_CXX_FLAGS "-fast -mp=gpu -gpu=cc90 -Minfo=accel,opt,mp -Wall -DTWO_PROD_FMA")
+elseif (CMAKE_BUILD_TYPE STREQUAL "CPU")
+    set(CMAKE_CXX_COMPILER "/system/apps/ubuntu/20.04-202304/oneapi/2023.0.0/compiler/2023.0.0/linux/bin/icpx")
+    set(CMAKE_CXX_FLAGS "-O2 -xHOST -fma -fopenmp -Wall -DTWO_PROD_FMA -std=c++17")
+    # set(CMAKE_CXX_FLAGS "-fast -mp=multicore -Minfo=accel,opt,mp -Wall -DTWO_PROD_FMA")
+endif()
 project(QD-FFT CXX)
 
 include_directories(qd)

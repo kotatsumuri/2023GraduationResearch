@@ -7,7 +7,7 @@
 #include "fft_util.hpp"
 
 namespace StockhamGPUN4 {
-inline void fft_even(uint64_t n, uint64_t p, qd restrict *x, qd restrict *ix, qd restrict *y, qd restrict *iy, const qd w[]) {
+inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, const qd w[]) {
     uint64_t n2 = n >> 1;
     uint64_t n4 = n >> 2;
     uint64_t l  = n2;
@@ -55,7 +55,7 @@ inline void fft_even(uint64_t n, uint64_t p, qd restrict *x, qd restrict *ix, qd
     }
 }
 
-inline void fft_odd(uint64_t n, uint64_t p, qd restrict *x, qd restrict *ix, qd restrict *y, qd restrict *iy, const qd w[]) {
+inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, const qd w[]) {
     uint64_t n2 = n >> 1;
     uint64_t n4 = n >> 2;
     uint64_t l  = n2;
@@ -116,28 +116,39 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
     uint64_t m  = 1;
     uint64_t lp = p - 1;
     uint64_t mp = 0;
+    qd *w_n2    = (qd *)calloc(n2 + 1, sizeof(qd));
+    qd *iw_n2   = (qd *)calloc(n2 + 1, sizeof(qd));
     h2dtimer.start();
-#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 4 + 1]) map(alloc : y[ : n], iy[ : n])
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 4 + 1]) map(alloc : y[ : n], iy[ : n], w_n2[ : n2 + 1], iw_n2[ : n2 + 1])
     {
         h2dtimer.stop();
+
+#pragma omp target teams distribute parallel for
+        for (uint64_t i = 0; i < n4 + 1; i++) {
+            copy(w[i], w_n2[i]);
+            minus(w[i], w_n2[n2 - i]);
+            copy(w[i], iw_n2[n4 - i]);
+            copy(w[i], iw_n2[n4 + i]);
+        }
+
         for (uint64_t t = 0; t < p; t++) {
             kernel_timer.start();
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    uint64_t idx_n4 = j >> (lp - 1);
-                    uint64_t idx    = j << (p - (1 + lp));
-                    uint64_t idx_a  = idx & (n4 - 1);
-                    if (idx_n4)
-                        idx_a = n4 - idx_a;
-                    double *a = (double *)w[idx_a];
-                    qd a_;
-                    if (idx_n4) {
-                        minus(a, a_);
-                        a = (double *)a_;
-                    }
-                    idx_a     = n4 - idx_a;
-                    double *b = (double *)w[idx_a];
+                    // uint64_t idx_n4 = j >> (lp - 1);
+                    // uint64_t idx    = (j << (p - (1 + lp))) & (n4 - 1);
+                    // if (idx_n4)
+                    //     idx = n4 - idx;
+                    // double *a = (double *)w[idx];
+                    // qd a_;
+                    // if (idx_n4) {
+                    //     minus(a, a_);
+                    //     a = (double *)a_;
+                    // }
+                    // double *b = (double *)w[n4 - idx];
+                    double *a = (double *)w_n2[j << (p - (1 + lp))];
+                    double *b = (double *)iw_n2[j << (p - (1 + lp))];
                     qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
                     copy(x[k + (j << mp)], x0);
                     copy(ix[k + (j << mp)], ix0);
@@ -170,28 +181,39 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
     uint64_t m  = 1;
     uint64_t lp = p - 1;
     uint64_t mp = 0;
+    qd *w_n2    = (qd *)calloc(n2 + 1, sizeof(qd));
+    qd *iw_n2   = (qd *)calloc(n2 + 1, sizeof(qd));
     h2dtimer.start();
-#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 4 + 1]) map(alloc : y[ : n], iy[ : n])
+#pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 4 + 1]) map(alloc : y[ : n], iy[ : n], w_n2[ : n2 + 1], iw_n2[ : n2 + 1])
     {
         h2dtimer.stop();
+
+#pragma omp target teams distribute parallel for
+        for (uint64_t i = 0; i < n4 + 1; i++) {
+            copy(w[i], w_n2[i]);
+            minus(w[i], w_n2[n2 - i]);
+            copy(w[i], iw_n2[n4 - i]);
+            copy(w[i], iw_n2[n4 + i]);
+        }
+
         for (uint64_t t = 0; t < p; t++) {
             kernel_timer.start();
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
-                    uint64_t idx_n4 = j >> (lp - 1);
-                    uint64_t idx    = j << (p - (1 + lp));
-                    uint64_t idx_a  = idx & (n4 - 1);
-                    if (idx_n4)
-                        idx_a = n4 - idx_a;
-                    double *a = (double *)w[idx_a];
-                    qd a_;
-                    if (idx_n4) {
-                        minus(a, a_);
-                        a = (double *)a_;
-                    }
-                    idx_a     = n4 - idx_a;
-                    double *b = (double *)w[idx_a];
+                    // uint64_t idx_n4 = j >> (lp - 1);
+                    // uint64_t idx    = (j << (p - (1 + lp))) & (n4 - 1);
+                    // if (idx_n4)
+                    //     idx = n4 - idx;
+                    // double *a = (double *)w[idx];
+                    // qd a_;
+                    // if (idx_n4) {
+                    //     minus(a, a_);
+                    //     a = (double *)a_;
+                    // }
+                    // double *b = (double *)w[n4 - idx];
+                    double *a = (double *)w_n2[j << (p - (1 + lp))];
+                    double *b = (double *)iw_n2[j << (p - (1 + lp))];
                     qd x0, ix0, x1, ix1, y0, iy0, y1, iy1;
                     copy(x[k + (j << mp)], x0);
                     copy(ix[k + (j << mp)], ix0);

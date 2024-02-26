@@ -1,0 +1,37 @@
+Out of memory allocating 8589934624 bytes of device memory
+Failing in Thread:1
+total/free CUDA memory: 84943110144/2844393472
+Present table dump for device[1]: NVIDIA Tesla GPU 0, compute capability 9.0, threadid=1
+Hint: specify 0x800 bit in NV_ACC_DEBUG for verbose info.
+host:0x14580dfeb010 device:0x14540c000000 size:17179869184 presentcount:0+1 line:188 name:iy[:n]
+host:0x145c0dfec010 device:0x147710000000 size:17179869184 presentcount:0+1 line:188 name:y[:n]
+host:0x14600dfed010 device:0x147b10000000 size:17179869184 presentcount:0+1 line:188 name:ix[:n]
+host:0x148211fed010 device:0x148f16000000 size:17179869184 presentcount:0+1 line:188 name:x[:n]
+host:0x149417fed010 device:0x149b1a000000 size:8589934624 presentcount:0+1 line:188 name:w_n2[:n2+1]
+host:0x14aab7db5010 device:0x14a778000000 size:4294967328 presentcount:0+1 line:188 name:w[:?+1]
+allocated block device:0x14540c000000 size:17179869184 thread:1
+allocated block device:0x147710000000 size:17179869184 thread:1
+allocated block device:0x147b10000000 size:17179869184 thread:1
+allocated block device:0x148f16000000 size:17179869184 thread:1
+allocated block device:0x149b1a000000 size:8589935104 thread:1
+allocated block device:0x14a778000000 size:4294967808 thread:1
+Accelerator Fatal Error: call to cuMemAlloc returned error 2: Out of memory
+ File: /work/NUMLIB/ks0514/2023GraduationResearch/QD-FFT-OMP-GPU/fft/stockham_gpu_n4.hpp
+ Function: _ZN13StockhamGPUN47fft_oddEmmPA4_dS1_S1_S1_S1_R5TimerS3_S3_:177
+ Line: 188
+
+
+============================================================
+Request ID:             149724.nqsv
+Request Name:           StockhamGPUN4Time32.sh
+Queue:                  gpu@nqsv
+Number of Jobs:         1
+User Name:              ks0514
+Group Name:             NUMLIB
+Created Request Time:   Wed Dec 13 09:18:10 2023
+Started Request Time:   Wed Dec 13 09:18:40 2023
+Ended Request Time:     Wed Dec 13 09:32:01 2023
+Resources Information:
+  Elapse:               805S
+  Remaining Elapse:     6395S
+============================================================

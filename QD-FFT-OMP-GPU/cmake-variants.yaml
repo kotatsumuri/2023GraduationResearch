@@ -1,0 +1,9 @@
+buildType:
+  default: GPU 
+  choices:
+    debug:
+      short: GPU
+      buildType: GPU
+    release:
+      short: CPU
+      buildType: CPU

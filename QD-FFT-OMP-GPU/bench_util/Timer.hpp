@@ -34,4 +34,8 @@ public:
     double elapsed_microsec_once() {
         return elapsed_microsec;
     }
+
+    double elapsed_time() {
+        return elapsed_microsec / 1e6;
+    }
 };

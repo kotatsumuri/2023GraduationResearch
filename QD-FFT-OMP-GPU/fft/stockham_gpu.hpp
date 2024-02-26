@@ -94,8 +94,8 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         h2d_timer.stop();
+        kernel_timer.start();
         for (uint64_t t = 0; t < p; t++) {
-            kernel_timer.start();
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
@@ -113,7 +113,6 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
                     copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
-            kernel_timer.stop();
             swap(&x, &y);
             swap(&ix, &iy);
             l >>= 1;
@@ -121,6 +120,7 @@ inline void fft_even(uint64_t n, uint64_t p, qd *x, qd *ix, qd *y, qd *iy, qd w[
             mp++;
             lp--;
         }
+        kernel_timer.stop();
         d2h_timer.start();
     }
     d2h_timer.stop();
@@ -136,8 +136,8 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
 #pragma omp target data map(tofrom : x[ : n], ix[ : n]) map(to : w[ : n / 2], iw[ : n / 2]) map(alloc : y[ : n], iy[ : n])
     {
         h2d_timer.stop();
+        kernel_timer.start();
         for (uint64_t t = 0; t < p; t++) {
-            kernel_timer.start();
 #pragma omp target teams distribute parallel for collapse(2)
             for (uint64_t j = 0; j < l; j++) {
                 for (uint64_t k = 0; k < m; k++) {
@@ -155,7 +155,6 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
                     copy(iy1, iy[k + (j << (mp + 1)) + m]);
                 }
             }
-            kernel_timer.stop();
             swap(&x, &y);
             swap(&ix, &iy);
             l >>= 1;
@@ -169,6 +168,7 @@ inline void fft_odd(uint64_t n, uint64_t p, qd *x, qd *ix, qd y[], qd iy[], qd w
             copy(x[i], y[i]);
             copy(ix[i], iy[i]);
         }
+        kernel_timer.stop();
         d2h_timer.start();
     }
     d2h_timer.stop();
@@ -270,15 +270,34 @@ void stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[]) {
     free(iy);
 }
 
+void stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer) {
+    qd *y  = (qd *)calloc(n, sizeof(qd));
+    qd *iy = (qd *)calloc(n, sizeof(qd));
+    if (p & 1) {
+        timer.start();
+        StockhamGPU::fft_odd(n, p, *x, *ix, y, iy, w, iw);
+        timer.stop();
+    } else {
+        timer.start();
+        StockhamGPU::fft_even(n, p, *x, *ix, y, iy, w, iw);
+        timer.stop();
+    }
+    free(y);
+    free(iy);
+}
+
 void stockham_gpu(uint64_t n, uint64_t p, qd *x[], qd *ix[], qd w[], qd iw[], Timer &timer, Timer &h2d_timer, Timer &d2h_timer, Timer &kernel_timer) {
     qd *y  = (qd *)calloc(n, sizeof(qd));
     qd *iy = (qd *)calloc(n, sizeof(qd));
-    timer.start();
-    if (p & 1)
+    if (p & 1) {
+        timer.start();
         StockhamGPU::fft_odd(n, p, *x, *ix, y, iy, w, iw, h2d_timer, d2h_timer, kernel_timer);
-    else
+        timer.stop();
+    } else {
+        timer.start();
         StockhamGPU::fft_even(n, p, *x, *ix, y, iy, w, iw, h2d_timer, d2h_timer, kernel_timer);
-    timer.stop();
+        timer.stop();
+    }
     free(y);
     free(iy);
 }

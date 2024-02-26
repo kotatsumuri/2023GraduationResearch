@@ -26,3 +26,7 @@ add_executable(StockhamGPUN4Time stockham_gpu_n4_time.cpp)
 
 add_executable(StockhamGPUN4ComplexErrorTest stockham_gpu_n4_complex_error_test.cpp)
 add_executable(StockhamGPUN4ComplexTime stockham_gpu_n4_complex_time.cpp)
+
+add_executable(StockhamGPUBenchFFTSpeed stockham_gpu_benchFFT_speed.cpp)
+
+add_executable(StockhamOMPBenchFFTSpeed stockham_omp_benchFFT_speed.cpp)
